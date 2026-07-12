@@ -18,8 +18,13 @@ config.plugins.autobackup.where = ConfigText(default = "/media/hdd")
 config.plugins.autobackup.epgcache = ConfigOnOff(default = False)
 config.plugins.autobackup.prevbackup = ConfigOnOff(default = False)
 
+config.plugins.autobackup.archiveEnabled = ConfigEnableDisable(default=False)
+config.plugins.autobackup.archiveWakeup = ConfigClock(default=((3 * 60) + 0) * 60)
+
 # Global variables
 autoStartTimer = None
+archiveStartTimer = None
+archiveContainer = None
 
 ##################################
 # Configuration GUI
@@ -59,32 +64,67 @@ def runBackup():
 		except Exception as e:
 			print("[AutoBackup] FAIL:", e)
 
+def runArchive():
+	destination = config.plugins.autobackup.where.value
+	if destination:
+		try:
+			global archiveContainer
+			from .ui import archiveCommand
+
+			def appClosed(retval):
+				global archiveContainer
+				print("[AutoBackup] archive complete, result:", retval)
+				archiveContainer = None
+
+			def dataAvail(data):
+				print("[AutoBackup]", data.rstrip())
+
+			print("[AutoBackup] start automatic archive creation")
+			cmd = archiveCommand(destination)
+
+			archiveContainer = enigma.eConsoleAppContainer()
+			archiveContainer.appClosed.append(appClosed)
+			archiveContainer.dataAvail.append(dataAvail)
+
+			if archiveContainer.execute(cmd):
+				raise Exception("failed to execute: " + cmd)
+
+		except Exception as e:
+			print("[AutoBackup] archive FAIL:", e)
+
 
 def main(session, **kwargs):
 	from . import ui
 	session.openWithCallback(doneConfiguring, ui.Config)
 
 
-def doneConfiguring(session, retval):
+def doneConfiguring(saved ,session):
+	if not saved:
+		return
 	"user has closed configuration, check new values...."
-	global autoStartTimer
+	global autoStartTimer, archiveStartTimer
 	if autoStartTimer is not None:
 		autoStartTimer.update()
+	if archiveStartTimer is not None:
+		archiveStartTimer.update()
 
 ##################################
 # Autostart section
 
 
 class AutoStartTimer:
-	def __init__(self, session):
+	def __init__(self, session, enabled, wakeup, callback):
 		self.session = session
+		self.enabled = enabled
+		self.wakeup = wakeup
+		self.callback = callback
 		self.timer = enigma.eTimer()
 		self.timer.callback.append(self.onTimer)
 		self.update()
 
 	def getWakeTime(self):
-		if config.plugins.autobackup.enabled.value:
-			clock = config.plugins.autobackup.wakeup.value
+		if self.enabled.value:
+			clock = self.wakeup.value
 			nowt = time.time()
 			now = time.localtime(nowt)
 			return int(time.mktime((now.tm_year, now.tm_mon, now.tm_mday,
@@ -121,18 +161,31 @@ class AutoStartTimer:
 		# If we're close enough, we're okay...
 		atLeast = 0
 		if abs(wake - now) < 60:
-			runBackup()
+			self.callback()
 			atLeast = 60
 		self.update(atLeast)
 
 
 def autostart(reason, session=None, **kwargs):
 	"called with reason=1 to during shutdown, with reason=0 at startup?"
-	global autoStartTimer
+	global autoStartTimer, archiveStartTimer
 	if reason == 0:
 		if session is not None:
 			if autoStartTimer is None:
-				autoStartTimer = AutoStartTimer(session)
+				autoStartTimer = AutoStartTimer(
+					session,
+					config.plugins.autobackup.enabled,
+					config.plugins.autobackup.wakeup,
+					runBackup
+				)
+
+			if archiveStartTimer is None:
+				archiveStartTimer = AutoStartTimer(
+					session,
+					config.plugins.autobackup.archiveEnabled,
+					config.plugins.autobackup.archiveWakeup,
+					runArchive
+				)
 
 
 def checkmenu(menuid):

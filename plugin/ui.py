@@ -8,7 +8,7 @@ from . import plugin
 import os, tarfile
 import enigma
 import shutil
-from Components.config import config, configfile, getConfigListEntry, ConfigSelection
+from Components.config import config, configfile, ConfigSelection
 from Screens.Screen import Screen
 from Components.ConfigList import ConfigListScreen
 from Components.About import about
@@ -78,6 +78,67 @@ def saveSelectedFiles(files):
 	except Exception as ex:
 		print("[AutoBackup] Failed to write /etc/backup.cfg", ex)
 
+def getHostName():
+	try:
+		with open("/etc/hostname", "r") as f:
+			return f.read().strip()
+	except:
+		return about.getHardwareTypeString()
+
+
+def createAutoBackupInfo(backupDir, hostname, slot):
+	if not os.path.isdir(backupDir):
+		os.makedirs(backupDir)
+
+	infoFile = os.path.join(backupDir, "autobackup.info")
+
+	with open(infoFile, "w") as f:
+		f.write("hostname=%s\n" % hostname)
+		f.write("hardware=%s\n" % about.getHardwareTypeString())
+		f.write("image=%s\n" % about.getImageTypeString())
+		f.write("oe=%s\n" % about.getOEVersionString())
+		f.write("enigma=%s\n" % about.getEnigmaVersionString())
+		if slot is not None:
+			f.write("slot=slot%d\n" % slot)
+
+
+def archiveCommand(destination):
+	try:
+		from Tools.Multiboot import getCurrentImage
+		slot = getCurrentImage()
+	except:
+		slot = None
+
+	hostname = getHostName().replace(" ", "_").replace("/", "_")
+	boxSuffix = "." + hostname
+
+	slotSuffix = ""
+	if slot is not None:
+		slotSuffix = ".slot%02d" % slot
+
+	tmpBackupDir = "/tmp/autobackup.%d" % os.getpid()
+
+	if os.path.isdir(tmpBackupDir):
+		shutil.rmtree(tmpBackupDir)
+
+	os.makedirs(os.path.join(tmpBackupDir, "backup"))
+	createAutoBackupInfo(os.path.join(tmpBackupDir, "backup"), hostname, slot)
+
+	return (
+		'%s && '
+		'cd "%s/backup" && '
+		'tar -czf "%s/backup/backup.$(date +%%Y%%m%%d_%%H%%M)%s%s.tar.gz" '
+		'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
+		'rm -rf "%s"'
+	) % (
+		plugin.backupCommand(tmpBackupDir, fullArchive=True),
+		tmpBackupDir,
+		destination,
+		boxSuffix,
+		slotSuffix,
+		tmpBackupDir
+	)
+
 
 class Config(ConfigListScreen, Screen):
 	skin = """
@@ -108,10 +169,10 @@ class Config(ConfigListScreen, Screen):
 		self.skinName = ["Config_AutoBackup", "Config"]
 		self.setup_title = _("AutoBackup Configuration")
 		Screen.__init__(self, session)
-		cfg = config.plugins.autobackup
+		self.cfg = config.plugins.autobackup
 		choices = getLocationChoices()
 		if choices:
-			currentwhere = cfg.where.value
+			currentwhere = self.cfg.where.value
 			defaultchoice = choices[0][0]
 			for k, v in choices:
 				if k == currentwhere:
@@ -121,15 +182,10 @@ class Config(ConfigListScreen, Screen):
 			defaultchoice = ""
 			choices = [("", _("Nowhere"))]
 		self.cfgwhere = ConfigSelection(default=defaultchoice, choices=choices)
-		configList = [
-			getConfigListEntry(_("Backup location"), self.cfgwhere),
-			getConfigListEntry(_("Daily automatic backup"), cfg.enabled),
-			getConfigListEntry(_("Automatic start time"), cfg.wakeup),
-			getConfigListEntry(_("Create Autoinstall"), cfg.autoinstall),
-			getConfigListEntry(_("EPG cache backup"), cfg.epgcache),
-			getConfigListEntry(_("Save previous backup"), cfg.prevbackup),
-			]
-		ConfigListScreen.__init__(self, configList, session=session, on_change=self.changedEntry)
+
+		self.createSetup()
+		ConfigListScreen.__init__(self, self.list, session=session, on_change=self.changedEntry)
+
 		self["key_red"] = Button(_("Cancel"))
 		self["key_green"] = Button(_("Save"))
 		self["key_yellow"] = Button(_("Manual"))
@@ -157,8 +213,28 @@ class Config(ConfigListScreen, Screen):
 		self.onClose.append(self.__onClose)
 		self.setTitle(_("AutoBackup Configuration"))
 
+	def createSetup(self):
+		self.list = []
+		self.list.append((_("Backup location"), self.cfgwhere))
+		self.list.append((_("Daily automatic backup"), self.cfg.enabled))
+		if self.cfg.enabled.value:
+			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup))
+		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall))
+		self.list.append((_("EPG cache backup"), self.cfg.epgcache))
+		self.list.append((_("Save previous backup"), self.cfg.prevbackup))
+		self.list.append((_("Automatic archive creation"), self.cfg.archiveEnabled))
+		if self.cfg.archiveEnabled.value:
+			self.list.append((4 * " " + _("Archive creation time"), self.cfg.archiveWakeup))
+
 	# for summary:
 	def changedEntry(self):
+		current = self["config"].getCurrent()
+
+		if current and current[1] in (self.cfg.enabled, self.cfg.archiveEnabled):
+			self.createSetup()
+			self["config"].list = self.list
+			self["config"].l.setList(self.list)
+
 		for x in self.onChangedEntry:
 			x()
 
@@ -523,72 +599,16 @@ class Config(ConfigListScreen, Screen):
 	def doArchiveCurrentBackup(self):
 		if not self.cfgwhere.value:
 			return
-		try:
-			from Tools.Multiboot import getCurrentImage
-			slot = getCurrentImage()
-		except:
-			slot = None
-
-		hostname = self.getHostName().replace(" ", "_").replace("/", "_")
-		boxSuffix = "." + hostname
-
-		slotSuffix = ""
-		if slot is not None:
-			slotSuffix = ".slot%02d" % slot
 
 		self.data = ''
 		self.showOutput()
 		self["statusbar"].setText(_('Running...'))
 
-		realBackupDir = self.cfgwhere.value
-		tmpBackupDir = "/tmp/autobackup.%d" % os.getpid()
-
-		if os.path.isdir(tmpBackupDir):
-			shutil.rmtree(tmpBackupDir)
-
-		os.makedirs(os.path.join(tmpBackupDir, "backup"))
-		self.createAutoBackupInfo(os.path.join(tmpBackupDir, "backup"), hostname, slot)
-
-		cmd = (
-			'%s && '
-			'cd "%s/backup" && '
-			'tar -czf "%s/backup/backup.$(date +%%Y%%m%%d_%%H%%M)%s%s.tar.gz" '
-			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
-			'rm -rf "%s"'
-		) % (
-			plugin.backupCommand(tmpBackupDir, fullArchive=True),
-			tmpBackupDir,
-			realBackupDir,
-			boxSuffix,
-			slotSuffix,
-			tmpBackupDir
-		)
+		cmd = archiveCommand(self.cfgwhere.value)
 
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
 			self.showOutput()
-
-	def createAutoBackupInfo(self, backupDir, hostname, slot):
-		if not os.path.isdir(backupDir):
-			os.makedirs(backupDir)
-
-		infoFile = os.path.join(backupDir, "autobackup.info")
-
-		with open(infoFile, "w") as f:
-			f.write("hostname=%s\n" % hostname)
-			f.write("hardware=%s\n" % about.getHardwareTypeString())
-			f.write("image=%s\n" % about.getImageTypeString())
-			f.write("oe=%s\n" % about.getOEVersionString())
-			f.write("enigma=%s\n" % about.getEnigmaVersionString())
-			if slot is not None:
-				f.write("slot=slot%d\n" % slot)
-
-	def getHostName(self):
-		try:
-			with open("/etc/hostname", "r") as f:
-				return f.read().strip()
-		except:
-			return about.getHardwareTypeString()
 
 
 class BackupSelection(Screen):
