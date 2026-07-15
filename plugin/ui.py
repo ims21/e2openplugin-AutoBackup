@@ -109,8 +109,9 @@ def getImageShortName():
 	image = about.getImageTypeString()
 
 	if image.startswith("OpenPLi Release "):
-		version = image[len("OpenPLi Release "):].replace(".", "")
-		return "release%s" % version.zfill(4)
+		version = image[len("OpenPLi Release "):]
+		major, minor = version.split(".", 1)
+		return "release%02d%02d" % (int(major), int(minor))
 
 	if image == "OpenPLi Homebuild":
 		return "homebuild"
@@ -735,8 +736,13 @@ class ArchiveList(Screen):
 						for line in f.read().decode("utf-8").splitlines():
 							if "=" in line:
 								key, value = line.split("=", 1)
-								if key.strip() not in info:
-									info[key.strip()] = value.strip()
+								key = key.strip()
+								value = value.strip()
+								if key not in info:
+									if key == "image":
+										# keep the short image name format for possible future use
+										value = getImageShortName(value)
+									info[key] = value
 				except KeyError:
 					pass
 
@@ -768,7 +774,7 @@ class ArchiveList(Screen):
 				return False
 
 		if self.archiveFilters["image"]:
-			if info.get("image", "") != getImageName():
+			if info.get("image", "") != getImageShortName():
 				return False
 
 		if self.archiveFilters["slot"]:
@@ -805,12 +811,14 @@ class ArchiveList(Screen):
 
 class ArchiveFilter(ConfigListScreen, Screen):
 	skin = """
-	<screen position="center,center" size="560,300" title="Archive filters">
+	<screen position="center,center" size="560,305" title="Archive filters">
 		<ePixmap pixmap="skin_default/buttons/red.png" position="0,0" size="140,40" alphatest="on" />
 		<ePixmap pixmap="skin_default/buttons/green.png" position="140,0" size="140,40" alphatest="on" />
 		<widget source="key_red" render="Label" position="0,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
 		<widget source="key_green" render="Label" position="140,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
-		<widget name="config" position="10,50" size="540,240" scrollbarMode="showOnDemand" />
+		<widget name="config" position="10,50" size="540,200" scrollbarMode="showOnDemand" />
+		<ePixmap pixmap="div-h.png" position="0,252" zPosition="10" size="900,2" />
+		<widget name="description" position="10,255" size="540,46" font="Regular;20" valign="center"/>
 	</screen>"""
 
 	def __init__(self, session, filters):
@@ -822,13 +830,13 @@ class ArchiveFilter(ConfigListScreen, Screen):
 		self.filterSlot = ConfigYesNo(default=filters.get("slot", False))
 		self.filterAlphabetical = ConfigYesNo(default=filters.get("alphabetical", False))
 
-		configList = [
-			getConfigListEntry(_("Current receiver MAC"), self.filterMac),
-			getConfigListEntry(_("Current hostname"), self.filterHostname),
-			getConfigListEntry(_("Current image"), self.filterImage),
-			getConfigListEntry(_("Current slot"), self.filterSlot),
-			getConfigListEntry(_("Sort alphabetically"), self.filterAlphabetical),
-		]
+		configList = []
+
+		configList.append((_("Current receiver MAC"), self.filterMac, _("Match current receiver MAC address from the archive name, info file or filenames in the archive.")))
+		configList.append((_("Current hostname"), self.filterHostname, _("Match current hostname from the archive name.")))
+		configList.append((_("Current image"), self.filterImage, _("Match current image name from the archive name.")))
+		configList.append((_("Current slot"), self.filterSlot, _("Match current slot number from the archive name.")))
+		configList.append((_("Sort alphabetically"), self.filterAlphabetical, _("Sort archives alphabetically instead of by creation time.")))
 
 		ConfigListScreen.__init__(self, configList, session=session)
 
@@ -845,6 +853,16 @@ class ArchiveFilter(ConfigListScreen, Screen):
 			}, -1
 		)
 
+		self["description"] = Label("")
+		self["config"].onSelectionChanged.append(self.selectionChanged)
+		self.selectionChanged()
+
+	def selectionChanged(self):
+		current = self["config"].getCurrent()
+		if current and len(current) > 2:
+			self["description"].setText(current[2])
+		else:
+			self["description"].setText("")
 
 	def apply(self):
 		self.close({
