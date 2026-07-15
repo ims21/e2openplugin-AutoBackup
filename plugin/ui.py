@@ -105,6 +105,21 @@ def getImageName():
 	return about.getImageTypeString()
 
 
+def getImageShortName():
+	image = about.getImageTypeString()
+
+	if image.startswith("OpenPLi Release "):
+		version = image[len("OpenPLi Release "):].replace(".", "")
+		return "release%s" % version.zfill(4)
+
+	if image == "OpenPLi Homebuild":
+		return "homebuild"
+
+	if image == "OpenPLi Develop":
+		return "develop"
+
+	return image.lower().replace(" ", "")
+
 def getOEVersion():
 	return about.getOEVersionString()
 
@@ -489,8 +504,8 @@ class Config(ConfigListScreen, Screen):
 			slot = None
 
 		mac = getMacAddress()
-		hostname = getHostName().replace(" ", "_").replace("/", "_")
-		image = getImageName().replace(" ", "_").replace("/", "_").replace(".", "")
+		hostname = getHostName()
+		image = getImageShortName()
 		slot = getCurrentSlot()
 
 		slotSuffix = ""
