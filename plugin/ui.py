@@ -106,15 +106,17 @@ def getImageName():
 
 
 def getImageShortName(image=None):
+	"""Convert an 'OpenPLi type <version>' image string to a short image name."""
 	if image is None:
 		image = about.getImageTypeString()
 
 	parts = image.split()
-	if len(parts) == 3:
+	n_parts = len(parts)
+	if n_parts == 3:
 		version = parts[1].lower()
 		major, minor = parts[2].split(".", 1)
-		return "%s%02d%02d" % (version.lower(), int(major), int(minor))
-	elif len(parts) == 2:
+		return "%s%02d%02d" % (version, int(major), int(minor))
+	elif n_parts == 2:
 		return parts[1].lower()
 	return image.lower().replace(" ", "")
 
