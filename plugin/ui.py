@@ -224,6 +224,14 @@ class Config(ConfigListScreen, Screen):
 		self.onClose.append(self.__onClose)
 		self.setTitle(_("AutoBackup Configuration"))
 
+		self.archiveFilters = {
+			"mac": True,
+			"hostname": False,
+			"image": False,
+			"slot": False,
+			"alphabetical": False,
+		}
+
 	# for summary:
 	def changedEntry(self):
 		for x in self.onChangedEntry:
@@ -443,15 +451,15 @@ class Config(ConfigListScreen, Screen):
 		self["status"].appendText(s)
 
 	def doRestorePrevious(self):
-		backupList = []
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
-		self.session.openWithCallback(self.doRestorePreviousNow, ArchiveList, backupDir)
+		self.session.openWithCallback(self.doRestorePreviousNow, ArchiveList, backupDir, self.archiveFilters)
 
 	def doRestorePreviousNow(self, result):
 		if not result:
 			return
 
-		backupFile = result[1]
+		selection, self.archiveFilters = result
+		backupFile = selection[1]
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
 
 		currentMac = open("/sys/class/net/eth0/address").read().strip().replace(":", "").lower()
@@ -653,19 +661,12 @@ class ArchiveList(Screen):
 		</screen>
 	"""
 
-	def __init__(self, session, backupDir):
+	def __init__(self, session, backupDir, filters):
 		Screen.__init__(self, session)
 		self.skinName = ["ArchiveList"]
 
 		self.backupDir = backupDir
-
-		self.archiveFilters = {
-			"mac": True,
-			"hostname": False,
-			"image": False,
-			"slot": False,
-			"alphabetical": False,
-		}
+		self.archiveFilters = filters.copy()
 
 		self["key_red"] = StaticText(_("Cancel"))
 		self["key_green"] = StaticText(_("Select"))
@@ -805,7 +806,7 @@ class ArchiveList(Screen):
 		self.loadArchives()
 
 	def select(self):
-		self.close(self["list"].getCurrent())
+		self.close((self["list"].getCurrent(), self.archiveFilters.copy()))
 
 	def exit(self):
 		self.close(None)
