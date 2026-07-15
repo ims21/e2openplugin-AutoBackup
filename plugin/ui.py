@@ -9,13 +9,14 @@ import os, tarfile
 import enigma
 import shutil
 import re
-from Components.config import config, configfile, getConfigListEntry, ConfigSelection
+from Components.config import config, configfile, getConfigListEntry, ConfigSelection, ConfigYesNo
 from Screens.Screen import Screen
 from Components.ConfigList import ConfigListScreen
 from Components.About import about
 from Components.ActionMap import ActionMap
 from Components.Button import Button
 from Components.Label import Label
+from Components.MenuList import MenuList
 from Components.ScrollLabel import ScrollLabel
 from Components.Sources.StaticText import StaticText
 from Screens.ChoiceBox import ChoiceBox
@@ -78,6 +79,54 @@ def saveSelectedFiles(files):
 		f.close()
 	except Exception as ex:
 		print("[AutoBackup] Failed to write /etc/backup.cfg", ex)
+
+
+def getMacAddress():
+	try:
+		with open("/sys/class/net/eth0/address", "r") as f:
+			return f.read().strip().replace(":", "").lower()
+	except:
+		return "nomac"
+
+
+def getHostName():
+	try:
+		with open("/etc/hostname", "r") as f:
+			return f.read().strip()
+	except:
+			return about.getHardwareTypeString()
+
+
+def getHardwareName():
+	return about.getHardwareTypeString()
+
+
+def getImageName():
+	return about.getImageTypeString()
+
+
+def getOEVersion():
+	return about.getOEVersionString()
+
+
+def getEnigmaVersion():
+	return about.getEnigmaVersionString()
+
+
+def getCurrentSlot():
+	try:
+		from Tools.Multiboot import getCurrentImage
+		return getCurrentImage()
+	except:
+		return None
+
+
+def isArchiveName(filename):
+	return filename.endswith(".tar.gz") and (
+		filename.startswith("backup.") or
+		re.match(r"^[0-9a-fA-F]{12}\.", filename) or
+		re.match(r"^\d{8}_\d{4}\.", filename)
+	)
 
 
 class Config(ConfigListScreen, Screen):
@@ -376,39 +425,15 @@ class Config(ConfigListScreen, Screen):
 		print("[AutoBackup]", s.strip())
 		self["status"].appendText(s)
 
-	def isArchiveName(self, filename):
-		return filename.endswith(".tar.gz") and (
-			filename.startswith("backup.") or
-			re.match(r"^[0-9a-fA-F]{12}\.", filename)
-		)
-
 	def doRestorePrevious(self):
 		backupList = []
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
-
-		if os.path.isdir(backupDir):
-			for filename in os.listdir(backupDir):
-				if self.isArchiveName(filename):
-					fullpath = os.path.join(backupDir, filename)
-					try:
-						st = os.stat(fullpath)
-						backupList.append((filename, fullpath, st.st_mtime))
-					except Exception as ex:
-						print("[AutoBackup] Failed to stat %s: %s" % (fullpath, ex))
-
-		if not backupList:
-			self.session.open(MessageBox, _("No previous backups found"), type=MessageBox.TYPE_ERROR, timeout=10)
-			return
-
-		backupList.sort(key=lambda b: b[2], reverse=True)
-		self.restorePreviousList = backupList
-		self.session.openWithCallback(self.doRestorePreviousNow, ChoiceBox, title=_("Select a backup archive and press OK."), windowTitle=_("Backup archive list"), list=backupList, keys=[""] * len(backupList), selection=getattr(self, "restorePreviousSelection", 0))
+		self.session.openWithCallback(self.doRestorePreviousNow, ArchiveList, backupDir)
 
 	def doRestorePreviousNow(self, result):
 		if not result:
 			return
 
-		self.restorePreviousSelection = self.restorePreviousList.index(result)
 		backupFile = result[1]
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
 
@@ -453,6 +478,76 @@ class Config(ConfigListScreen, Screen):
 			picon = picon
 		)
 		return
+
+	def doArchiveCurrentBackup(self):
+		if not self.cfgwhere.value:
+			return
+		try:
+			from Tools.Multiboot import getCurrentImage
+			slot = getCurrentImage()
+		except:
+			slot = None
+
+		mac = getMacAddress()
+		hostname = getHostName().replace(" ", "_").replace("/", "_")
+		image = getImageName().replace(" ", "_").replace("/", "_").replace(".", "")
+		slot = getCurrentSlot()
+
+		slotSuffix = ""
+		if slot is not None:
+			slotSuffix = ".slot%02d" % slot
+
+		self.data = ''
+		self.showOutput()
+		self["statusbar"].setText(_('Running...'))
+
+		realBackupDir = self.cfgwhere.value
+		tmpBackupDir = "/tmp/autobackup.%d" % os.getpid()
+
+		if os.path.isdir(tmpBackupDir):
+			shutil.rmtree(tmpBackupDir)
+
+		os.makedirs(os.path.join(tmpBackupDir, "backup"))
+		self.createAutoBackupInfo(os.path.join(tmpBackupDir, "backup"))
+
+		cmd = (
+			'%s && '
+			'cd "%s/backup" && '
+			'tar -czf "%s/backup/$(date +%%Y%%m%%d_%%H%%M).%s.%s.%s%s.tar.gz" '
+			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
+			'rm -rf "%s"'
+		) % (
+			plugin.backupCommand(tmpBackupDir, fullArchive=True),
+			tmpBackupDir,
+			realBackupDir,
+			mac,
+			hostname,
+			image,
+			slotSuffix,
+			tmpBackupDir
+		)
+
+		if self.container.execute(cmd):
+			print("[AutoBackup] failed to execute")
+			self.showOutput()
+
+	def createAutoBackupInfo(self, backupDir):
+		if not os.path.isdir(backupDir):
+			os.makedirs(backupDir)
+
+		infoFile = os.path.join(backupDir, "autobackup.info")
+		slot = getCurrentSlot()
+
+		with open(infoFile, "w") as f:
+			f.write("mac=%s\n" % getMacAddress())
+			f.write("hostname=%s\n" % getHostName())
+			f.write("hardware=%s\n" % getHardwareName())
+			f.write("image=%s\n" % getImageName())
+			f.write("oe=%s\n" % getOEVersion())
+			f.write("enigma=%s\n" % getEnigmaVersion())
+			if slot is not None:
+				f.write("slot=slot%d\n" % slot)
+
 
 	def doRestorePreviousAction(self, backupFile, backupDir, action):
 		if action == "restore":
@@ -527,115 +622,226 @@ class Config(ConfigListScreen, Screen):
 			print("[AutoBackup] Failed to check backup: %s" % ex)
 		return None
 
-#######
-	def getMacAddress(self):
-		try:
-			with open("/sys/class/net/eth0/address", "r") as f:
-				return f.read().strip().replace(":", "").lower()
-		except:
-			return "nomac"
 
+class ArchiveList(Screen):
+	skin = """
+	<screen position="center,center" size="900,432" title="Backup archive list">
+	<ePixmap pixmap="skin_default/buttons/red.png" position="0,0" size="140,40" alphatest="on" />
+	<ePixmap pixmap="skin_default/buttons/green.png" position="140,0" size="140,40" alphatest="on" />
+	<widget source="key_red" render="Label" position="0,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
+	<widget source="key_green" render="Label" position="140,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
+	<widget name="list" position="10,40" size="880,350" scrollbarMode="showOnDemand" />
+	<ePixmap pixmap="div-h.png" position="0,392" zPosition="10" size="900,2" />
+	<ePixmap pixmap="buttons/key_menu.png" position="10,394" size="52,38" alphatest="on" />
+	</screen>
+	"""
 
-	def getHostName(self):
-		try:
-			with open("/etc/hostname", "r") as f:
-				return f.read().strip()
-		except:
-				return about.getHardwareTypeString()
+	def __init__(self, session, backupDir):
+		Screen.__init__(self, session)
+		self.skinName = ["ArchiveList"]
 
+		self.backupDir = backupDir
 
-	def getHardwareName(self):
-		return about.getHardwareTypeString()
+		self.archiveFilters = {
+			"mac": True,
+			"hostname": False,
+			"image": False,
+			"slot": False,
+		}
 
+		self["key_red"] = StaticText(_("Cancel"))
+		self["key_green"] = StaticText(_("Select"))
+		self["list"] = MenuList([])
 
-	def getImageName(self):
-		return about.getImageTypeString()
-
-
-	def getOEVersion(self):
-		return about.getOEVersionString()
-
-
-	def getEnigmaVersion(self):
-		return about.getEnigmaVersionString()
-
-
-	def getCurrentSlot(self):
-		try:
-			from Tools.Multiboot import getCurrentImage
-			return getCurrentImage()
-		except:
-			return None
-
-#######
-	def doArchiveCurrentBackup(self):
-		if not self.cfgwhere.value:
-			return
-		try:
-			from Tools.Multiboot import getCurrentImage
-			slot = getCurrentImage()
-		except:
-			slot = None
-
-		mac = self.getMacAddress()
-		hostname = self.getHostName().replace(" ", "_").replace("/", "_")
-		image = self.getImageName().replace(" ", "_").replace("/", "_").replace(".", "")
-		slot = self.getCurrentSlot()
-
-		slotSuffix = ""
-		if slot is not None:
-			slotSuffix = ".slot%02d" % slot
-
-		self.data = ''
-		self.showOutput()
-		self["statusbar"].setText(_('Running...'))
-
-		realBackupDir = self.cfgwhere.value
-		tmpBackupDir = "/tmp/autobackup.%d" % os.getpid()
-
-		if os.path.isdir(tmpBackupDir):
-			shutil.rmtree(tmpBackupDir)
-
-		os.makedirs(os.path.join(tmpBackupDir, "backup"))
-		self.createAutoBackupInfo(os.path.join(tmpBackupDir, "backup"))
-
-		cmd = (
-			'%s && '
-			'cd "%s/backup" && '
-			'tar -czf "%s/backup/%s.%s.%s%s.tar.gz" '
-			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
-			'rm -rf "%s"'
-		) % (
-			plugin.backupCommand(tmpBackupDir, fullArchive=True),
-			tmpBackupDir,
-			realBackupDir,
-			mac,
-			hostname,
-			image,
-			slotSuffix,
-			tmpBackupDir
+		self["actions"] = ActionMap(
+			["OkCancelActions", "ColorActions", "DirectionActions", "MenuActions"],
+			{
+				"cancel": self.exit,
+				"red": self.exit,
+				"green": self.select,
+				"ok": self.select,
+				"up": self["list"].up,
+				"down": self["list"].down,
+				"left": self["list"].pageUp,
+				"right": self["list"].pageDown,
+				"menu": self.openFilter,
+			},
+			-1
 		)
 
-		if self.container.execute(cmd):
-			print("[AutoBackup] failed to execute")
-			self.showOutput()
+		self.loadArchives()
 
-	def createAutoBackupInfo(self, backupDir):
-		if not os.path.isdir(backupDir):
-			os.makedirs(backupDir)
+	def loadArchives(self):
+		archives = []
 
-		infoFile = os.path.join(backupDir, "autobackup.info")
-		slot = self.getCurrentSlot()
+		if os.path.isdir(self.backupDir):
+			for filename in os.listdir(self.backupDir):
+				if not isArchiveName(filename):
+					continue
 
-		with open(infoFile, "w") as f:
-			f.write("mac=%s\n" % self.getMacAddress())
-			f.write("hostname=%s\n" % self.getHostName())
-			f.write("hardware=%s\n" % self.getHardwareName())
-			f.write("image=%s\n" % self.getImageName())
-			f.write("oe=%s\n" % self.getOEVersion())
-			f.write("enigma=%s\n" % self.getEnigmaVersion())
-			if slot is not None:
-				f.write("slot=slot%d\n" % slot)
+				fullpath = os.path.join(self.backupDir, filename)
+
+				if not self.archiveMatchesFilter(fullpath, filename):
+					continue
+
+				try:
+					st = os.stat(fullpath)
+					archives.append((filename, fullpath, st.st_mtime))
+				except Exception as ex:
+					print("[AutoBackup] Failed to stat %s: %s" % (fullpath, ex))
+
+		archives.sort(key=lambda archive: archive[2], reverse=True)
+		self["list"].setList(archives)
+
+		if not archives:
+			self.session.open(MessageBox, _("No backup archives match the selected filters."), type=MessageBox.TYPE_INFO, timeout=5)
+
+	def readArchiveInfo(self, archiveFile, filename):
+		info = {}
+
+		match = re.match(r"^\d{8}_\d{4}\.([0-9a-fA-F]{12})\.([^.]+)\.([^.]+)(?:\.slot(\d+))?\.tar\.gz$", filename)
+
+		if match:
+			info["mac"] = match.group(1).lower()
+			info["hostname"] = match.group(2)
+			info["image"] = match.group(3)
+			if match.group(4) is not None:
+				info["slot"] = "slot%d" % int(match.group(4))
+
+		try:
+			with tarfile.open(archiveFile, "r:gz") as tar:
+				try:
+					f = tar.extractfile("autobackup.info")
+					if f:
+						for line in f.read().decode("utf-8").splitlines():
+							if "=" in line:
+								key, value = line.split("=", 1)
+								if key.strip() not in info:
+									info[key.strip()] = value.strip()
+				except KeyError:
+					pass
+
+				if "mac" not in info:
+					for name in tar.getnames():
+						base = os.path.basename(name)
+						match = re.search(r"([0-9a-fA-F]{12})\.tar\.gz$", base)
+						if match:
+							info["mac"] = match.group(1).lower()
+							break
+
+		except Exception as ex:
+			print("[AutoBackup] Failed to read archive information from %s: %s" % (archiveFile, ex))
+
+		return info
+
+	def archiveMatchesFilter(self, fullpath, filename):
+		if not any(self.archiveFilters.values()):
+			return True
+
+		info = self.readArchiveInfo(fullpath, filename)
+
+		if self.archiveFilters["mac"]:
+			if info.get("mac", "").lower() != getMacAddress().lower():
+				return False
+
+		if self.archiveFilters["hostname"]:
+			if info.get("hostname", "") != getHostName():
+				return False
+
+		if self.archiveFilters["image"]:
+			if info.get("image", "") != getImageName():
+				return False
+
+		if self.archiveFilters["slot"]:
+			currentSlot = getCurrentSlot()
+			archiveSlot = info.get("slot")
+
+			if currentSlot is None:
+				if archiveSlot:
+					return False
+			elif archiveSlot != "slot%d" % currentSlot:
+				return False
+
+		return True
+
+	def openFilter(self):
+		self.session.openWithCallback(
+			self.filterClosed,
+			ArchiveFilter,
+			self.archiveFilters
+		)
+
+	def filterClosed(self, filters):
+		if filters is None:
+			return
+
+		self.archiveFilters = filters
+		self.loadArchives()
+
+	def select(self):
+		self.close(self["list"].getCurrent())
+
+	def exit(self):
+		self.close(None)
+
+class ArchiveFilter(ConfigListScreen, Screen):
+	skin = """
+	<screen position="center,center" size="560,300" title="Archive filters">
+		<ePixmap pixmap="skin_default/buttons/red.png" position="0,0" size="140,40" alphatest="on" />
+		<ePixmap pixmap="skin_default/buttons/green.png" position="140,0" size="140,40" alphatest="on" />
+
+		<widget source="key_red" render="Label" position="0,0" zPosition="1" size="140,40"
+			font="Regular;20" halign="center" valign="center"
+			backgroundColor="#9f1313" transparent="1" />
+		<widget source="key_green" render="Label" position="140,0" zPosition="1" size="140,40"
+			font="Regular;20" halign="center" valign="center"
+			backgroundColor="#1f771f" transparent="1" />
+
+		<widget name="config" position="10,50" size="540,240" scrollbarMode="showOnDemand" />
+	</screen>"""
+
+	def __init__(self, session, filters):
+		Screen.__init__(self, session)
+
+		self.filterMac = ConfigYesNo(default=filters.get("mac", True))
+		self.filterHostname = ConfigYesNo(default=filters.get("hostname", False))
+		self.filterImage = ConfigYesNo(default=filters.get("image", False))
+		self.filterSlot = ConfigYesNo(default=filters.get("slot", False))
+
+		configList = [
+			getConfigListEntry(_("Current receiver MAC"), self.filterMac),
+			getConfigListEntry(_("Current hostname"), self.filterHostname),
+			getConfigListEntry(_("Current image"), self.filterImage),
+			getConfigListEntry(_("Current slot"), self.filterSlot),
+		]
+
+		ConfigListScreen.__init__(self, configList, session=session)
+
+		self["key_red"] = StaticText(_("Cancel"))
+		self["key_green"] = StaticText(_("Apply"))
+
+		self["actions"] = ActionMap(
+			["OkCancelActions", "ColorActions"],
+			{
+				"cancel": self.cancel,
+				"red": self.cancel,
+				"green": self.apply,
+				"ok": self.apply,
+			},
+			-1
+		)
+
+
+	def apply(self):
+		self.close({
+			"mac": self.filterMac.value,
+			"hostname": self.filterHostname.value,
+			"image": self.filterImage.value,
+			"slot": self.filterSlot.value,
+		})
+
+	def cancel(self):
+		self.close(None)
 
 
 class BackupSelection(Screen):
