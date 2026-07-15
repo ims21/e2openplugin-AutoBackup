@@ -109,17 +109,13 @@ def getImageShortName(image=None):
 	if image is None:
 		image = about.getImageTypeString()
 
-	if image.startswith("OpenPLi Release "):
-		version = image[len("OpenPLi Release "):]
-		major, minor = version.split(".", 1)
-		return "release%02d%02d" % (int(major), int(minor))
-
-	if image == "OpenPLi Homebuild":
-		return "homebuild"
-
-	if image == "OpenPLi Develop":
-		return "develop"
-
+	parts = image.split()
+	if len(parts) == 3:
+		version = parts[1].lower()
+		major, minor = parts[2].split(".", 1)
+		return "%s%02d%02d" % (version.lower(), int(major), int(minor))
+	elif len(parts) == 2:
+		return parts[1].lower()
 	return image.lower().replace(" ", "")
 
 def getOEVersion():
