@@ -626,14 +626,14 @@ class Config(ConfigListScreen, Screen):
 class ArchiveList(Screen):
 	skin = """
 	<screen position="center,center" size="900,432" title="Backup archive list">
-	<ePixmap pixmap="skin_default/buttons/red.png" position="0,0" size="140,40" alphatest="on" />
-	<ePixmap pixmap="skin_default/buttons/green.png" position="140,0" size="140,40" alphatest="on" />
-	<widget source="key_red" render="Label" position="0,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
-	<widget source="key_green" render="Label" position="140,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
-	<widget name="list" position="10,40" size="880,350" scrollbarMode="showOnDemand" />
-	<ePixmap pixmap="div-h.png" position="0,392" zPosition="10" size="900,2" />
-	<ePixmap pixmap="buttons/key_menu.png" position="10,394" size="52,38" alphatest="on" />
-	</screen>
+		<ePixmap pixmap="skin_default/buttons/red.png" position="0,0" size="140,40" alphatest="on" />
+		<ePixmap pixmap="skin_default/buttons/green.png" position="140,0" size="140,40" alphatest="on" />
+		<widget source="key_red" render="Label" position="0,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
+		<widget source="key_green" render="Label" position="140,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
+		<widget name="list" position="10,40" size="880,350" scrollbarMode="showOnDemand" />
+		<ePixmap pixmap="div-h.png" position="0,392" zPosition="10" size="900,2" />
+		<ePixmap pixmap="buttons/key_menu.png" position="10,394" size="52,38" alphatest="on" />
+		</screen>
 	"""
 
 	def __init__(self, session, backupDir):
@@ -647,6 +647,7 @@ class ArchiveList(Screen):
 			"hostname": False,
 			"image": False,
 			"slot": False,
+			"alphabetical": False,
 		}
 
 		self["key_red"] = StaticText(_("Cancel"))
@@ -690,7 +691,10 @@ class ArchiveList(Screen):
 				except Exception as ex:
 					print("[AutoBackup] Failed to stat %s: %s" % (fullpath, ex))
 
-		archives.sort(key=lambda archive: archive[2], reverse=True)
+		if self.archiveFilters["alphabetical"]:
+			archives.sort(key=lambda archive: archive[0].lower())
+		else:
+			archives.sort(key=lambda archive: archive[2], reverse=True)
 		self["list"].setList(archives)
 
 		if not archives:
@@ -789,14 +793,8 @@ class ArchiveFilter(ConfigListScreen, Screen):
 	<screen position="center,center" size="560,300" title="Archive filters">
 		<ePixmap pixmap="skin_default/buttons/red.png" position="0,0" size="140,40" alphatest="on" />
 		<ePixmap pixmap="skin_default/buttons/green.png" position="140,0" size="140,40" alphatest="on" />
-
-		<widget source="key_red" render="Label" position="0,0" zPosition="1" size="140,40"
-			font="Regular;20" halign="center" valign="center"
-			backgroundColor="#9f1313" transparent="1" />
-		<widget source="key_green" render="Label" position="140,0" zPosition="1" size="140,40"
-			font="Regular;20" halign="center" valign="center"
-			backgroundColor="#1f771f" transparent="1" />
-
+		<widget source="key_red" render="Label" position="0,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
+		<widget source="key_green" render="Label" position="140,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
 		<widget name="config" position="10,50" size="540,240" scrollbarMode="showOnDemand" />
 	</screen>"""
 
@@ -807,12 +805,14 @@ class ArchiveFilter(ConfigListScreen, Screen):
 		self.filterHostname = ConfigYesNo(default=filters.get("hostname", False))
 		self.filterImage = ConfigYesNo(default=filters.get("image", False))
 		self.filterSlot = ConfigYesNo(default=filters.get("slot", False))
+		self.filterAlphabetical = ConfigYesNo(default=filters.get("alphabetical", False))
 
 		configList = [
 			getConfigListEntry(_("Current receiver MAC"), self.filterMac),
 			getConfigListEntry(_("Current hostname"), self.filterHostname),
 			getConfigListEntry(_("Current image"), self.filterImage),
 			getConfigListEntry(_("Current slot"), self.filterSlot),
+			getConfigListEntry(_("Sort alphabetically"), self.filterAlphabetical),
 		]
 
 		ConfigListScreen.__init__(self, configList, session=session)
@@ -827,8 +827,7 @@ class ArchiveFilter(ConfigListScreen, Screen):
 				"red": self.cancel,
 				"green": self.apply,
 				"ok": self.apply,
-			},
-			-1
+			}, -1
 		)
 
 
@@ -838,6 +837,7 @@ class ArchiveFilter(ConfigListScreen, Screen):
 			"hostname": self.filterHostname.value,
 			"image": self.filterImage.value,
 			"slot": self.filterSlot.value,
+			"alphabetical": self.filterAlphabetical.value,
 		})
 
 	def cancel(self):
