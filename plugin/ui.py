@@ -105,8 +105,9 @@ def getImageName():
 	return about.getImageTypeString()
 
 
-def getImageShortName():
-	image = about.getImageTypeString()
+def getImageShortName(image=None):
+	if image is None:
+		image = about.getImageTypeString()
 
 	if image.startswith("OpenPLi Release "):
 		version = image[len("OpenPLi Release "):]
@@ -682,8 +683,7 @@ class ArchiveList(Screen):
 				"left": self["list"].pageUp,
 				"right": self["list"].pageDown,
 				"menu": self.openFilter,
-			},
-			-1
+			},-1
 		)
 
 		self.loadArchives()
@@ -728,6 +728,7 @@ class ArchiveList(Screen):
 			if match.group(4) is not None:
 				info["slot"] = "slot%d" % int(match.group(4))
 
+		# if information is not available from the archive name, read it from autobackup.info.
 		try:
 			with tarfile.open(archiveFile, "r:gz") as tar:
 				try:
@@ -740,12 +741,12 @@ class ArchiveList(Screen):
 								value = value.strip()
 								if key not in info:
 									if key == "image":
-										# keep the short image name format for possible future use
 										value = getImageShortName(value)
 									info[key] = value
 				except KeyError:
 					pass
 
+				# fallback for older archives: try to extract MAC address from filenames inside the archive
 				if "mac" not in info:
 					for name in tar.getnames():
 						base = os.path.basename(name)
@@ -832,12 +833,11 @@ class ArchiveFilter(ConfigListScreen, Screen):
 
 		configList = []
 
-		configList.append((_("Current receiver MAC"), self.filterMac, _("Match current receiver MAC address from the archive name, info file or filenames in the archive.")))
-		configList.append((_("Current hostname"), self.filterHostname, _("Match current hostname from the archive name.")))
-		configList.append((_("Current image"), self.filterImage, _("Match current image name from the archive name.")))
-		configList.append((_("Current slot"), self.filterSlot, _("Match current slot number from the archive name.")))
+		configList.append((_("Current receiver MAC"), self.filterMac, _("Match the current receiver MAC address using the archive name, info file or filenames in the archive.")))
+		configList.append((_("Current hostname"), self.filterHostname, _("Match the current hostname using the archive name or the info file.")))
+		configList.append((_("Current image"), self.filterImage, _("Match the current image name using the archive name or the info file.")))
+		configList.append((_("Current slot"), self.filterSlot, _("Match the current slot number using the archive name or the info file.")))
 		configList.append((_("Sort alphabetically"), self.filterAlphabetical, _("Sort archives alphabetically instead of by creation time.")))
-
 		ConfigListScreen.__init__(self, configList, session=session)
 
 		self["key_red"] = StaticText(_("Cancel"))
