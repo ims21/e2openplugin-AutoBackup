@@ -8,6 +8,7 @@ from . import plugin
 import os, tarfile
 import enigma
 import shutil
+import re
 from Components.config import config, configfile, getConfigListEntry, ConfigSelection
 from Screens.Screen import Screen
 from Components.ConfigList import ConfigListScreen
@@ -375,13 +376,19 @@ class Config(ConfigListScreen, Screen):
 		print("[AutoBackup]", s.strip())
 		self["status"].appendText(s)
 
+	def isArchiveName(self, filename):
+		return filename.endswith(".tar.gz") and (
+			filename.startswith("backup.") or
+			re.match(r"^[0-9a-fA-F]{12}\.", filename)
+		)
+
 	def doRestorePrevious(self):
 		backupList = []
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
 
 		if os.path.isdir(backupDir):
 			for filename in os.listdir(backupDir):
-				if filename.startswith("backup.") and filename.endswith(".tar.gz"):
+				if self.isArchiveName(filename):
 					fullpath = os.path.join(backupDir, filename)
 					try:
 						st = os.stat(fullpath)
@@ -520,6 +527,47 @@ class Config(ConfigListScreen, Screen):
 			print("[AutoBackup] Failed to check backup: %s" % ex)
 		return None
 
+#######
+	def getMacAddress(self):
+		try:
+			with open("/sys/class/net/eth0/address", "r") as f:
+				return f.read().strip().replace(":", "").lower()
+		except:
+			return "nomac"
+
+
+	def getHostName(self):
+		try:
+			with open("/etc/hostname", "r") as f:
+				return f.read().strip()
+		except:
+				return about.getHardwareTypeString()
+
+
+	def getHardwareName(self):
+		return about.getHardwareTypeString()
+
+
+	def getImageName(self):
+		return about.getImageTypeString()
+
+
+	def getOEVersion(self):
+		return about.getOEVersionString()
+
+
+	def getEnigmaVersion(self):
+		return about.getEnigmaVersionString()
+
+
+	def getCurrentSlot(self):
+		try:
+			from Tools.Multiboot import getCurrentImage
+			return getCurrentImage()
+		except:
+			return None
+
+#######
 	def doArchiveCurrentBackup(self):
 		if not self.cfgwhere.value:
 			return
@@ -529,8 +577,10 @@ class Config(ConfigListScreen, Screen):
 		except:
 			slot = None
 
+		mac = self.getMacAddress()
 		hostname = self.getHostName().replace(" ", "_").replace("/", "_")
-		boxSuffix = "." + hostname
+		image = self.getImageName().replace(" ", "_").replace("/", "_").replace(".", "")
+		slot = self.getCurrentSlot()
 
 		slotSuffix = ""
 		if slot is not None:
@@ -547,19 +597,21 @@ class Config(ConfigListScreen, Screen):
 			shutil.rmtree(tmpBackupDir)
 
 		os.makedirs(os.path.join(tmpBackupDir, "backup"))
-		self.createAutoBackupInfo(os.path.join(tmpBackupDir, "backup"), hostname, slot)
+		self.createAutoBackupInfo(os.path.join(tmpBackupDir, "backup"))
 
 		cmd = (
 			'%s && '
 			'cd "%s/backup" && '
-			'tar -czf "%s/backup/backup.$(date +%%Y%%m%%d_%%H%%M)%s%s.tar.gz" '
+			'tar -czf "%s/backup/%s.%s.%s%s.tar.gz" '
 			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
 			'rm -rf "%s"'
 		) % (
 			plugin.backupCommand(tmpBackupDir, fullArchive=True),
 			tmpBackupDir,
 			realBackupDir,
-			boxSuffix,
+			mac,
+			hostname,
+			image,
 			slotSuffix,
 			tmpBackupDir
 		)
@@ -568,27 +620,22 @@ class Config(ConfigListScreen, Screen):
 			print("[AutoBackup] failed to execute")
 			self.showOutput()
 
-	def createAutoBackupInfo(self, backupDir, hostname, slot):
+	def createAutoBackupInfo(self, backupDir):
 		if not os.path.isdir(backupDir):
 			os.makedirs(backupDir)
 
 		infoFile = os.path.join(backupDir, "autobackup.info")
+		slot = self.getCurrentSlot()
 
 		with open(infoFile, "w") as f:
-			f.write("hostname=%s\n" % hostname)
-			f.write("hardware=%s\n" % about.getHardwareTypeString())
-			f.write("image=%s\n" % about.getImageTypeString())
-			f.write("oe=%s\n" % about.getOEVersionString())
-			f.write("enigma=%s\n" % about.getEnigmaVersionString())
+			f.write("mac=%s\n" % self.getMacAddress())
+			f.write("hostname=%s\n" % self.getHostName())
+			f.write("hardware=%s\n" % self.getHardwareName())
+			f.write("image=%s\n" % self.getImageName())
+			f.write("oe=%s\n" % self.getOEVersion())
+			f.write("enigma=%s\n" % self.getEnigmaVersion())
 			if slot is not None:
 				f.write("slot=slot%d\n" % slot)
-
-	def getHostName(self):
-		try:
-			with open("/etc/hostname", "r") as f:
-				return f.read().strip()
-		except:
-			return about.getHardwareTypeString()
 
 
 class BackupSelection(Screen):
