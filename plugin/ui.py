@@ -450,15 +450,14 @@ class Config(ConfigListScreen, Screen):
 
 	def doRestorePrevious(self):
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
-		self.session.openWithCallback(self.doRestorePreviousNow, ArchiveList, backupDir, self.archiveFilters)
+		self.session.openWithCallback(boundFunction(self.doRestorePreviousNow, backupDir), ArchiveList, backupDir, self.archiveFilters)
 
-	def doRestorePreviousNow(self, result):
+	def doRestorePreviousNow(self, backupDir, result):
 		if not result:
 			return
 
 		selection, self.archiveFilters = result
 		backupFile = selection[1]
-		backupDir = os.path.join(self.cfgwhere.value, "backup")
 
 		currentMac = open("/sys/class/net/eth0/address").read().strip().replace(":", "").lower()
 		backupMac = self.checkPreviousBackup(backupFile)
