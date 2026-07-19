@@ -17,6 +17,7 @@ config.plugins.autobackup.autoinstall = ConfigOnOff(default = True)
 config.plugins.autobackup.where = ConfigText(default = "/media/hdd")
 config.plugins.autobackup.epgcache = ConfigOnOff(default = False)
 config.plugins.autobackup.prevbackup = ConfigOnOff(default = False)
+config.plugins.autobackup.backuparchive = ConfigOnOff(default = False) # temporary for create archiv too
 
 # Global variables
 autoStartTimer = None

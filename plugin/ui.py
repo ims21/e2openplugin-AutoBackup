@@ -213,6 +213,7 @@ class Config(ConfigListScreen, Screen):
 		self.container = enigma.eConsoleAppContainer()
 		self.container.appClosed.append(self.appClosed)
 		self.container.dataAvail.append(self.dataAvail)
+		self.archiveAfterBackup = False  # temporary for create archive too
 		self.cfgwhere.addNotifier(self.changedWhere)
 		self.onClose.append(self.__onClose)
 		self.setTitle(_("AutoBackup Configuration"))
@@ -234,6 +235,7 @@ class Config(ConfigListScreen, Screen):
 		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall))
 		self.list.append((_("EPG cache backup"), self.cfg.epgcache))
 		self.list.append((_("Save previous backup"), self.cfg.prevbackup))
+		self.list.append((_("Create backup archive"), self.cfg.backuparchive)) # temporary for create archiv too
 
 	# for summary:
 	def changedEntry(self):
@@ -320,6 +322,8 @@ class Config(ConfigListScreen, Screen):
 		if not self.cfgwhere.value:
 			return
 
+		self.archiveAfterBackup = self.cfg.backuparchive.value  # temporary for create archive too
+
 		# remove existing autobackup.info if present.
 		infoFile = os.path.join(self.cfgwhere.value, "backup", "autobackup.info")
 		try:
@@ -338,6 +342,7 @@ class Config(ConfigListScreen, Screen):
 		cmd = plugin.backupCommand()
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
+			self.archiveAfterBackup = False  # temporary for create archive too
 			self.showOutput()
 
 	def dorestore(self):
@@ -445,6 +450,12 @@ class Config(ConfigListScreen, Screen):
 
 	def appClosed(self, retval):
 		print("[AutoBackup] done:", retval)
+
+		if not retval and self.archiveAfterBackup: # temporary for create archive too
+			self.archiveAfterBackup = False
+			self.doArchiveCurrentBackup()
+			return
+
 		if retval:
 			txt = _("Failed")
 		else:
