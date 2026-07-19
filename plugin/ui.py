@@ -173,10 +173,10 @@ class Config(ConfigListScreen, Screen):
 		self.skinName = ["Config_AutoBackup", "Config"]
 		self.setup_title = _("AutoBackup Configuration")
 		Screen.__init__(self, session)
-		cfg = config.plugins.autobackup
+		self.cfg = config.plugins.autobackup
 		choices = getLocationChoices()
 		if choices:
-			currentwhere = cfg.where.value
+			currentwhere = self.cfg.where.value
 			defaultchoice = choices[0][0]
 			for k, v in choices:
 				if k == currentwhere:
@@ -186,15 +186,10 @@ class Config(ConfigListScreen, Screen):
 			defaultchoice = ""
 			choices = [("", _("Nowhere"))]
 		self.cfgwhere = ConfigSelection(default=defaultchoice, choices=choices)
-		configList = [
-			getConfigListEntry(_("Backup location"), self.cfgwhere),
-			getConfigListEntry(_("Daily automatic backup"), cfg.enabled),
-			getConfigListEntry(_("Automatic start time"), cfg.wakeup),
-			getConfigListEntry(_("Create Autoinstall"), cfg.autoinstall),
-			getConfigListEntry(_("EPG cache backup"), cfg.epgcache),
-			getConfigListEntry(_("Save previous backup"), cfg.prevbackup),
-			]
-		ConfigListScreen.__init__(self, configList, session=session, on_change=self.changedEntry)
+
+		self.createSetup()
+		ConfigListScreen.__init__(self, self.list, session=session, on_change=self.changedEntry)
+
 		self["key_red"] = Button(_("Cancel"))
 		self["key_green"] = Button(_("Save"))
 		self["key_yellow"] = Button(_("Manual"))
@@ -230,8 +225,24 @@ class Config(ConfigListScreen, Screen):
 			"alphabetical": False,
 		}
 
+	def createSetup(self):
+		self.list = []
+		self.list.append((_("Backup location"), self.cfgwhere))
+		self.list.append((_("Daily automatic backup"), self.cfg.enabled))
+		if self.cfg.enabled.value:
+			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup))
+		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall))
+		self.list.append((_("EPG cache backup"), self.cfg.epgcache))
+		self.list.append((_("Save previous backup"), self.cfg.prevbackup))
+
 	# for summary:
 	def changedEntry(self):
+		current = self["config"].getCurrent()
+		if current and current[1] in (self.cfg.enabled,):
+			self.createSetup()
+			self["config"].list = self.list
+			self["config"].l.setList(self.list)
+
 		for x in self.onChangedEntry:
 			x()
 
