@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-20 22:32+0200\n"
+"POT-Creation-Date: 2026-07-20 23:46+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Vytenis P. <vyteniui@gmail.com>\n"
 "Language-Team: Vytenis P. vyteniui@gmail.com\n"
@@ -14,15 +14,15 @@ msgstr ""
 "X-Generator: Poedit 2.4.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: ../ui.py:921
+#: ../ui.py:930
 msgid "Apply"
 msgstr ""
 
-#: ../ui.py:542
+#: ../ui.py:551
 msgid "Archive contents"
 msgstr ""
 
-#: ../ui.py:903
+#: ../ui.py:912
 msgid "Archive filters"
 msgstr ""
 
@@ -38,33 +38,33 @@ msgstr "AutoBackup konfigūravimas"
 msgid "Automatic settings backup"
 msgstr "Automatinė nustatymų atsarginė kopija"
 
-#: ../ui.py:247
+#: ../ui.py:248
 msgid "Automatic start time"
 msgstr "Automatiško paleidimo laikas"
 
-#: ../ui.py:251
+#: ../ui.py:252
 msgid "Automatically creates a backup archive after every successful backup, both manual and scheduled."
 msgstr ""
 
-#: ../ui.py:245
+#: ../ui.py:246
 msgid "Automatically creates a backup every day at the specified time."
 msgstr ""
 
-#: ../ui.py:314
+#: ../ui.py:315
 msgid "Backup EPG cache"
 msgstr "Kopijuoti EPG talpyklą"
 
-#: ../ui.py:717
+#: ../ui.py:726
 #, fuzzy
 msgid "Backup archive list"
 msgstr "Kopijuoti EPG talpyklą"
 
-#: ../ui.py:540
+#: ../ui.py:549
 #, fuzzy
 msgid "Backup information"
 msgstr "Atsarginės kopijos vieta"
 
-#: ../ui.py:244
+#: ../ui.py:245
 msgid "Backup location"
 msgstr "Atsarginės kopijos vieta"
 
@@ -72,12 +72,12 @@ msgstr "Atsarginės kopijos vieta"
 msgid "CF"
 msgstr "CF"
 
-#: ../ui.py:205 ../ui.py:522 ../ui.py:530 ../ui.py:723 ../ui.py:920
-#: ../ui.py:974
+#: ../ui.py:205 ../ui.py:531 ../ui.py:539 ../ui.py:732 ../ui.py:929
+#: ../ui.py:983
 msgid "Cancel"
 msgstr "Atšaukti"
 
-#: ../ui.py:445
+#: ../ui.py:446
 msgid ""
 "Choose a backup.\n"
 "This will delete autoinstall list.\n"
@@ -87,7 +87,7 @@ msgstr ""
 "Tai panaikins autoįdiegimo sąrašą.\n"
 "Ar tikrai norite tęsti?"
 
-#: ../ui.py:416
+#: ../ui.py:417
 msgid ""
 "Choose a backup.\n"
 "This will reinstall all plugins from your backup.\n"
@@ -97,7 +97,7 @@ msgstr ""
 "Tai iš naujo įdiegs visus įskiepius iš atsarginės kopijos.\n"
 "Ar tikrai norite įdiegti iš naujo?"
 
-#: ../ui.py:377
+#: ../ui.py:378
 msgid ""
 "Choose settings backup which should be restored.\n"
 "Do you really want to restore these settings and restart?"
@@ -105,70 +105,70 @@ msgstr ""
 "Pasirinkite nustatymų atsarginę kopiją, kuri turėtų būti atkurta.\n"
 "Ar tikrai norite atkurti šiuos parametrus ir paleisti iš naujo?"
 
-#: ../ui.py:248
+#: ../ui.py:249
 msgid "Create Autoinstall"
 msgstr "Sukurti autoįdiegimą"
 
-#: ../ui.py:313
+#: ../ui.py:314
 msgid "Create a backup of the current settings."
 msgstr ""
 
-#: ../ui.py:318
+#: ../ui.py:319
 msgid "Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name."
 msgstr ""
 
-#: ../ui.py:318
+#: ../ui.py:319
 msgid "Create archive with current settings"
 msgstr ""
 
-#: ../ui.py:251
+#: ../ui.py:252
 msgid "Create backup archive after backup"
 msgstr ""
 
-#: ../ui.py:248
+#: ../ui.py:249
 msgid "Creates an Autoinstall file with a list of installed packages."
 msgstr ""
 
-#: ../ui.py:245
+#: ../ui.py:246
 msgid "Daily automatic backup"
 msgstr "Kasdieninė automatinė atsarginė kopija"
 
-#: ../ui.py:524 ../ui.py:531
+#: ../ui.py:533 ../ui.py:540
 msgid "Delete this archive"
 msgstr ""
 
-#: ../ui.py:1013
+#: ../ui.py:1022
 msgid "Deselect"
 msgstr "Atšaukti pasirinkimą"
 
-#: ../ui.py:244
+#: ../ui.py:245
 msgid "Directory where backup files are created."
 msgstr ""
 
-#: ../ui.py:572
+#: ../ui.py:581
 #, fuzzy
 msgid "Do you really want delete this backup archive?"
 msgstr ""
 "Pasirinkite nustatymų atsarginę kopiją, kuri turėtų būti atkurta.\n"
 "Ar tikrai norite atkurti šiuos parametrus ir paleisti iš naujo?"
 
-#: ../ui.py:384
+#: ../ui.py:385
 msgid "Do you want to restore your settings?"
 msgstr "Jūs norite atkurti savus nustatymus?"
 
-#: ../ui.py:475
+#: ../ui.py:476
 msgid "Done"
 msgstr "Atlikta"
 
-#: ../ui.py:249
+#: ../ui.py:250
 msgid "EPG cache backup"
 msgstr "EPG talpyklos atsarginė kopija"
 
-#: ../ui.py:473
+#: ../ui.py:474
 msgid "Failed"
 msgstr "Nepavyko"
 
-#: ../ui.py:590
+#: ../ui.py:599
 #, fuzzy
 msgid "Failed to delete backup."
 msgstr "Pasirinkite failus atsarginei kopijai"
@@ -177,19 +177,19 @@ msgstr "Pasirinkite failus atsarginei kopijai"
 msgid "Harddisk"
 msgstr "HDD"
 
-#: ../ui.py:914
+#: ../ui.py:923
 msgid "Hostname"
 msgstr ""
 
-#: ../ui.py:915
+#: ../ui.py:924
 msgid "Image"
 msgstr ""
 
-#: ../ui.py:315
+#: ../ui.py:316
 msgid "Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."
 msgstr ""
 
-#: ../ui.py:283
+#: ../ui.py:284
 msgid "Last backup date"
 msgstr "Paskutinės atsarginės kopijos data"
 
@@ -201,47 +201,54 @@ msgstr ""
 msgid "Manual"
 msgstr "Rankiniu būdu"
 
-#: ../ui.py:914
+#: ../ui.py:923
 msgid "Match the current hostname using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:915
+#: ../ui.py:924
 msgid "Match the current image name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:913
+#: ../ui.py:922
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr ""
 
-#: ../ui.py:916
+#: ../ui.py:925
 msgid "Match the current slot number using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:413 ../ui.py:442
+#: ../ui.py:414 ../ui.py:443
 msgid "No autoinstall list found"
 msgstr "Autoinstaliacijos sąrašo nerasta"
 
-#: ../ui.py:875
+#: ../ui.py:510
+msgid ""
+"No backup archives match the current filters.\n"
+"\n"
+"Reopening the archive list may show more backup archives."
+msgstr ""
+
+#: ../ui.py:884
 msgid "No backup archives match the selected filters."
 msgstr ""
 
-#: ../ui.py:627
+#: ../ui.py:636
 msgid "No backup information available."
 msgstr ""
 
-#: ../ui.py:285 ../ui.py:288
+#: ../ui.py:286 ../ui.py:289
 msgid "No backup present"
 msgstr "Atsarginių kopijų nėra"
 
-#: ../ui.py:374
+#: ../ui.py:375
 msgid "No settings backups found"
 msgstr "Nustatymų atsarginių kopijų nerasta"
 
-#: ../ui.py:276
+#: ../ui.py:277
 msgid "No suitable media found, insert USB stick, flash card or harddisk."
 msgstr "Tinkamų laikmenų nerasta, prijunkite USB atmintinę, atminties kortelę, ar HDD."
 
-#: ../ui.py:502
+#: ../ui.py:508
 #, fuzzy
 msgid "No usable backup archives were found."
 msgstr "Nustatymų atsarginių kopijų nerasta"
@@ -250,52 +257,52 @@ msgstr "Nustatymų atsarginių kopijų nerasta"
 msgid "Nowhere"
 msgstr "Niekur"
 
-#: ../ui.py:1027
+#: ../ui.py:1036
 msgid "Really close without saving settings?"
 msgstr "Tikrai uždaryti, neišsaugant nustatymų?"
 
-#: ../ui.py:913
+#: ../ui.py:922
 msgid "Receiver MAC"
 msgstr ""
 
-#: ../ui.py:316
+#: ../ui.py:317
 msgid "Remove autoinstall list"
 msgstr "Pašalinti autoinstaliacijos sąrašą"
 
-#: ../ui.py:316
+#: ../ui.py:317
 msgid "Remove the 'autoinstall' file from a backup."
 msgstr ""
 
-#: ../ui.py:208 ../ui.py:317
+#: ../ui.py:208 ../ui.py:318
 msgid "Restore"
 msgstr "Atkurti"
 
-#: ../ui.py:319
+#: ../ui.py:320
 #, fuzzy
 msgid "Restore previous backup"
 msgstr "Išsaugoti ankstesnę atsarginę kopiją"
 
-#: ../ui.py:319
+#: ../ui.py:320
 msgid "Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored."
 msgstr ""
 
-#: ../ui.py:317
+#: ../ui.py:318
 msgid "Restore settings from the current backup."
 msgstr ""
 
-#: ../ui.py:523
+#: ../ui.py:532
 msgid "Restore settings now"
 msgstr ""
 
-#: ../ui.py:313
+#: ../ui.py:314
 msgid "Run a backup now"
 msgstr "Atlikti atsarginį kopijavimą dabar"
 
-#: ../ui.py:315
+#: ../ui.py:316
 msgid "Run autoinstall"
 msgstr "Vykdyti autoįdiegimą"
 
-#: ../ui.py:354 ../ui.py:394 ../ui.py:423 ../ui.py:556 ../ui.py:604
+#: ../ui.py:355 ../ui.py:395 ../ui.py:424 ../ui.py:565 ../ui.py:613
 msgid "Running..."
 msgstr "veikia..."
 
@@ -303,62 +310,62 @@ msgstr "veikia..."
 msgid "SD"
 msgstr "SD"
 
-#: ../ui.py:206 ../ui.py:975
+#: ../ui.py:206 ../ui.py:984
 msgid "Save"
 msgstr "Įrašyti"
 
-#: ../ui.py:314
+#: ../ui.py:315
 msgid "Save current contents of EPG cache to a file."
 msgstr ""
 
-#: ../ui.py:250
+#: ../ui.py:251
 msgid "Save previous backup"
 msgstr "Išsaugoti ankstesnę atsarginę kopiją"
 
-#: ../ui.py:249
+#: ../ui.py:250
 msgid "Saves the contents of the EPG cache to a file before creating a backup."
 msgstr ""
 
-#: ../ui.py:250
+#: ../ui.py:251
 msgid "Saves the previous backup before creating a new one."
 msgstr ""
 
-#: ../ui.py:724 ../ui.py:1015
+#: ../ui.py:733 ../ui.py:1024
 msgid "Select"
 msgstr "Pasirinkti"
 
-#: ../ui.py:312
+#: ../ui.py:313
 msgid "Select files and folders to include in the backup. Basic backup items are already selected."
 msgstr ""
 
-#: ../ui.py:312
+#: ../ui.py:313
 msgid "Select files to backup"
 msgstr "Pasirinkite failus atsarginei kopijai"
 
-#: ../ui.py:1006
+#: ../ui.py:1015
 msgid "Select files/folders to backup"
 msgstr "Pasirinkite failus ir katalogus atsarginei kopijai"
 
-#: ../ui.py:916
+#: ../ui.py:925
 msgid "Slot"
 msgstr ""
 
-#: ../ui.py:917
+#: ../ui.py:926
 msgid "Sort alphabetically"
 msgstr ""
 
-#: ../ui.py:917
+#: ../ui.py:926
 msgid "Sort archives alphabetically instead of by creation time."
 msgstr ""
 
-#: ../ui.py:533
+#: ../ui.py:542
 #, python-format
 msgid ""
 "This backup was created for another receiver.\n"
 "Current receiver MAC: %s"
 msgstr ""
 
-#: ../ui.py:247
+#: ../ui.py:248
 #, fuzzy
 msgid "Time when the daily automatic backup starts."
 msgstr "Kasdieninė automatinė atsarginė kopija"
@@ -367,11 +374,11 @@ msgstr "Kasdieninė automatinė atsarginė kopija"
 msgid "USB"
 msgstr "USB"
 
-#: ../ui.py:544
+#: ../ui.py:553
 msgid "What do you want to do?"
 msgstr ""
 
-#: ../ui.py:369 ../ui.py:408 ../ui.py:437
+#: ../ui.py:370 ../ui.py:409 ../ui.py:438
 msgid "from: "
 msgstr "nuo: "
 
