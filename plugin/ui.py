@@ -531,72 +531,17 @@ class Config(ConfigListScreen, Screen):
 	def doArchiveCurrentBackup(self):
 		if not self.cfgwhere.value:
 			return
-		try:
-			from Tools.Multiboot import getCurrentImage
-			slot = getCurrentImage()
-		except:
-			slot = None
-
-		mac = getMacAddress()
-		hostname = getHostName()
-		image = getImageShortName()
-		slot = getCurrentSlot()
-
-		slotSuffix = ""
-		if slot is not None:
-			slotSuffix = ".slot%02d" % slot
 
 		self.data = ''
 		self.showOutput()
 		self["statusbar"].setText(_('Running...'))
 
-		realBackupDir = self.cfgwhere.value
-		tmpBackupDir = "/tmp/autobackup.%d" % os.getpid()
-
-		if os.path.isdir(tmpBackupDir):
-			shutil.rmtree(tmpBackupDir)
-
-		os.makedirs(os.path.join(tmpBackupDir, "backup"))
-		self.createAutoBackupInfo(os.path.join(tmpBackupDir, "backup"))
-
-		cmd = (
-			'%s && '
-			'cd "%s/backup" && '
-			'tar -czf "%s/backup/$(date +%%Y%%m%%d_%%H%%M).%s.%s.%s%s.tar.gz" '
-			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
-			'rm -rf "%s"'
-		) % (
-			plugin.backupCommand(tmpBackupDir, fullArchive=True),
-			tmpBackupDir,
-			realBackupDir,
-			mac,
-			hostname,
-			image,
-			slotSuffix,
-			tmpBackupDir
-		)
+		archive = ArchiveCreator(self.cfgwhere.value)
+		cmd = archive.buildCommand()
 
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
 			self.showOutput()
-
-	def createAutoBackupInfo(self, backupDir):
-		if not os.path.isdir(backupDir):
-			os.makedirs(backupDir)
-
-		infoFile = os.path.join(backupDir, "autobackup.info")
-		slot = getCurrentSlot()
-
-		with open(infoFile, "w") as f:
-			f.write("mac=%s\n" % getMacAddress())
-			f.write("hostname=%s\n" % getHostName())
-			f.write("hardware=%s\n" % getHardwareName())
-			f.write("image=%s\n" % getImageName())
-			f.write("oe=%s\n" % getOEVersion())
-			f.write("enigma=%s\n" % getEnigmaVersion())
-			if slot is not None:
-				f.write("slot=slot%d\n" % slot)
-
 
 	def doRestorePreviousAction(self, backupFile, backupDir, action):
 		if action == "restore":
@@ -624,12 +569,6 @@ class Config(ConfigListScreen, Screen):
 			return
 		self.doRestorePrevious()
 
-	def formatAutoBackupInfo(self, info):
-		result = []
-		for line in info.splitlines():
-			result.append(line.replace("=", ":\t", 1))
-		return "\n".join(result)
-
 	def doRestorePreviousConfirmed(self, backupFile, backupDir, answer):
 		if not answer:
 			self.doRestorePrevious()
@@ -644,6 +583,12 @@ class Config(ConfigListScreen, Screen):
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
 		self.showOutput()
+
+	def formatAutoBackupInfo(self, info):
+		result = []
+		for line in info.splitlines():
+			result.append(line.replace("=", ":\t", 1))
+		return "\n".join(result)
 
 	def readAutoBackupInfo(self, backupFile):
 		try:
@@ -670,6 +615,62 @@ class Config(ConfigListScreen, Screen):
 		except Exception as ex:
 			print("[AutoBackup] Failed to check backup: %s" % ex)
 		return None
+
+
+class ArchiveCreator:
+	def __init__(self, destination):
+		self.destination = destination
+		self.tmpBackupDir = "/tmp/autobackup.%d" % os.getpid()
+		self.mac = getMacAddress()
+		self.hostname = getHostName()
+		self.image = getImageShortName()
+		self.slot = getCurrentSlot()
+
+	def createInfo(self):
+		backupDir = os.path.join(self.tmpBackupDir, "backup")
+
+		if not os.path.isdir(backupDir):
+			os.makedirs(backupDir)
+
+		infoFile = os.path.join(backupDir, "autobackup.info")
+
+		with open(infoFile, "w") as f:
+			f.write("mac=%s\n" % self.mac)
+			f.write("hostname=%s\n" % self.hostname)
+			f.write("hardware=%s\n" % getHardwareName())
+			f.write("image=%s\n" % getImageName())
+			f.write("oe=%s\n" % getOEVersion())
+			f.write("enigma=%s\n" % getEnigmaVersion())
+			if self.slot is not None:
+				f.write("slot=slot%d\n" % self.slot)
+
+	def buildCommand(self):
+		slotSuffix = ""
+		if self.slot is not None:
+			slotSuffix = ".slot%02d" % self.slot
+
+		if os.path.isdir(self.tmpBackupDir):
+			shutil.rmtree(self.tmpBackupDir)
+
+		os.makedirs(os.path.join(self.tmpBackupDir, "backup"))
+		self.createInfo()
+
+		return (
+			'%s && '
+			'cd "%s/backup" && '
+			'tar -czf "%s/backup/$(date +%%Y%%m%%d_%%H%%M).%s.%s.%s%s.tar.gz" '
+			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
+			'rm -rf "%s"'
+		) % (
+			plugin.backupCommand(self.tmpBackupDir, fullArchive=True),
+			self.tmpBackupDir,
+			self.destination,
+			self.mac,
+			self.hostname,
+			self.image,
+			slotSuffix,
+			self.tmpBackupDir
+		)
 
 
 class ArchiveList(Screen):

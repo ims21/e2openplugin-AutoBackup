@@ -52,6 +52,9 @@ def runBackup():
 				print("[AutoBackup]", data.rstrip())
 			print("[AutoBackup] start daily backup")
 			cmd = backupCommand()
+			if config.plugins.autobackup.backuparchive.value:
+				from .ui import ArchiveCreator
+				cmd += " && " + ArchiveCreator(destination).buildCommand()
 			container = enigma.eConsoleAppContainer()
 			if container.execute(cmd):
 				raise (Exception, "failed to execute:" + cmd)
