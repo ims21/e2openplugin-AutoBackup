@@ -135,13 +135,21 @@ def getCurrentSlot():
 	except:
 		return None
 
-
+# here we define which backup archive filename formats are accepted
 def isArchiveName(filename):
-	return filename.endswith(".tar.gz") and (
-		filename.startswith("backup.") or
-		re.match(r"^[0-9a-fA-F]{12}\.", filename) or
-		re.match(r"^\d{8}_\d{4}\.", filename)
-	)
+	if not filename.endswith(".tar.gz"):
+		return False
+
+	# new format: YYYYMMDD_HHMM...
+	if re.match(r"^\d{8}_\d{4}\.", filename):
+		return True
+
+	# old format: backup.YYYYMMDD_HHMM...
+	if re.match(r"^backup\.\d{8}_\d{4}\.", filename):
+		return True
+
+	return False
+
 
 def padSize(size, width):
     s = str(size)
@@ -475,15 +483,25 @@ class Config(ConfigListScreen, Screen):
 		print("[AutoBackup]", s.strip())
 		self["status"].appendText(s)
 
-	def doRestorePrevious(self):
+	def doRestorePrevious(self, selectedIndex=None):
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
-		self.session.openWithCallback(boundFunction(self.doRestorePreviousNow, backupDir), ArchiveList, backupDir, self.archiveFilters)
+		self.session.openWithCallback(
+			boundFunction(self.doRestorePreviousNow, backupDir),
+			ArchiveList,
+			backupDir,
+			self.archiveFilters,
+			selectedIndex
+		)
 
 	def doRestorePreviousNow(self, backupDir, result):
 		if not result:
 			return
 
-		selection, self.archiveFilters = result
+		selection, self.archiveFilters, selectedIndex = result
+		if selection is None:
+			self.session.open(MessageBox, _("No usable backups were found."), type=MessageBox.TYPE_INFO, timeout=5)
+			return
+
 		backupFile = selection[1]
 
 		currentMac = open("/sys/class/net/eth0/address").read().strip().replace(":", "").lower()
@@ -516,7 +534,7 @@ class Config(ConfigListScreen, Screen):
 			picon = MessageBox.TYPE_ERROR
 
 		self.session.openWithCallback(
-			boundFunction(self.doRestorePreviousAction, backupFile, backupDir),
+			boundFunction(self.doRestorePreviousAction, backupFile, backupDir, selectedIndex),
 			MessageBox,
 			warning +
 			_("Backup information") +
@@ -544,31 +562,37 @@ class Config(ConfigListScreen, Screen):
 			print("[AutoBackup] failed to execute")
 			self.showOutput()
 
-	def doRestorePreviousAction(self, backupFile, backupDir, action):
+	def doRestorePreviousAction(self, backupFile, backupDir, selectedIndex, action):
 		if action == "restore":
 			self.doRestorePreviousConfirmed(backupFile, backupDir, True)
 		elif action == "delete":
 			self.session.openWithCallback(
-				boundFunction(self.doDeletePreviousConfirmed, backupFile),
+				boundFunction(self.doDeletePreviousConfirmed, backupFile, selectedIndex),
 				MessageBox,
 				_("Do you really want delete this backup archive?") + "\n\n" + backupFile,
 				type=MessageBox.TYPE_YESNO,
 				default=False
 			)
 		else:
-			self.doRestorePrevious()
+			self.doRestorePrevious(selectedIndex)
 
-	def doDeletePreviousConfirmed(self, backupFile, answer):
+	def doDeletePreviousConfirmed(self, backupFile, selectedIndex, answer):
 		if not answer:
-			self.doRestorePrevious()
+			self.doRestorePrevious(selectedIndex)
 			return
 		try:
 			os.remove(backupFile)
 		except Exception as ex:
 			print("[AutoBackup] Failed to delete backup %s: %s" % (backupFile, ex))
-			self.session.open(MessageBox, _("Failed to delete backup."), type=MessageBox.TYPE_ERROR, timeout=10)
+			self.session.openWithCallback(
+				lambda *_: self.doRestorePrevious(selectedIndex),
+				MessageBox,
+				_("Failed to delete backup."),
+				type=MessageBox.TYPE_ERROR,
+				timeout=10
+			)
 			return
-		self.doRestorePrevious()
+		self.doRestorePrevious(selectedIndex)
 
 	def doRestorePreviousConfirmed(self, backupFile, backupDir, answer):
 		if not answer:
@@ -687,13 +711,14 @@ class ArchiveList(Screen):
 		</screen>
 	"""
 
-	def __init__(self, session, backupDir, filters):
+	def __init__(self, session, backupDir, filters, selectedIndex):
 		Screen.__init__(self, session)
 		self.skinName = ["ArchiveList"]
 		self.setTitle(_("Backup archive list"))
 
 		self.backupDir = backupDir
 		self.archiveFilters = filters.copy()
+		self.selectedIndex = selectedIndex
 
 		self["key_red"] = StaticText(_("Cancel"))
 		self["key_green"] = StaticText(_("Select"))
@@ -715,6 +740,17 @@ class ArchiveList(Screen):
 		)
 
 		self.loadArchives()
+		self.onLayoutFinish.append(self.layoutFinished)
+
+	def layoutFinished(self):
+		if not self["list"].list:
+			self.close((None, self.archiveFilters.copy(), None))
+			return
+		self.restoreSelection()
+
+	def restoreSelection(self):
+		if self.selectedIndex is not None and self["list"].list:
+			self["list"].moveToIndex(min(self.selectedIndex, len(self["list"].list) - 1))
 
 	def loadArchives(self):
 		archives = []
@@ -723,26 +759,18 @@ class ArchiveList(Screen):
 			for filename in os.listdir(self.backupDir):
 				if not isArchiveName(filename):
 					continue
-
 				fullpath = os.path.join(self.backupDir, filename)
-
 				if not self.archiveMatchesFilter(fullpath, filename):
 					continue
-
-				try:
-					st = os.stat(fullpath)
-					archives.append((filename, fullpath, st.st_mtime))
-				except Exception as ex:
-					print("[AutoBackup] Failed to stat %s: %s" % (fullpath, ex))
+				match = re.search(r"\d{8}_\d{4}", filename)
+				sortKey = match.group(0).replace("_", "")
+				archives.append((filename, fullpath, sortKey))
 
 		if self.archiveFilters["alphabetical"]:
 			archives.sort(key=lambda archive: archive[0].lower())
 		else:
 			archives.sort(key=lambda archive: archive[2], reverse=True)
 		self["list"].setList(archives)
-
-		if not archives:
-			self.session.open(MessageBox, _("No backup archives match the selected filters."), type=MessageBox.TYPE_INFO, timeout=5)
 
 	def readArchiveInfo(self, archiveFile, filename):
 		info = {}
@@ -755,6 +783,15 @@ class ArchiveList(Screen):
 			info["image"] = match.group(3)
 			if match.group(4) is not None:
 				info["slot"] = "slot%d" % int(match.group(4))
+
+		required = [
+			key for key in ("mac", "hostname", "image", "slot")
+			if self.archiveFilters[key]
+		]
+
+		# all information required by the active filters was found in the archive name.
+		if all(key in info for key in required):
+			return info
 
 		# if information is not available from the archive name, read it from autobackup.info.
 		try:
@@ -775,7 +812,7 @@ class ArchiveList(Screen):
 					pass
 
 				# fallback for older archives: try to extract MAC address from filenames inside the archive
-				if "mac" not in info:
+				if "mac" in required and "mac" not in info:
 					for name in tar.getnames():
 						base = os.path.basename(name)
 						match = re.search(r"([0-9a-fA-F]{12})\.tar\.gz$", base)
@@ -789,7 +826,7 @@ class ArchiveList(Screen):
 		return info
 
 	def archiveMatchesFilter(self, fullpath, filename):
-		if not any(self.archiveFilters.values()):
+		if not any(self.archiveFilters[key] for key in ("mac", "hostname", "image", "slot")):
 			return True
 
 		info = self.readArchiveInfo(fullpath, filename)
@@ -831,9 +868,20 @@ class ArchiveList(Screen):
 
 		self.archiveFilters = filters
 		self.loadArchives()
+		if not self["list"].list:
+			self.session.openWithCallback(
+				lambda *_: self.openFilter(),
+				MessageBox,
+				_("No backup archives match the selected filters."),
+				type=MessageBox.TYPE_INFO,
+				timeout=5
+			)
+			return
+		self.restoreSelection()
 
 	def select(self):
-		self.close((self["list"].getCurrent(), self.archiveFilters.copy()))
+		index = self["list"].getSelectedIndex()
+		self.close((self["list"].getCurrent(), self.archiveFilters.copy(), index))
 
 	def exit(self):
 		self.close(None)
