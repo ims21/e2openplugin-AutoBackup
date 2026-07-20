@@ -150,7 +150,7 @@ def padSize(size, width):
 
 class Config(ConfigListScreen, Screen):
 	skin = """
-<screen position="center,center" size="560,400" title="AutoBackup Configuration" >
+<screen position="center,center" size="560,450" title="AutoBackup Configuration" >
 	<ePixmap name="red"    position="0,0"   zPosition="2" size="140,40" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
 	<ePixmap name="green"  position="140,0" zPosition="2" size="140,40" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
 	<ePixmap name="yellow" position="280,0" zPosition="2" size="140,40" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
@@ -162,9 +162,9 @@ class Config(ConfigListScreen, Screen):
 	<widget name="key_blue" position="420,0" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
 
 	<widget name="config" position="10,40" size="540,200" scrollbarMode="showOnDemand" />
-
 	<widget name="statusbar" position="10,250" size="470,20" font="Regular;18" />
-	<widget name="status" position="10,280" size="540,130" font="Console;14" />
+	<widget name="description" position="10,280" size="540,46" font="Regular;20" valign="center"/>
+	<widget name="status" position="10,330" size="540,130" font="Console;14" />
 
 	<ePixmap alphatest="on" pixmap="skin_default/icons/clock.png" position="480,383" size="14,14" zPosition="3"/>
 	<widget font="Regular;18" halign="left" position="505,380" render="Label" size="55,20" source="global.CurrentTime" transparent="1" valign="center" zPosition="3">
@@ -199,6 +199,7 @@ class Config(ConfigListScreen, Screen):
 		self["key_yellow"] = Button(_("Manual"))
 		self["key_blue"] = Button(_("Restore"))
 		self["key_menu"] = StaticText(_("MENU"))
+		self["description"] = Label()
 		self["statusbar"] = Label()
 		self["status"] = ScrollLabel('', showscrollbar=False)
 		self["setupActions"] = ActionMap(["SetupActions", "ColorActions", "MenuActions"],
@@ -232,14 +233,14 @@ class Config(ConfigListScreen, Screen):
 
 	def createSetup(self):
 		self.list = []
-		self.list.append((_("Backup location"), self.cfgwhere))
-		self.list.append((_("Daily automatic backup"), self.cfg.enabled))
+		self.list.append((_("Backup location"), self.cfgwhere, _("Directory where backup files are created.")))
+		self.list.append((_("Daily automatic backup"), self.cfg.enabled, _("Automatically creates a backup every day at the specified time.")))
 		if self.cfg.enabled.value:
-			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup))
-		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall))
-		self.list.append((_("EPG cache backup"), self.cfg.epgcache))
-		self.list.append((_("Save previous backup"), self.cfg.prevbackup))
-		self.list.append((_("Create backup archive"), self.cfg.backuparchive)) # temporary for create archiv too
+			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup, _("Time when the daily automatic backup starts.")))
+		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Creates an Autoinstall file with a list of installed packages")))
+		self.list.append((_("EPG cache backup"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a backup.")))
+		self.list.append((_("Save previous backup"), self.cfg.prevbackup, _("Saves the previous backup before creating a new one.")))
+		self.list.append((_("Create backup archive after backup"), self.cfg.backuparchive, _("Automatically creates a backup archive after every successful backup, both manual and scheduled."))) # temporary for create archiv too
 
 	# for summary:
 	def changedEntry(self):
