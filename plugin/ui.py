@@ -237,7 +237,7 @@ class Config(ConfigListScreen, Screen):
 		self.list.append((_("Daily automatic backup"), self.cfg.enabled, _("Automatically creates a backup every day at the specified time.")))
 		if self.cfg.enabled.value:
 			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup, _("Time when the daily automatic backup starts.")))
-		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Creates an Autoinstall file with a list of installed packages")))
+		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Creates an Autoinstall file with a list of installed packages.")))
 		self.list.append((_("EPG cache backup"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a backup.")))
 		self.list.append((_("Save previous backup"), self.cfg.prevbackup, _("Saves the previous backup before creating a new one.")))
 		self.list.append((_("Create backup archive after backup"), self.cfg.backuparchive, _("Automatically creates a backup archive after every successful backup, both manual and scheduled."))) # temporary for create archiv too
@@ -690,6 +690,7 @@ class ArchiveList(Screen):
 	def __init__(self, session, backupDir, filters):
 		Screen.__init__(self, session)
 		self.skinName = ["ArchiveList"]
+		self.setTitle(_("Backup archive list"))
 
 		self.backupDir = backupDir
 		self.archiveFilters = filters.copy()
@@ -851,6 +852,7 @@ class ArchiveFilter(ConfigListScreen, Screen):
 
 	def __init__(self, session, filters):
 		Screen.__init__(self, session)
+		self.setTitle(_("Archive filters"))
 
 		self.filterMac = ConfigYesNo(default=filters.get("mac", True))
 		self.filterHostname = ConfigYesNo(default=filters.get("hostname", False))
@@ -860,10 +862,10 @@ class ArchiveFilter(ConfigListScreen, Screen):
 
 		configList = []
 
-		configList.append((_("Current receiver MAC"), self.filterMac, _("Match the current receiver MAC address using the archive name, info file or filenames in the archive.")))
-		configList.append((_("Current hostname"), self.filterHostname, _("Match the current hostname using the archive name or the info file.")))
-		configList.append((_("Current image"), self.filterImage, _("Match the current image name using the archive name or the info file.")))
-		configList.append((_("Current slot"), self.filterSlot, _("Match the current slot number using the archive name or the info file.")))
+		configList.append((_("Receiver MAC"), self.filterMac, _("Match the current receiver MAC address using the archive name, info file or filenames in the archive.")))
+		configList.append((_("Hostname"), self.filterHostname, _("Match the current hostname using the archive name or the info file.")))
+		configList.append((_("Image"), self.filterImage, _("Match the current image name using the archive name or the info file.")))
+		configList.append((_("Slot"), self.filterSlot, _("Match the current slot number using the archive name or the info file.")))
 		configList.append((_("Sort alphabetically"), self.filterAlphabetical, _("Sort archives alphabetically instead of by creation time.")))
 		ConfigListScreen.__init__(self, configList, session=session)
 
