@@ -230,7 +230,6 @@ class Config(ConfigListScreen, Screen):
 		self.cfgwhere.addNotifier(self.changedWhere)
 		self.onClose.append(self.__onClose)
 		self.setTitle(_("AutoBackup Configuration"))
-
 		self.archiveFilters = {
 			"mac": True,
 			"hostname": False,
@@ -238,6 +237,8 @@ class Config(ConfigListScreen, Screen):
 			"slot": False,
 			"alphabetical": False,
 		}
+		self.activeArchiveFilters = None
+
 
 	def createSetup(self):
 		self.list = []
@@ -485,21 +486,29 @@ class Config(ConfigListScreen, Screen):
 
 	def doRestorePrevious(self, selectedIndex=None):
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
+		if self.activeArchiveFilters is None:
+			self.activeArchiveFilters = self.archiveFilters.copy()
 		self.session.openWithCallback(
 			boundFunction(self.doRestorePreviousNow, backupDir),
 			ArchiveList,
 			backupDir,
-			self.archiveFilters,
+			self.activeArchiveFilters,
 			selectedIndex
 		)
 
 	def doRestorePreviousNow(self, backupDir, result):
 		if not result:
+			self.activeArchiveFilters = None
 			return
 
-		selection, self.archiveFilters, selectedIndex = result
+		selection, self.activeArchiveFilters, selectedIndex = result
 		if selection is None:
-			self.session.open(MessageBox, _("No usable backups were found."), type=MessageBox.TYPE_INFO, timeout=5)
+			self.activeArchiveFilters = None
+			if selectedIndex is None:
+				text = _("No usable backup archives were found.")
+			else:
+				text = _("No backup archives match the current filters.\n\nReopening the archive list may show more backup archives.")
+			self.session.open(MessageBox, text, type=MessageBox.TYPE_INFO, timeout=5)
 			return
 
 		backupFile = selection[1]
@@ -744,7 +753,7 @@ class ArchiveList(Screen):
 
 	def layoutFinished(self):
 		if not self["list"].list:
-			self.close((None, self.archiveFilters.copy(), None))
+			self.close((None, self.archiveFilters.copy(), self.selectedIndex))
 			return
 		self.restoreSelection()
 
