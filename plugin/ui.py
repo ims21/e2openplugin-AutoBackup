@@ -143,6 +143,10 @@ def isArchiveName(filename):
 		re.match(r"^\d{8}_\d{4}\.", filename)
 	)
 
+def padSize(size, width):
+    s = str(size)
+    return "  " * (width - len(s)) + s
+
 
 class Config(ConfigListScreen, Screen):
 	skin = """
@@ -488,7 +492,8 @@ class Config(ConfigListScreen, Screen):
 			files = []
 			for member in tar.getmembers():
 				if not member.issym() and not member.islnk():
-					files.append(8 * " " + member.name)
+					size = padSize(member.size, 8)
+					files.append("\c00b0b0b0%s B\C  %s" % (size, member.name))
 			contents = "\n".join(sorted(files, key=str.lower))
 
 		info = self.formatAutoBackupInfo(self.readAutoBackupInfo(backupFile))
