@@ -177,6 +177,28 @@ def getArchiveDateTime(filename):
 	except:
 		return _("Unknown time")
 
+def validateArchiveParameters(info, filters):
+	archiveInfo = {}
+
+	for line in info.splitlines():
+		if "=" in line:
+			key, value = line.split("=", 1)
+			archiveInfo[key.strip()] = value.strip()
+	current = {
+		"mac": (getMacAddress(), _("MAC address")),
+		"hostname": (getHostName(), _("Hostname")),
+		"image": (getImageName(), _("Image")),
+		"slot": (
+			"slot%d" % getCurrentSlot() if getCurrentSlot() is not None else "",
+			_("Slot")
+		),
+	}
+	mismatch = []
+	for key, (value, text) in current.items():
+		if filters.get(key) and archiveInfo.get(key, "") != value:
+			mismatch.append(text)
+	return mismatch
+
 
 class Config(ConfigListScreen, Screen):
 	skin = """
@@ -272,6 +294,7 @@ class Config(ConfigListScreen, Screen):
 	def createSetup(self):
 		self.list = []
 		self.list.append((_("Backup location"), self.cfgwhere, _("Directory where backup files are created.")))
+		self.list.append((_("Experimental: Archive information priority"), self.cfg.method, _("Select whether archive information is read from autobackup.info first or from the archive filename first."))),
 		self.list.append((_("Daily automatic backup"), self.cfg.enabled, _("Automatically creates a backup every day at the specified time.")))
 		if self.cfg.enabled.value:
 			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup, _("Time when the daily automatic backup starts.")))
@@ -582,7 +605,16 @@ class Config(ConfigListScreen, Screen):
 					files.append("\c00b0b0b0%s B\C  %s" % (size, member.name))
 			contents = "\n".join(sorted(files, key=str.lower))
 
-		info = self.formatAutoBackupInfo(self.readAutoBackupInfo(backupFile))
+		archiveInfo = self.readAutoBackupInfo(backupFile)
+		info = self.formatAutoBackupInfo(archiveInfo)
+
+		mismatch = validateArchiveParameters(archiveInfo, self.activeArchiveFilters)
+		if mismatch:
+			info = "%s\n\n%s\n\n%s" % (
+				"\c00ff0000%s\C" % _("Warning!"),
+				_("The following archive parameters do not match the current receiver: %s") % ", ".join(mismatch),
+				info
+		)
 
 		if backupMac == currentMac:
 			choices = [
@@ -766,47 +798,60 @@ class ArchiveCreator:
 			self.tmpBackupDir
 		)
 
-def readArchiveInfo(archiveFile, filename, filters):
+
+def getRequiredArchiveInfo(filters):
+	return [key for key in ("mac", "hostname", "image", "slot") if filters[key]]
+
+
+def readArchiveInfoFromName(filename):
 	info = {}
 
-	match = re.match(r"^\d{8}_\d{4}\.([0-9a-fA-F]{12})\.([^.]+)\.([^.]+)(?:\.slot(\d+))?\.tar\.gz$", filename)
+	match = re.match(
+		r"^\d{8}_\d{4}\.([0-9a-fA-F]{12})\.([^.]+)\.([^.]+)(?:\.slot(\d+))?\.tar\.gz$",
+		filename
+	)
 
 	if match:
 		info["mac"] = match.group(1).lower()
 		info["hostname"] = match.group(2)
 		info["image"] = match.group(3)
+
 		if match.group(4) is not None:
 			info["slot"] = "slot%d" % int(match.group(4))
 
-	required = [key for key in ("mac", "hostname", "image", "slot") if filters[key]]
+	return info
 
-	# all information required by the active filters was found in the archive name.
-	if all(key in info for key in required):
-		return info
 
-	# if information is not available from the archive name, read it from autobackup.info.
+def readArchiveInfoFromTar(archiveFile, required):
+	info = {}
+
 	try:
 		with tarfile.open(archiveFile, "r:gz") as tar:
 			try:
 				f = tar.extractfile("autobackup.info")
 				if f:
 					for line in f.read().decode("utf-8").splitlines():
-						if "=" in line:
-							key, value = line.split("=", 1)
-							key = key.strip()
-							value = value.strip()
-							if key not in info:
-								if key == "image":
-									value = getImageShortName(value)
-								info[key] = value
+						if "=" not in line:
+							continue
+
+						key, value = line.split("=", 1)
+						key = key.strip()
+						value = value.strip()
+
+						if key == "image":
+							value = getImageShortName(value)
+
+						info[key] = value
 			except KeyError:
 				pass
 
-			# fallback for older archives: try to extract MAC address from filenames inside the archive
+			# Fallback for older archives: try to extract MAC
+			# address from filenames inside the archive.
 			if "mac" in required and "mac" not in info:
 				for name in tar.getnames():
 					base = os.path.basename(name)
 					match = re.search(r"([0-9a-fA-F]{12})\.tar\.gz$", base)
+
 					if match:
 						info["mac"] = match.group(1).lower()
 						break
@@ -816,10 +861,37 @@ def readArchiveInfo(archiveFile, filename, filters):
 
 	return info
 
+def mergeMissingArchiveInfo(info, fallbackInfo):
+	for key, value in fallbackInfo.items():
+		if key not in info:
+			info[key] = value
+
+	return info
+
+def readArchiveInfoName(archiveFile, filename, filters):
+	required = getRequiredArchiveInfo(filters)
+	info = readArchiveInfoFromName(filename)
+
+	# All information required by the active filters
+	# was found in the archive name.
+	if all(key in info for key in required):
+		return info
+
+	archiveInfo = readArchiveInfoFromTar(archiveFile, required)
+	return mergeMissingArchiveInfo(info, archiveInfo)
+
+def readArchiveInfoFile(archiveFile, filename, filters):
+	required = getRequiredArchiveInfo(filters)
+	info = readArchiveInfoFromTar(archiveFile, required)
+
+	filenameInfo = readArchiveInfoFromName(filename)
+	return mergeMissingArchiveInfo(info, filenameInfo)
+
+
 def archiveMatchesFilters(fullpath, filename, filters):
 		if not any(filters[key] for key in ("mac", "hostname", "image", "slot")):
 			return True
-
+		readArchiveInfo = (readArchiveInfoFile if config.plugins.autobackup.method.value else readArchiveInfoName)
 		info = readArchiveInfo(fullpath, filename, filters)
 
 		if filters["mac"] and info.get("mac", "").lower() != getMacAddress().lower():

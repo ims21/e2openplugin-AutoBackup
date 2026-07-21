@@ -11,6 +11,7 @@ from Components.config import config, \
 
 #Set default configuration
 config.plugins.autobackup = ConfigSubsection()
+config.plugins.autobackup.method = ConfigOnOff(default = True)
 config.plugins.autobackup.wakeup = ConfigClock(default = ((3*60) + 0) * 60) # 3:00
 config.plugins.autobackup.enabled = ConfigEnableDisable(default = False)
 config.plugins.autobackup.autoinstall = ConfigOnOff(default = True)
