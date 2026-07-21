@@ -715,9 +715,6 @@ class Config(ConfigListScreen, Screen):
 
 	def doRestorePreviousConfirmed(self, backupFile, backupDir, answer):
 		if not answer:
-			# Blue: on Cancel just exit.
-			# Uncomment the next line if Cancel should reopen the archive list.
-			# self.doRestorePrevious()
 			return
 
 		self.data = ''
