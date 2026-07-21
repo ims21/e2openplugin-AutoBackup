@@ -184,19 +184,27 @@ def validateArchiveParameters(info, filters):
 		if "=" in line:
 			key, value = line.split("=", 1)
 			archiveInfo[key.strip()] = value.strip()
+
 	current = {
-		"mac": (getMacAddress(), _("MAC address")),
-		"hostname": (getHostName(), _("Hostname")),
-		"image": (getImageName(), _("Image")),
-		"slot": (
-			"slot%d" % getCurrentSlot() if getCurrentSlot() is not None else "",
-			_("Slot")
-		),
+		"mac": getMacAddress(),
+		"hostname": getHostName(),
+		"image": getImageName(),
+		"slot": "slot%d" % getCurrentSlot() if getCurrentSlot() is not None else "",
 	}
+
 	mismatch = []
-	for key, (value, text) in current.items():
-		if filters.get(key) and archiveInfo.get(key, "") != value:
-			mismatch.append(text)
+	for key, value in current.items():
+		# Skip disabled parameter filters.
+		if not filters.get(key):
+			continue
+
+		# Validate only parameters available in autobackup.info.
+		if key not in archiveInfo:
+			continue
+
+		if archiveInfo[key] != value:
+			mismatch.append(key)
+
 	return mismatch
 
 
@@ -599,38 +607,55 @@ class Config(ConfigListScreen, Screen):
 
 		with tarfile.open(backupFile, "r:gz") as tar:
 			files = []
+			hasArchiveInfo = False
 			for member in tar.getmembers():
+				if member.name == "autobackup.info":
+					hasArchiveInfo = True
 				if not member.issym() and not member.islnk():
 					size = padSize(member.size, 8)
 					files.append("\c00b0b0b0%s B\C  %s" % (size, member.name))
 			contents = "\n".join(sorted(files, key=str.lower))
 
 		archiveInfo = self.readAutoBackupInfo(backupFile)
-		info = self.formatAutoBackupInfo(archiveInfo)
 
-		mismatch = validateArchiveParameters(archiveInfo, self.activeArchiveFilters)
-		if mismatch:
-			info = "%s\n\n%s\n\n%s" % (
-				"\c00ff0000%s\C" % _("Warning!"),
-				_("The following archive parameters do not match the current receiver: %s") % ", ".join(mismatch),
-				info
-		)
-
-		if backupMac == currentMac:
-			choices = [
-				(_("Cancel"), "cancel"),
-				(_("Restore settings now"), "restore"),
-				(_("Delete this archive"), "delete"),
-			]
-			warning = ""
-			picon = MessageBox.TYPE_YESNO
+		mismatch = validateArchiveParameters(archiveInfo, {
+			"mac": True,
+			"hostname": True,
+			"image": True,
+			"slot": True,
+		})
+		if hasArchiveInfo:
+			mismatch = validateArchiveParameters(archiveInfo, {
+				"mac": True,
+				"hostname": True,
+				"image": True,
+				"slot": True,
+			})
+			info = self.formatAutoBackupInfo(archiveInfo, mismatch)
 		else:
-			choices = [
-				(_("Cancel"), "cancel"),
-				(_("Delete this archive"), "delete"),
-			]
-			warning = _("This backup was created for another receiver.\nCurrent receiver MAC: %s") % currentMac + "\n\n"
+			mismatch = []
+			info = archiveInfo
+
+		if mismatch:
+			info = "%s\n\n%s" % (_("Red values do not match current receiver."), info)
+
+		choices = [
+			(_("Cancel"), "cancel"),
+			(_("Restore settings now"), "restore"),
+			(_("Delete this archive"), "delete"),
+		]
+
+		warning = ""
+
+		if backupMac != currentMac:
+			warning = _("Backup was created for another receiver.\nCurrent receiver MAC: %s\n\n") % currentMac
+
+		if backupMac != currentMac:
 			picon = MessageBox.TYPE_ERROR
+		elif mismatch:
+			picon = MessageBox.TYPE_WARNING
+		else:
+			picon = MessageBox.TYPE_YESNO
 
 		self.session.openWithCallback(
 			boundFunction(self.doRestorePreviousAction, backupFile, backupDir, selectedIndex),
@@ -710,10 +735,24 @@ class Config(ConfigListScreen, Screen):
 			print("[AutoBackup] failed to execute")
 		self.showOutput()
 
-	def formatAutoBackupInfo(self, info):
+	def formatAutoBackupInfo(self, info, mismatch=None):
+		mismatch = set(mismatch or [])
 		result = []
+
 		for line in info.splitlines():
-			result.append(line.replace("=", ":\t", 1))
+			if "=" not in line:
+				result.append(line)
+				continue
+
+			key, value = line.split("=", 1)
+			key = key.strip()
+			formatted = "%s:\t%s" % (key, value.strip())
+
+			if key in mismatch:
+				formatted = "\c00ff4040%s\C" % formatted
+
+			result.append(formatted)
+
 		return "\n".join(result)
 
 	def readAutoBackupInfo(self, backupFile):
@@ -962,20 +1001,21 @@ class ArchiveList(Screen):
 
 		self["key_red"] = StaticText(_("Cancel"))
 		self["key_green"] = StaticText(_("Select"))
+		self["key_blue"] = StaticText(_("Filters"))
 		self["list"] = MenuList([])
 
 		self["actions"] = ActionMap(
-			["OkCancelActions", "ColorActions", "DirectionActions", "MenuActions"],
+			["OkCancelActions", "ColorActions", "DirectionActions"],
 			{
 				"cancel": self.exit,
 				"red": self.exit,
 				"green": self.select,
+				"blue": self.openFilter,
 				"ok": self.select,
 				"up": self["list"].up,
 				"down": self["list"].down,
 				"left": self["list"].pageUp,
 				"right": self["list"].pageDown,
-				"menu": self.openFilter,
 			},-1
 		)
 
@@ -1056,7 +1096,7 @@ class ArchiveFilter(ConfigListScreen, Screen):
 		ConfigListScreen.__init__(self, configList, session=session)
 
 		self["key_red"] = StaticText(_("Cancel"))
-		self["key_green"] = StaticText(_("Apply"))
+		self["key_green"] = StaticText(_("Apply filters"))
 
 		self["actions"] = ActionMap(
 			["OkCancelActions", "ColorActions"],
@@ -1064,7 +1104,6 @@ class ArchiveFilter(ConfigListScreen, Screen):
 				"cancel": self.cancel,
 				"red": self.cancel,
 				"green": self.apply,
-				"ok": self.apply,
 			}, -1
 		)
 
