@@ -263,7 +263,7 @@ class Config(ConfigListScreen, Screen):
 			"mac": True,
 			"hostname": False,
 			"image": False,
-			"slot": False,
+			"slot": True,
 			"alphabetical": False,
 		}
 		self.activeArchiveFilters = None
@@ -532,6 +532,14 @@ class Config(ConfigListScreen, Screen):
 				list=backupList
 			)
 		else:
+			# call with only MAC filter
+			self.activeArchiveFilters = {
+				"mac": True,
+				"hostname": False,
+				"image": False,
+				"slot": False,
+				"alphabetical": False,
+			}
 			self.doRestorePrevious()
 
 	def doRestorePrevious(self, selectedIndex=None):
@@ -655,7 +663,9 @@ class Config(ConfigListScreen, Screen):
 
 	def doRestorePreviousConfirmed(self, backupFile, backupDir, answer):
 		if not answer:
-			self.doRestorePrevious()
+			# Blue: on Cancel just exit.
+			# Uncomment the next line if Cancel should reopen the archive list.
+			# self.doRestorePrevious()
 			return
 
 		self.data = ''
