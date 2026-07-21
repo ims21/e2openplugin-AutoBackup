@@ -578,22 +578,19 @@ class Config(ConfigListScreen, Screen):
 		if self.activeArchiveFilters is None:
 			self.activeArchiveFilters = self.archiveFilters.copy()
 		self.session.openWithCallback(
-			boundFunction(self.doRestorePreviousNow, backupDir),
+			self.doRestorePreviousClosed,
 			ArchiveList,
 			backupDir,
 			self.activeArchiveFilters,
-			selectedIndex
+			selectedIndex,
+			self
 		)
 
-	def doRestorePreviousNow(self, backupDir, result):
-		if not result:
-			self.activeArchiveFilters = None
-			return
+	def doRestorePreviousClosed(self, result):
+		self.activeArchiveFilters = None
 
+	def doRestorePreviousNow(self, backupDir, result, archiveList):
 		selection, self.activeArchiveFilters, selectedIndex = result
-		if selection is None:
-			self.activeArchiveFilters = None
-			return
 
 		backupFile = selection[1]
 
@@ -653,7 +650,13 @@ class Config(ConfigListScreen, Screen):
 			picon = MessageBox.TYPE_YESNO
 
 		self.session.openWithCallback(
-			boundFunction(self.doRestorePreviousAction, backupFile, backupDir, selectedIndex),
+			boundFunction(
+				self.doRestorePreviousAction,
+				backupFile,
+				backupDir,
+				selectedIndex,
+				archiveList
+			),
 			MessageBox,
 			warning +
 			_("Backup information") +
@@ -681,37 +684,39 @@ class Config(ConfigListScreen, Screen):
 			print("[AutoBackup] failed to execute")
 			self.showOutput()
 
-	def doRestorePreviousAction(self, backupFile, backupDir, selectedIndex, action):
+	def doRestorePreviousAction(self, backupFile, backupDir, selectedIndex, archiveList, action):
 		if action == "restore":
+			archiveList.close(None)
 			self.doRestorePreviousConfirmed(backupFile, backupDir, True)
 		elif action == "delete":
 			self.session.openWithCallback(
-				boundFunction(self.doDeletePreviousConfirmed, backupFile, selectedIndex),
+				boundFunction(
+					self.doDeletePreviousConfirmed,
+					backupFile,
+					selectedIndex,
+					archiveList
+				),
 				MessageBox,
 				_("Do you really want to delete this backup archive?") + "\n\n" + os.path.basename(backupFile),
 				type=MessageBox.TYPE_YESNO,
 				default=False
 			)
-		else:
-			self.doRestorePrevious(selectedIndex)
 
-	def doDeletePreviousConfirmed(self, backupFile, selectedIndex, answer):
+	def doDeletePreviousConfirmed(self, backupFile, selectedIndex, archiveList, answer):
 		if not answer:
-			self.doRestorePrevious(selectedIndex)
 			return
 		try:
 			os.remove(backupFile)
 		except Exception as ex:
 			print("[AutoBackup] Failed to delete backup %s: %s" % (backupFile, ex))
-			self.session.openWithCallback(
-				lambda *_: self.doRestorePrevious(selectedIndex),
+			self.session.open(
 				MessageBox,
 				_("Failed to delete backup."),
 				type=MessageBox.TYPE_ERROR,
 				timeout=10
 			)
 			return
-		self.doRestorePrevious(selectedIndex)
+		archiveList.removeArchive(selectedIndex)
 
 	def doRestorePreviousConfirmed(self, backupFile, backupDir, answer):
 		if not answer:
@@ -985,7 +990,7 @@ class ArchiveList(Screen):
 	</screen>
 	"""
 
-	def __init__(self, session, backupDir, filters, selectedIndex):
+	def __init__(self, session, backupDir, filters, selectedIndex, configScreen):
 		Screen.__init__(self, session)
 		self.skinName = ["ArchiveList"]
 		self.setTitle(_("Backup archive list"))
@@ -993,6 +998,7 @@ class ArchiveList(Screen):
 		self.backupDir = backupDir
 		self.archiveFilters = filters.copy()
 		self.selectedIndex = selectedIndex
+		self.configScreen = configScreen
 
 		self["key_red"] = StaticText(_("Cancel"))
 		self["key_green"] = StaticText(_("Select"))
@@ -1046,8 +1052,36 @@ class ArchiveList(Screen):
 	def select(self):
 		if not self["list"].list:
 			return
+
 		index = self["list"].getSelectedIndex()
-		self.close((self["list"].getCurrent(), self.archiveFilters.copy(), index))
+		self.selectedIndex = index
+		self.configScreen.doRestorePreviousNow(
+			self.backupDir,
+			(
+				self["list"].getCurrent(),
+				self.archiveFilters.copy(),
+				index
+			),
+			self
+		)
+
+	def removeArchive(self, index):
+		archives = list(self["list"].list)
+
+		if 0 <= index < len(archives):
+			del archives[index]
+
+		self["list"].setList(archives)
+		self["message"].setText(
+			"" if archives else
+			_("No backup archives match the current filters.\n\nTry changing the filter settings.")
+		)
+
+		if archives:
+			self.selectedIndex = min(index, len(archives) - 1)
+			self.restoreSelection()
+		else:
+			self.selectedIndex = None
 
 	def exit(self):
 		self.close(None)
