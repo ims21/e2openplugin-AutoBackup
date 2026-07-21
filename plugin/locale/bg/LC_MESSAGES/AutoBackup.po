@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ims\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-21 19:35+0200\n"
+"POT-Creation-Date: 2026-07-21 20:55+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Мартин Петков <marto74bg@yahoo.co.uk>\n"
 "Language-Team: \n"
@@ -13,15 +13,20 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: ../ui.py:1099
+#: ../ui.py:762
+#, fuzzy
+msgid " - no backup information available."
+msgstr "Местоположение за резервно копие"
+
+#: ../ui.py:1090
 msgid "Apply filters"
 msgstr ""
 
-#: ../ui.py:666
+#: ../ui.py:661
 msgid "Archive contents"
 msgstr ""
 
-#: ../ui.py:1081
+#: ../ui.py:1072
 msgid "Archive filters"
 msgstr ""
 
@@ -53,12 +58,12 @@ msgstr ""
 msgid "Backup EPG cache"
 msgstr "Резервно копие на EPG кеша"
 
-#: ../ui.py:996
+#: ../ui.py:994
 #, fuzzy
 msgid "Backup archive list"
 msgstr "Резервно копие на EPG кеша"
 
-#: ../ui.py:664
+#: ../ui.py:659
 #, fuzzy
 msgid "Backup information"
 msgstr "Местоположение за резервно копие"
@@ -67,7 +72,7 @@ msgstr "Местоположение за резервно копие"
 msgid "Backup location"
 msgstr "Местоположение за резервно копие"
 
-#: ../ui.py:651
+#: ../ui.py:646
 #, python-format
 msgid ""
 "Backup was created for another receiver.\n"
@@ -79,7 +84,7 @@ msgstr ""
 msgid "CF"
 msgstr "CF"
 
-#: ../ui.py:257 ../ui.py:643 ../ui.py:1002 ../ui.py:1098 ../ui.py:1151
+#: ../ui.py:257 ../ui.py:638 ../ui.py:1000 ../ui.py:1089 ../ui.py:1142
 msgid "Cancel"
 msgstr "Отказ"
 
@@ -138,11 +143,11 @@ msgstr ""
 msgid "Daily automatic backup"
 msgstr "Ежедневно автоматично резервно копие"
 
-#: ../ui.py:645
+#: ../ui.py:640
 msgid "Delete this archive"
 msgstr ""
 
-#: ../ui.py:1190
+#: ../ui.py:1181
 msgid "Deselect"
 msgstr "Отмяна Избор"
 
@@ -150,9 +155,9 @@ msgstr "Отмяна Избор"
 msgid "Directory where backup files are created."
 msgstr ""
 
-#: ../ui.py:696
+#: ../ui.py:691
 #, fuzzy
-msgid "Do you really want delete this backup archive?"
+msgid "Do you really want to delete this backup archive?"
 msgstr ""
 "Изберете кое резервно копие с настройки да се възстанови.\n"
 "Искате ли да възстановите тези настройки и да рестартирате?"
@@ -177,12 +182,12 @@ msgstr ""
 msgid "Failed"
 msgstr "Грешка"
 
-#: ../ui.py:714
+#: ../ui.py:709
 #, fuzzy
 msgid "Failed to delete backup."
 msgstr "Изберете файлове за резервно копие"
 
-#: ../ui.py:1004
+#: ../ui.py:1002
 msgid "Filters"
 msgstr ""
 
@@ -190,11 +195,11 @@ msgstr ""
 msgid "Harddisk"
 msgstr "Твърд диск"
 
-#: ../ui.py:1092
+#: ../ui.py:1083
 msgid "Hostname"
 msgstr ""
 
-#: ../ui.py:1093
+#: ../ui.py:1084
 msgid "Image"
 msgstr ""
 
@@ -214,19 +219,19 @@ msgstr ""
 msgid "Manual"
 msgstr "Ръчно"
 
-#: ../ui.py:1092
+#: ../ui.py:1083
 msgid "Match the current hostname using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1093
+#: ../ui.py:1084
 msgid "Match the current image name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1091
+#: ../ui.py:1082
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr ""
 
-#: ../ui.py:1094
+#: ../ui.py:1085
 msgid "Match the current slot number using the archive name or the info file."
 msgstr ""
 
@@ -234,19 +239,11 @@ msgstr ""
 msgid "No autoinstall list found"
 msgstr "Не са открити файловете с автоинсталация"
 
-#: ../ui.py:599
+#: ../ui.py:1034
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
-"Reopening the archive list may show more backup archives."
-msgstr ""
-
-#: ../ui.py:1053
-msgid "No backup archives match the selected filters."
-msgstr ""
-
-#: ../ui.py:767
-msgid "No backup information available."
+"Try changing the filter settings."
 msgstr ""
 
 #: ../ui.py:346 ../ui.py:349
@@ -261,24 +258,19 @@ msgstr "Не са открити файловете с копие на наст�
 msgid "No suitable media found, insert USB stick, flash card or harddisk."
 msgstr "Няма подходящо устройство, необходимо е да поставите флашка или твърд диск."
 
-#: ../ui.py:597
-#, fuzzy
-msgid "No usable backup archives were found."
-msgstr "Не са открити файловете с копие на настройките"
-
 #: ../ui.py:251
 msgid "Nowhere"
 msgstr "Никъде"
 
-#: ../ui.py:1204
+#: ../ui.py:1195
 msgid "Really close without saving settings?"
 msgstr ""
 
-#: ../ui.py:1091
+#: ../ui.py:1082
 msgid "Receiver MAC"
 msgstr ""
 
-#: ../ui.py:640
+#: ../ui.py:635
 msgid "Red values do not match current receiver."
 msgstr ""
 
@@ -307,7 +299,7 @@ msgstr ""
 msgid "Restore settings from the current backup."
 msgstr ""
 
-#: ../ui.py:644
+#: ../ui.py:639
 msgid "Restore settings now"
 msgstr ""
 
@@ -319,7 +311,7 @@ msgstr "Направи резервно копие сега"
 msgid "Run autoinstall"
 msgstr "Направи автоинсталация"
 
-#: ../ui.py:408 ../ui.py:451 ../ui.py:480 ../ui.py:680 ../ui.py:730
+#: ../ui.py:408 ../ui.py:451 ../ui.py:480 ../ui.py:675 ../ui.py:725
 msgid "Running..."
 msgstr "Изпълнява се..."
 
@@ -327,7 +319,7 @@ msgstr "Изпълнява се..."
 msgid "SD"
 msgstr "SD"
 
-#: ../ui.py:258 ../ui.py:1152
+#: ../ui.py:258 ../ui.py:1143
 msgid "Save"
 msgstr "Запази"
 
@@ -347,7 +339,7 @@ msgstr ""
 msgid "Saves the previous backup before creating a new one."
 msgstr ""
 
-#: ../ui.py:1003 ../ui.py:1192
+#: ../ui.py:1001 ../ui.py:1183
 msgid "Select"
 msgstr "Избери"
 
@@ -359,7 +351,7 @@ msgstr ""
 msgid "Select files to backup"
 msgstr "Изберете файлове за резервно копие"
 
-#: ../ui.py:1183
+#: ../ui.py:1174
 msgid "Select files/folders to backup"
 msgstr "Изберете файлове/папки за резервно копие"
 
@@ -367,15 +359,15 @@ msgstr "Изберете файлове/папки за резервно коп�
 msgid "Select whether archive information is read from autobackup.info first or from the archive filename first."
 msgstr ""
 
-#: ../ui.py:1094
+#: ../ui.py:1085
 msgid "Slot"
 msgstr ""
 
-#: ../ui.py:1095
+#: ../ui.py:1086
 msgid "Sort alphabetically"
 msgstr ""
 
-#: ../ui.py:1095
+#: ../ui.py:1086
 msgid "Sort archives alphabetically instead of by creation time."
 msgstr ""
 
@@ -392,7 +384,7 @@ msgstr "USB"
 msgid "Unknown time"
 msgstr ""
 
-#: ../ui.py:668
+#: ../ui.py:663
 msgid "What do you want to do?"
 msgstr ""
 
