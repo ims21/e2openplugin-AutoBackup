@@ -610,12 +610,6 @@ class Config(ConfigListScreen, Screen):
 
 		archiveInfo = self.readAutoBackupInfo(backupFile)
 
-		mismatch = validateArchiveParameters(archiveInfo, {
-			"mac": True,
-			"hostname": True,
-			"image": True,
-			"slot": True,
-		})
 		if hasArchiveInfo:
 			mismatch = validateArchiveParameters(archiveInfo, {
 				"mac": True,
@@ -968,9 +962,10 @@ def getArchives(backupDir, filters):
 			archives.append((entry.name, entry.path, sortKey))
 
 	if filters["alphabetical"]:
-		archives.sort(key=lambda archive: archive[0].lower())
+		archives.sort(key=lambda archive: archive[0].lower(), reverse=True)
 	else:
 		archives.sort(key=lambda archive: archive[2], reverse=True)
+
 	return archives
 
 
@@ -1045,8 +1040,22 @@ class ArchiveList(Screen):
 		if filters == self.archiveFilters:
 			return
 
+		reloadRequired = any(
+			filters[key] != self.archiveFilters[key]
+			for key in ("mac", "hostname", "image", "slot")
+		)
+
 		self.archiveFilters = filters
-		self.loadArchives()
+
+		if reloadRequired:
+			# active filters changed, rebuild the archive list
+			self.loadArchives()
+		else:
+			# only sorting changed, reorder the current list
+			archives = list(self["list"].list)
+			archives.reverse()
+			self["list"].setList(archives)
+
 		self.restoreSelection()
 
 	def select(self):
