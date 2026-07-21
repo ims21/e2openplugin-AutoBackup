@@ -593,16 +593,11 @@ class Config(ConfigListScreen, Screen):
 		selection, self.activeArchiveFilters, selectedIndex = result
 		if selection is None:
 			self.activeArchiveFilters = None
-			if selectedIndex is None:
-				text = _("No usable backup archives were found.")
-			else:
-				text = _("No backup archives match the current filters.\n\nReopening the archive list may show more backup archives.")
-			self.session.open(MessageBox, text, type=MessageBox.TYPE_INFO, timeout=5)
 			return
 
 		backupFile = selection[1]
 
-		currentMac = open("/sys/class/net/eth0/address").read().strip().replace(":", "").lower()
+		currentMac = getMacAddress()
 		backupMac = self.checkPreviousBackup(backupFile)
 
 		with tarfile.open(backupFile, "r:gz") as tar:
@@ -693,7 +688,7 @@ class Config(ConfigListScreen, Screen):
 			self.session.openWithCallback(
 				boundFunction(self.doDeletePreviousConfirmed, backupFile, selectedIndex),
 				MessageBox,
-				_("Do you really want delete this backup archive?") + "\n\n" + backupFile,
+				_("Do you really want to delete this backup archive?") + "\n\n" + os.path.basename(backupFile),
 				type=MessageBox.TYPE_YESNO,
 				default=False
 			)
@@ -764,7 +759,7 @@ class Config(ConfigListScreen, Screen):
 		except Exception as ex:
 			print("[AutoBackup] Failed to read autobackup.info:", ex)
 
-		return _("No backup information available.")
+		return _(" - no backup information available.")
 
 	def checkPreviousBackup(self, backupFile):
 		try:
@@ -989,6 +984,7 @@ class ArchiveList(Screen):
 		<widget source="key_yellow" render="Label" position="280,0" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
 		<widget source="key_blue" render="Label" position="420,0" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
 		<widget name="list" position="10,40" size="880,350" scrollbarMode="showOnDemand" />
+		<widget name="message" position="10,40" size="880,350" font="Regular;20" halign="center" valign="center" transparent="1" />
 	</screen>
 	"""
 
@@ -1005,6 +1001,7 @@ class ArchiveList(Screen):
 		self["key_green"] = StaticText(_("Select"))
 		self["key_blue"] = StaticText(_("Filters"))
 		self["list"] = MenuList([])
+		self["message"] = Label("")
 
 		self["actions"] = ActionMap(
 			["OkCancelActions", "ColorActions", "DirectionActions"],
@@ -1025,9 +1022,6 @@ class ArchiveList(Screen):
 		self.onLayoutFinish.append(self.layoutFinished)
 
 	def layoutFinished(self):
-		if not self["list"].list:
-			self.close((None, self.archiveFilters.copy(), self.selectedIndex))
-			return
 		self.restoreSelection()
 
 	def restoreSelection(self):
@@ -1035,7 +1029,9 @@ class ArchiveList(Screen):
 			self["list"].moveToIndex(min(self.selectedIndex, len(self["list"].list) - 1))
 
 	def loadArchives(self):
-		self["list"].setList(getArchives(self.backupDir, self.archiveFilters))
+		archives = getArchives(self.backupDir, self.archiveFilters)
+		self["list"].setList(archives)
+		self["message"].setText("" if archives else _("No backup archives match the current filters.\n\nTry changing the filter settings."))
 
 	def openFilter(self):
 		self.session.openWithCallback(self.filterClosed, ArchiveFilter, self.archiveFilters)
@@ -1048,18 +1044,11 @@ class ArchiveList(Screen):
 
 		self.archiveFilters = filters
 		self.loadArchives()
-		if not self["list"].list:
-			self.session.openWithCallback(
-				lambda *_: self.openFilter(),
-				MessageBox,
-				_("No backup archives match the selected filters."),
-				type=MessageBox.TYPE_INFO,
-				timeout=5
-			)
-			return
 		self.restoreSelection()
 
 	def select(self):
+		if not self["list"].list:
+			return
 		index = self["list"].getSelectedIndex()
 		self.close((self["list"].getCurrent(), self.archiveFilters.copy(), index))
 
