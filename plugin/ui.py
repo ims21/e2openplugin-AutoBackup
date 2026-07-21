@@ -24,6 +24,7 @@ from Screens.MessageBox import MessageBox
 from Tools.FuzzyDate import FuzzyTime
 from Screens.Standby import getReasons
 from Tools.BoundFunction import boundFunction
+from time import mktime
 
 FRIENDLY = {
 	"/media/hdd": _("Harddisk"),
@@ -135,6 +136,7 @@ def getCurrentSlot():
 	except:
 		return None
 
+
 # here we define which backup archive filename formats are accepted
 def isArchiveName(filename):
 	if not filename.endswith(".tar.gz"):
@@ -154,6 +156,26 @@ def isArchiveName(filename):
 def padSize(size, width):
     s = str(size)
     return "  " * (width - len(s)) + s
+
+
+def getArchiveDateTime(filename):
+	match = re.search(r"(?:^|backup\.)(\d{8})_(\d{2})(\d{2})", filename)
+	if not match:
+		return _("Unknown")
+
+	date = match.group(1)
+	hour = match.group(2)
+	minute = match.group(3)
+
+	try:
+		t = mktime((
+			int(date[:4]), int(date[4:6]), int(date[6:8]),
+			int(hour), int(minute),
+			0, 0, 0, -1
+		))
+		return " ".join(FuzzyTime(t, inPast=True))
+	except:
+		return _("Unknown")
 
 
 class Config(ConfigListScreen, Screen):
@@ -226,10 +248,17 @@ class Config(ConfigListScreen, Screen):
 		self.container = enigma.eConsoleAppContainer()
 		self.container.appClosed.append(self.appClosed)
 		self.container.dataAvail.append(self.dataAvail)
+
+		try:
+			open("/tmp/restore.log", "w").close()
+		except Exception as ex:
+			print("[AutoBackup] Failed to create restore log:", ex)
+
 		self.archiveAfterBackup = False  # temporary for create archive too
 		self.cfgwhere.addNotifier(self.changedWhere)
 		self.onClose.append(self.__onClose)
 		self.setTitle(_("AutoBackup Configuration"))
+
 		self.archiveFilters = {
 			"mac": True,
 			"hostname": False,
@@ -338,13 +367,6 @@ class Config(ConfigListScreen, Screen):
 
 		self.archiveAfterBackup = self.cfg.backuparchive.value  # temporary for create archive too
 
-		# remove existing autobackup.info if present.
-		infoFile = os.path.join(self.cfgwhere.value, "backup", "autobackup.info")
-		try:
-			os.remove(infoFile)
-		except OSError:
-			pass
-
 		self.saveAll()
 		# Write config file before creating the backup so we have it all
 		configfile.save()
@@ -360,22 +382,25 @@ class Config(ConfigListScreen, Screen):
 			self.showOutput()
 
 	def dorestore(self):
-		backupList = []
-		foundBackupLocations = [media for media in os.listdir("/media/") if os.path.isdir(os.path.join("/media/", media))]
-		for backupMedia in foundBackupLocations:
-			path = "/media/%s/backup/" % backupMedia
-			if os.path.isfile(path + "PLi-AutoBackup.tar.gz") and os.path.isfile(path + ".timestamp"):
-				try:
-					st = os.stat(os.path.join(path, ".timestamp"))
-					backupList.append(("/media/%s " % backupMedia + _("from: ") + " ".join(FuzzyTime(st.st_mtime, inPast=True)), "/media/%s" % backupMedia, st.st_mtime))
-				except Exception as ex:
-					print("Failed to stat %s: %s" % (path, ex))
+		if 1:
+			self.doRestoreNew()
+		else:
+			backupList = []
+			foundBackupLocations = [media for media in os.listdir("/media/") if os.path.isdir(os.path.join("/media/", media))]
+			for backupMedia in foundBackupLocations:
+				path = "/media/%s/backup/" % backupMedia
+				if os.path.isfile(path + "PLi-AutoBackup.tar.gz") and os.path.isfile(path + ".timestamp"):
+					try:
+						st = os.stat(os.path.join(path, ".timestamp"))
+						backupList.append(("/media/%s " % backupMedia + _("from: ") + " ".join(FuzzyTime(st.st_mtime, inPast=True)), "/media/%s" % backupMedia, st.st_mtime))
+					except Exception as ex:
+						print("Failed to stat %s: %s" % (path, ex))
 
-		if not backupList:
-			self.session.open(MessageBox, _("No settings backups found"), type=MessageBox.TYPE_ERROR, timeout=10)
-			return
-		backupList.sort(key=lambda b: b[2], reverse=True)
-		self.session.openWithCallback(self.dorestorenow_reason, MessageBox, _("Choose settings backup which should be restored.\nDo you really want to restore these settings and restart?"), list=backupList)
+			if not backupList:
+				self.session.open(MessageBox, _("No settings backups found"), type=MessageBox.TYPE_ERROR, timeout=10)
+				return
+			backupList.sort(key=lambda b: b[2], reverse=True)
+			self.session.openWithCallback(self.dorestorenow_reason, MessageBox, _("Choose settings backup which should be restored.\nDo you really want to restore these settings and restart?"), list=backupList)
 
 	def dorestorenow_reason(self, path):
 		if not path:
@@ -483,6 +508,31 @@ class Config(ConfigListScreen, Screen):
 		s = s.decode()
 		print("[AutoBackup]", s.strip())
 		self["status"].appendText(s)
+
+		try:
+			with open("/tmp/restore.log", "a") as f:
+				f.write(s)
+		except Exception as ex:
+			print("[AutoBackup] Failed to write restore log:", ex)
+
+	def doRestoreNew(self):
+		backupDir = os.path.join(self.cfgwhere.value, "backup")
+
+		if self.activeArchiveFilters is None:
+			self.activeArchiveFilters = self.archiveFilters.copy()
+
+		archives = getArchives(backupDir, self.activeArchiveFilters)
+		if archives:
+			filename, backupFile = archives[0][:2]
+			backupList = [("%s %s %s" % (self.cfgwhere.value, _("from: "), getArchiveDateTime(filename)), True)]
+			self.session.openWithCallback(
+				boundFunction(self.doRestorePreviousConfirmed, backupFile, backupDir),
+				MessageBox,
+				_("Choose settings backup which should be restored.\nDo you really want to restore these settings and restart?"),
+				list=backupList
+			)
+		else:
+			self.doRestorePrevious()
 
 	def doRestorePrevious(self, selectedIndex=None):
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
@@ -706,6 +756,105 @@ class ArchiveCreator:
 			self.tmpBackupDir
 		)
 
+def readArchiveInfo(archiveFile, filename, filters):
+	info = {}
+
+	match = re.match(r"^\d{8}_\d{4}\.([0-9a-fA-F]{12})\.([^.]+)\.([^.]+)(?:\.slot(\d+))?\.tar\.gz$", filename)
+
+	if match:
+		info["mac"] = match.group(1).lower()
+		info["hostname"] = match.group(2)
+		info["image"] = match.group(3)
+		if match.group(4) is not None:
+			info["slot"] = "slot%d" % int(match.group(4))
+
+	required = [key for key in ("mac", "hostname", "image", "slot") if filters[key]]
+
+	# all information required by the active filters was found in the archive name.
+	if all(key in info for key in required):
+		return info
+
+	# if information is not available from the archive name, read it from autobackup.info.
+	try:
+		with tarfile.open(archiveFile, "r:gz") as tar:
+			try:
+				f = tar.extractfile("autobackup.info")
+				if f:
+					for line in f.read().decode("utf-8").splitlines():
+						if "=" in line:
+							key, value = line.split("=", 1)
+							key = key.strip()
+							value = value.strip()
+							if key not in info:
+								if key == "image":
+									value = getImageShortName(value)
+								info[key] = value
+			except KeyError:
+				pass
+
+			# fallback for older archives: try to extract MAC address from filenames inside the archive
+			if "mac" in required and "mac" not in info:
+				for name in tar.getnames():
+					base = os.path.basename(name)
+					match = re.search(r"([0-9a-fA-F]{12})\.tar\.gz$", base)
+					if match:
+						info["mac"] = match.group(1).lower()
+						break
+
+	except Exception as ex:
+		print("[AutoBackup] Failed to read archive information from %s: %s" % (archiveFile, ex))
+
+	return info
+
+def archiveMatchesFilters(fullpath, filename, filters):
+		if not any(filters[key] for key in ("mac", "hostname", "image", "slot")):
+			return True
+
+		info = readArchiveInfo(fullpath, filename, filters)
+
+		if filters["mac"] and info.get("mac", "").lower() != getMacAddress().lower():
+			return False
+
+		if filters["hostname"] and info.get("hostname", "") != getHostName():
+			return False
+
+		if filters["image"] and info.get("image", "") != getImageShortName():
+			return False
+
+		if filters["slot"]:
+			currentSlot = getCurrentSlot()
+			archiveSlot = info.get("slot")
+
+			if currentSlot is None:
+				if archiveSlot:
+					return False
+			elif archiveSlot != "slot%d" % currentSlot:
+				return False
+
+		return True
+
+def getArchives(backupDir, filters):
+	archives = []
+
+	if os.path.isdir(backupDir):
+		for entry in os.scandir(backupDir):
+			if not entry.is_file():
+				continue
+			if not isArchiveName(entry.name):
+				continue
+			if not archiveMatchesFilters(entry.path, entry.name, filters):
+				continue
+
+			match = re.search(r"\d{8}_\d{4}", entry.name)
+			sortKey = match.group(0).replace("_", "")
+			archives.append((entry.name, entry.path, sortKey))
+
+	if filters["alphabetical"]:
+		archives.sort(key=lambda archive: archive[0].lower())
+	else:
+		archives.sort(key=lambda archive: archive[2], reverse=True)
+	return archives
+
 
 class ArchiveList(Screen):
 	skin = """
@@ -762,117 +911,15 @@ class ArchiveList(Screen):
 			self["list"].moveToIndex(min(self.selectedIndex, len(self["list"].list) - 1))
 
 	def loadArchives(self):
-		archives = []
-
-		if os.path.isdir(self.backupDir):
-			for filename in os.listdir(self.backupDir):
-				if not isArchiveName(filename):
-					continue
-				fullpath = os.path.join(self.backupDir, filename)
-				if not self.archiveMatchesFilter(fullpath, filename):
-					continue
-				match = re.search(r"\d{8}_\d{4}", filename)
-				sortKey = match.group(0).replace("_", "")
-				archives.append((filename, fullpath, sortKey))
-
-		if self.archiveFilters["alphabetical"]:
-			archives.sort(key=lambda archive: archive[0].lower())
-		else:
-			archives.sort(key=lambda archive: archive[2], reverse=True)
-		self["list"].setList(archives)
-
-	def readArchiveInfo(self, archiveFile, filename):
-		info = {}
-
-		match = re.match(r"^\d{8}_\d{4}\.([0-9a-fA-F]{12})\.([^.]+)\.([^.]+)(?:\.slot(\d+))?\.tar\.gz$", filename)
-
-		if match:
-			info["mac"] = match.group(1).lower()
-			info["hostname"] = match.group(2)
-			info["image"] = match.group(3)
-			if match.group(4) is not None:
-				info["slot"] = "slot%d" % int(match.group(4))
-
-		required = [
-			key for key in ("mac", "hostname", "image", "slot")
-			if self.archiveFilters[key]
-		]
-
-		# all information required by the active filters was found in the archive name.
-		if all(key in info for key in required):
-			return info
-
-		# if information is not available from the archive name, read it from autobackup.info.
-		try:
-			with tarfile.open(archiveFile, "r:gz") as tar:
-				try:
-					f = tar.extractfile("autobackup.info")
-					if f:
-						for line in f.read().decode("utf-8").splitlines():
-							if "=" in line:
-								key, value = line.split("=", 1)
-								key = key.strip()
-								value = value.strip()
-								if key not in info:
-									if key == "image":
-										value = getImageShortName(value)
-									info[key] = value
-				except KeyError:
-					pass
-
-				# fallback for older archives: try to extract MAC address from filenames inside the archive
-				if "mac" in required and "mac" not in info:
-					for name in tar.getnames():
-						base = os.path.basename(name)
-						match = re.search(r"([0-9a-fA-F]{12})\.tar\.gz$", base)
-						if match:
-							info["mac"] = match.group(1).lower()
-							break
-
-		except Exception as ex:
-			print("[AutoBackup] Failed to read archive information from %s: %s" % (archiveFile, ex))
-
-		return info
-
-	def archiveMatchesFilter(self, fullpath, filename):
-		if not any(self.archiveFilters[key] for key in ("mac", "hostname", "image", "slot")):
-			return True
-
-		info = self.readArchiveInfo(fullpath, filename)
-
-		if self.archiveFilters["mac"]:
-			if info.get("mac", "").lower() != getMacAddress().lower():
-				return False
-
-		if self.archiveFilters["hostname"]:
-			if info.get("hostname", "") != getHostName():
-				return False
-
-		if self.archiveFilters["image"]:
-			if info.get("image", "") != getImageShortName():
-				return False
-
-		if self.archiveFilters["slot"]:
-			currentSlot = getCurrentSlot()
-			archiveSlot = info.get("slot")
-
-			if currentSlot is None:
-				if archiveSlot:
-					return False
-			elif archiveSlot != "slot%d" % currentSlot:
-				return False
-
-		return True
+		self["list"].setList(getArchives(self.backupDir, self.archiveFilters))
 
 	def openFilter(self):
-		self.session.openWithCallback(
-			self.filterClosed,
-			ArchiveFilter,
-			self.archiveFilters
-		)
+		self.session.openWithCallback(self.filterClosed, ArchiveFilter, self.archiveFilters)
 
 	def filterClosed(self, filters):
 		if filters is None:
+			return
+		if filters == self.archiveFilters:
 			return
 
 		self.archiveFilters = filters
