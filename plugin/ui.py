@@ -161,7 +161,7 @@ def padSize(size, width):
 def getArchiveDateTime(filename):
 	match = re.search(r"(?:^|backup\.)(\d{8})_(\d{2})(\d{2})", filename)
 	if not match:
-		return _("Unknown")
+		return _("Unknown time")
 
 	date = match.group(1)
 	hour = match.group(2)
@@ -175,7 +175,7 @@ def getArchiveDateTime(filename):
 		))
 		return " ".join(FuzzyTime(t, inPast=True))
 	except:
-		return _("Unknown")
+		return _("Unknown time")
 
 
 class Config(ConfigListScreen, Screen):

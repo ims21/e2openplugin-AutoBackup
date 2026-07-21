@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enigma2-plugin-extensions-autobackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-20 23:46+0200\n"
+"POT-Creation-Date: 2026-07-21 10:57+0200\n"
 "PO-Revision-Date: 2016-05-06 14:14+0200\n"
 "Last-Translator: neoatomic <neoatomic@users.noreply.github.com>\n"
 "Language-Team: daddelfalk\n"
@@ -14,15 +14,15 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.8.7\n"
 
-#: ../ui.py:930
+#: ../ui.py:977
 msgid "Apply"
 msgstr ""
 
-#: ../ui.py:551
+#: ../ui.py:601
 msgid "Archive contents"
 msgstr ""
 
-#: ../ui.py:912
+#: ../ui.py:959
 msgid "Archive filters"
 msgstr ""
 
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Auto backup"
 msgstr "Automaattiset asetukset varmuuskopiolle"
 
-#: ../ui.py:186 ../ui.py:232
+#: ../ui.py:208 ../ui.py:260
 msgid "AutoBackup Configuration"
 msgstr "AutoBackup Asetukset"
 
@@ -39,52 +39,52 @@ msgstr "AutoBackup Asetukset"
 msgid "Automatic settings backup"
 msgstr "Automaattiset asetukset varmuuskopiolle"
 
-#: ../ui.py:248
+#: ../ui.py:277
 msgid "Automatic start time"
 msgstr "Automaattinen aloitusaika"
 
-#: ../ui.py:252
+#: ../ui.py:281
 msgid "Automatically creates a backup archive after every successful backup, both manual and scheduled."
 msgstr ""
 
-#: ../ui.py:246
+#: ../ui.py:275
 msgid "Automatically creates a backup every day at the specified time."
 msgstr ""
 
-#: ../ui.py:315
+#: ../ui.py:344
 msgid "Backup EPG cache"
 msgstr ""
 
-#: ../ui.py:726
+#: ../ui.py:875
 msgid "Backup archive list"
 msgstr ""
 
-#: ../ui.py:549
+#: ../ui.py:599
 #, fuzzy
 msgid "Backup information"
 msgstr "Varmuuskopion hakemisto"
 
-#: ../ui.py:245
+#: ../ui.py:274
 msgid "Backup location"
 msgstr "Varmuuskopion hakemisto"
 
-#: ../ui.py:31 ../ui.py:50
+#: ../ui.py:32 ../ui.py:51
 msgid "CF"
 msgstr "CF"
 
-#: ../ui.py:205 ../ui.py:531 ../ui.py:539 ../ui.py:732 ../ui.py:929
-#: ../ui.py:983
+#: ../ui.py:227 ../ui.py:581 ../ui.py:589 ../ui.py:881 ../ui.py:976
+#: ../ui.py:1030
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: ../ui.py:446
+#: ../ui.py:471
 msgid ""
 "Choose a backup.\n"
 "This will delete autoinstall list.\n"
 "Do you really want to continue?"
 msgstr ""
 
-#: ../ui.py:417
+#: ../ui.py:442
 #, fuzzy
 msgid ""
 "Choose a backup.\n"
@@ -94,7 +94,7 @@ msgstr ""
 "Tämä palauttaa varmuuskopiosi %s.\n"
 "Haluatko todella palauttaa nämä asetukset ja uudelleenkäynnistää vastaanottimesi?"
 
-#: ../ui.py:378
+#: ../ui.py:403 ../ui.py:531
 #, fuzzy
 msgid ""
 "Choose settings backup which should be restored.\n"
@@ -103,286 +103,290 @@ msgstr ""
 "Tämä palauttaa varmuuskopiosi %s.\n"
 "Haluatko todella palauttaa nämä asetukset ja uudelleenkäynnistää vastaanottimesi?"
 
-#: ../ui.py:249
+#: ../ui.py:278
 msgid "Create Autoinstall"
 msgstr "Tee Automaattinen asennus"
 
-#: ../ui.py:314
+#: ../ui.py:343
 msgid "Create a backup of the current settings."
 msgstr ""
 
-#: ../ui.py:319
+#: ../ui.py:348
 msgid "Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name."
 msgstr ""
 
-#: ../ui.py:319
+#: ../ui.py:348
 msgid "Create archive with current settings"
 msgstr ""
 
-#: ../ui.py:252
+#: ../ui.py:281
 msgid "Create backup archive after backup"
 msgstr ""
 
-#: ../ui.py:249
+#: ../ui.py:278
 msgid "Creates an Autoinstall file with a list of installed packages."
 msgstr ""
 
-#: ../ui.py:246
+#: ../ui.py:275
 msgid "Daily automatic backup"
 msgstr "Päivittäinen automaattinen varmuuskopio"
 
-#: ../ui.py:533 ../ui.py:540
+#: ../ui.py:583 ../ui.py:590
 msgid "Delete this archive"
 msgstr ""
 
-#: ../ui.py:1022
+#: ../ui.py:1069
 msgid "Deselect"
 msgstr "Poista valinta"
 
-#: ../ui.py:245
+#: ../ui.py:274
 msgid "Directory where backup files are created."
 msgstr ""
 
-#: ../ui.py:581
+#: ../ui.py:631
 #, fuzzy
 msgid "Do you really want delete this backup archive?"
 msgstr ""
 "Tämä palauttaa varmuuskopiosi %s.\n"
 "Haluatko todella palauttaa nämä asetukset ja uudelleenkäynnistää vastaanottimesi?"
 
-#: ../ui.py:385
+#: ../ui.py:410
 msgid "Do you want to restore your settings?"
 msgstr ""
 
-#: ../ui.py:476
+#: ../ui.py:501
 msgid "Done"
 msgstr "Tehty"
 
-#: ../ui.py:250
+#: ../ui.py:279
 msgid "EPG cache backup"
 msgstr ""
 
-#: ../ui.py:474
+#: ../ui.py:499
 msgid "Failed"
 msgstr "Epäonnistui"
 
-#: ../ui.py:599
+#: ../ui.py:649
 #, fuzzy
 msgid "Failed to delete backup."
 msgstr "Valitse varmuuskopioitavat tiedostot"
 
-#: ../ui.py:29 ../ui.py:52
+#: ../ui.py:30 ../ui.py:53
 msgid "Harddisk"
 msgstr "Kovalevy"
 
-#: ../ui.py:923
+#: ../ui.py:970
 msgid "Hostname"
 msgstr ""
 
-#: ../ui.py:924
+#: ../ui.py:971
 msgid "Image"
 msgstr ""
 
-#: ../ui.py:316
+#: ../ui.py:345
 msgid "Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."
 msgstr ""
 
-#: ../ui.py:284
+#: ../ui.py:313
 msgid "Last backup date"
 msgstr "Viimeisen varmuuskopion päiväys"
 
-#: ../ui.py:209
+#: ../ui.py:231
 msgid "MENU"
 msgstr ""
 
-#: ../ui.py:207
+#: ../ui.py:229
 msgid "Manual"
 msgstr "Manuaalinen"
 
-#: ../ui.py:923
+#: ../ui.py:970
 msgid "Match the current hostname using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:924
+#: ../ui.py:971
 msgid "Match the current image name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:922
+#: ../ui.py:969
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr ""
 
-#: ../ui.py:925
+#: ../ui.py:972
 msgid "Match the current slot number using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:414 ../ui.py:443
+#: ../ui.py:439 ../ui.py:468
 #, fuzzy
 msgid "No autoinstall list found"
 msgstr "Tee Automaattinen asennus"
 
-#: ../ui.py:510
+#: ../ui.py:560
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
 "Reopening the archive list may show more backup archives."
 msgstr ""
 
-#: ../ui.py:884
+#: ../ui.py:931
 msgid "No backup archives match the selected filters."
 msgstr ""
 
-#: ../ui.py:636
+#: ../ui.py:686
 msgid "No backup information available."
 msgstr ""
 
-#: ../ui.py:286 ../ui.py:289
+#: ../ui.py:315 ../ui.py:318
 msgid "No backup present"
 msgstr "Varmuuskopioita ei löydy"
 
-#: ../ui.py:375
+#: ../ui.py:400
 #, fuzzy
 msgid "No settings backups found"
 msgstr "Automaattiset asetukset varmuuskopiolle"
 
-#: ../ui.py:277
+#: ../ui.py:306
 msgid "No suitable media found, insert USB stick, flash card or harddisk."
 msgstr "Sopivaa tallennuspaikkaa ei löytynyt, lisää USB tikku, muistikortti tai kovalevy."
 
-#: ../ui.py:508
+#: ../ui.py:558
 #, fuzzy
 msgid "No usable backup archives were found."
 msgstr "Automaattiset asetukset varmuuskopiolle"
 
-#: ../ui.py:199
+#: ../ui.py:221
 msgid "Nowhere"
 msgstr "Ei missään"
 
-#: ../ui.py:1036
+#: ../ui.py:1083
 msgid "Really close without saving settings?"
 msgstr ""
 
-#: ../ui.py:922
+#: ../ui.py:969
 msgid "Receiver MAC"
 msgstr ""
 
-#: ../ui.py:317
+#: ../ui.py:346
 msgid "Remove autoinstall list"
 msgstr ""
 
-#: ../ui.py:317
+#: ../ui.py:346
 msgid "Remove the 'autoinstall' file from a backup."
 msgstr ""
 
-#: ../ui.py:208 ../ui.py:318
+#: ../ui.py:230 ../ui.py:347
 msgid "Restore"
 msgstr "Palauta"
 
-#: ../ui.py:320
+#: ../ui.py:349
 msgid "Restore previous backup"
 msgstr ""
 
-#: ../ui.py:320
+#: ../ui.py:349
 msgid "Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored."
 msgstr ""
 
-#: ../ui.py:318
+#: ../ui.py:347
 msgid "Restore settings from the current backup."
 msgstr ""
 
-#: ../ui.py:532
+#: ../ui.py:582
 msgid "Restore settings now"
 msgstr ""
 
-#: ../ui.py:314
+#: ../ui.py:343
 msgid "Run a backup now"
 msgstr "Käynnistä varmuuskopiointi nyt"
 
-#: ../ui.py:316
+#: ../ui.py:345
 #, fuzzy
 msgid "Run autoinstall"
 msgstr "Tee Automaattinen asennus"
 
-#: ../ui.py:355 ../ui.py:395 ../ui.py:424 ../ui.py:565 ../ui.py:613
+#: ../ui.py:377 ../ui.py:420 ../ui.py:449 ../ui.py:615 ../ui.py:663
 #, fuzzy
 msgid "Running..."
 msgstr "Käynnissä"
 
-#: ../ui.py:32
+#: ../ui.py:33
 msgid "SD"
 msgstr "SD"
 
-#: ../ui.py:206 ../ui.py:984
+#: ../ui.py:228 ../ui.py:1031
 msgid "Save"
 msgstr "Tallenna"
 
-#: ../ui.py:315
+#: ../ui.py:344
 msgid "Save current contents of EPG cache to a file."
 msgstr ""
 
-#: ../ui.py:251
+#: ../ui.py:280
 msgid "Save previous backup"
 msgstr ""
 
-#: ../ui.py:250
+#: ../ui.py:279
 msgid "Saves the contents of the EPG cache to a file before creating a backup."
 msgstr ""
 
-#: ../ui.py:251
+#: ../ui.py:280
 msgid "Saves the previous backup before creating a new one."
 msgstr ""
 
-#: ../ui.py:733 ../ui.py:1024
+#: ../ui.py:882 ../ui.py:1071
 msgid "Select"
 msgstr "Valitse"
 
-#: ../ui.py:313
+#: ../ui.py:342
 msgid "Select files and folders to include in the backup. Basic backup items are already selected."
 msgstr ""
 
-#: ../ui.py:313
+#: ../ui.py:342
 msgid "Select files to backup"
 msgstr "Valitse varmuuskopioitavat tiedostot"
 
-#: ../ui.py:1015
+#: ../ui.py:1062
 msgid "Select files/folders to backup"
 msgstr "Valitse varmuuskopioitavat tiedostot/hakemistot"
 
-#: ../ui.py:925
+#: ../ui.py:972
 msgid "Slot"
 msgstr ""
 
-#: ../ui.py:926
+#: ../ui.py:973
 msgid "Sort alphabetically"
 msgstr ""
 
-#: ../ui.py:926
+#: ../ui.py:973
 msgid "Sort archives alphabetically instead of by creation time."
 msgstr ""
 
-#: ../ui.py:542
+#: ../ui.py:592
 #, python-format
 msgid ""
 "This backup was created for another receiver.\n"
 "Current receiver MAC: %s"
 msgstr ""
 
-#: ../ui.py:248
+#: ../ui.py:277
 #, fuzzy
 msgid "Time when the daily automatic backup starts."
 msgstr "Päivittäinen automaattinen varmuuskopio"
 
-#: ../ui.py:30
+#: ../ui.py:31
 msgid "USB"
 msgstr "USB"
 
-#: ../ui.py:553
+#: ../ui.py:164 ../ui.py:178
+msgid "Unknown time"
+msgstr ""
+
+#: ../ui.py:603
 msgid "What do you want to do?"
 msgstr ""
 
-#: ../ui.py:370 ../ui.py:409 ../ui.py:438
+#: ../ui.py:395 ../ui.py:434 ../ui.py:463 ../ui.py:527
 msgid "from: "
 msgstr ""
 
-#: ../ui.py:47
+#: ../ui.py:48
 msgid "root"
 msgstr ""
