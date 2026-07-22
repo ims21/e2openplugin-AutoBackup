@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 09:37+0200\n"
+"POT-Creation-Date: 2026-07-22 14:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../ui.py:635
+#: ../ui.py:651
 msgid " - no backup information available"
 msgstr ""
 
-#: ../ui.py:638
+#: ../ui.py:654
 msgid " - red values do not match this receiver"
 msgstr ""
 
-#: ../ui.py:770
+#: ../ui.py:792
 msgid "- unable to read autobackup.info"
 msgstr ""
 
-#: ../ui.py:1142
+#: ../ui.py:1164
 msgid "Apply filters"
 msgstr ""
 
-#: ../ui.py:670
+#: ../ui.py:686
 msgid "Archive contents"
 msgstr ""
 
-#: ../ui.py:1124
+#: ../ui.py:1146
 msgid "Archive filters"
 msgstr ""
 
@@ -65,15 +65,15 @@ msgstr ""
 msgid "Automatically creates a backup every day at the specified time."
 msgstr ""
 
-#: ../ui.py:394
+#: ../ui.py:410
 msgid "Backup EPG cache"
 msgstr ""
 
-#: ../ui.py:1003
+#: ../ui.py:1025
 msgid "Backup archive list"
 msgstr ""
 
-#: ../ui.py:668
+#: ../ui.py:684
 msgid "Backup information"
 msgstr ""
 
@@ -81,7 +81,7 @@ msgstr ""
 msgid "Backup location"
 msgstr ""
 
-#: ../ui.py:649
+#: ../ui.py:665
 #, python-format
 msgid ""
 "Backup was created for another receiver.\n"
@@ -93,25 +93,25 @@ msgstr ""
 msgid "CF"
 msgstr ""
 
-#: ../ui.py:288 ../ui.py:641 ../ui.py:1010 ../ui.py:1141 ../ui.py:1194
+#: ../ui.py:288 ../ui.py:657 ../ui.py:1032 ../ui.py:1163 ../ui.py:1216
 msgid "Cancel"
 msgstr ""
 
-#: ../ui.py:521
+#: ../ui.py:537
 msgid ""
 "Choose a backup.\n"
 "This will delete autoinstall list.\n"
 "Do you really want to continue?"
 msgstr ""
 
-#: ../ui.py:492
+#: ../ui.py:508
 msgid ""
 "Choose a backup.\n"
 "This will reinstall all plugins from your backup.\n"
 "Do you really want to reinstall?"
 msgstr ""
 
-#: ../ui.py:453 ../ui.py:577
+#: ../ui.py:469 ../ui.py:593
 msgid ""
 "Choose settings backup which should be restored.\n"
 "Do you really want to restore these settings and restart?"
@@ -121,15 +121,15 @@ msgstr ""
 msgid "Create Autoinstall"
 msgstr ""
 
-#: ../ui.py:393
+#: ../ui.py:409
 msgid "Create a backup of the current settings."
 msgstr ""
 
-#: ../ui.py:398
+#: ../ui.py:414
 msgid "Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name."
 msgstr ""
 
-#: ../ui.py:398
+#: ../ui.py:414
 msgid "Create archive with current settings"
 msgstr ""
 
@@ -145,11 +145,11 @@ msgstr ""
 msgid "Daily automatic backup"
 msgstr ""
 
-#: ../ui.py:643
+#: ../ui.py:659
 msgid "Delete this archive"
 msgstr ""
 
-#: ../ui.py:1233
+#: ../ui.py:1255
 msgid "Deselect"
 msgstr ""
 
@@ -157,15 +157,19 @@ msgstr ""
 msgid "Directory where backup files are created."
 msgstr ""
 
-#: ../ui.py:706
+#: ../ui.py:390
+msgid "Discard unsaved changes?"
+msgstr ""
+
+#: ../ui.py:722
 msgid "Do you really want to delete this backup archive?"
 msgstr ""
 
-#: ../ui.py:460
+#: ../ui.py:476
 msgid "Do you want to restore your settings?"
 msgstr ""
 
-#: ../ui.py:551
+#: ../ui.py:567
 msgid "Done"
 msgstr ""
 
@@ -177,15 +181,15 @@ msgstr ""
 msgid "Experimental: Archive information priority"
 msgstr ""
 
-#: ../ui.py:549
+#: ../ui.py:565
 msgid "Failed"
 msgstr ""
 
-#: ../ui.py:720
+#: ../ui.py:736
 msgid "Failed to delete backup."
 msgstr ""
 
-#: ../ui.py:1012
+#: ../ui.py:1034
 msgid "Filters"
 msgstr ""
 
@@ -193,15 +197,15 @@ msgstr ""
 msgid "Harddisk"
 msgstr ""
 
-#: ../ui.py:1135
+#: ../ui.py:1157
 msgid "Hostname"
 msgstr ""
 
-#: ../ui.py:1136
+#: ../ui.py:1158
 msgid "Image"
 msgstr ""
 
-#: ../ui.py:395
+#: ../ui.py:411
 msgid "Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."
 msgstr ""
 
@@ -217,27 +221,27 @@ msgstr ""
 msgid "Manual"
 msgstr ""
 
-#: ../ui.py:1135
+#: ../ui.py:1157
 msgid "Match the current hostname using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1136
+#: ../ui.py:1158
 msgid "Match the current image name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1134
+#: ../ui.py:1156
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr ""
 
-#: ../ui.py:1137
+#: ../ui.py:1159
 msgid "Match the current slot number using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:489 ../ui.py:518
+#: ../ui.py:505 ../ui.py:534
 msgid "No autoinstall list found"
 msgstr ""
 
-#: ../ui.py:1044 ../ui.py:1098
+#: ../ui.py:1066 ../ui.py:1120
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
@@ -248,7 +252,7 @@ msgstr ""
 msgid "No backup present"
 msgstr ""
 
-#: ../ui.py:450
+#: ../ui.py:466
 msgid "No settings backups found"
 msgstr ""
 
@@ -260,51 +264,51 @@ msgstr ""
 msgid "Nowhere"
 msgstr ""
 
-#: ../ui.py:1247
+#: ../ui.py:1269
 msgid "Really close without saving settings?"
 msgstr ""
 
-#: ../ui.py:1134
+#: ../ui.py:1156
 msgid "Receiver MAC"
 msgstr ""
 
-#: ../ui.py:396
+#: ../ui.py:412
 msgid "Remove autoinstall list"
 msgstr ""
 
-#: ../ui.py:396
+#: ../ui.py:412
 msgid "Remove the 'autoinstall' file from a backup."
 msgstr ""
 
-#: ../ui.py:291 ../ui.py:397
+#: ../ui.py:291 ../ui.py:413
 msgid "Restore"
 msgstr ""
 
-#: ../ui.py:399
+#: ../ui.py:415
 msgid "Restore previous backup"
 msgstr ""
 
-#: ../ui.py:399
+#: ../ui.py:415
 msgid "Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored."
 msgstr ""
 
-#: ../ui.py:397
+#: ../ui.py:413
 msgid "Restore settings from the current backup."
 msgstr ""
 
-#: ../ui.py:642
+#: ../ui.py:658
 msgid "Restore settings now"
 msgstr ""
 
-#: ../ui.py:393
+#: ../ui.py:409
 msgid "Run a backup now"
 msgstr ""
 
-#: ../ui.py:395
+#: ../ui.py:411
 msgid "Run autoinstall"
 msgstr ""
 
-#: ../ui.py:427 ../ui.py:470 ../ui.py:499 ../ui.py:684 ../ui.py:733
+#: ../ui.py:443 ../ui.py:486 ../ui.py:515 ../ui.py:700 ../ui.py:749
 msgid "Running..."
 msgstr ""
 
@@ -312,11 +316,11 @@ msgstr ""
 msgid "SD"
 msgstr ""
 
-#: ../ui.py:289 ../ui.py:1195
+#: ../ui.py:289 ../ui.py:1217
 msgid "Save"
 msgstr ""
 
-#: ../ui.py:394
+#: ../ui.py:410
 msgid "Save current contents of EPG cache to a file."
 msgstr ""
 
@@ -332,19 +336,19 @@ msgstr ""
 msgid "Saves the previous backup before creating a new one."
 msgstr ""
 
-#: ../ui.py:1011 ../ui.py:1235
+#: ../ui.py:1033 ../ui.py:1257
 msgid "Select"
 msgstr ""
 
-#: ../ui.py:392
+#: ../ui.py:408
 msgid "Select files and folders to include in the backup. Basic backup items are already selected."
 msgstr ""
 
-#: ../ui.py:392
+#: ../ui.py:408
 msgid "Select files to backup"
 msgstr ""
 
-#: ../ui.py:1226
+#: ../ui.py:1248
 msgid "Select files/folders to backup"
 msgstr ""
 
@@ -352,15 +356,15 @@ msgstr ""
 msgid "Select whether archive information is read from autobackup.info first or from the archive filename first."
 msgstr ""
 
-#: ../ui.py:1137
+#: ../ui.py:1159
 msgid "Slot"
 msgstr ""
 
-#: ../ui.py:1138
+#: ../ui.py:1160
 msgid "Sort alphabetically"
 msgstr ""
 
-#: ../ui.py:1138
+#: ../ui.py:1160
 msgid "Sort archives alphabetically instead of by creation time."
 msgstr ""
 
@@ -376,11 +380,11 @@ msgstr ""
 msgid "Unknown time"
 msgstr ""
 
-#: ../ui.py:672
+#: ../ui.py:688
 msgid "What do you want to do?"
 msgstr ""
 
-#: ../ui.py:445 ../ui.py:484 ../ui.py:513 ../ui.py:573
+#: ../ui.py:461 ../ui.py:500 ../ui.py:529 ../ui.py:589
 msgid "from: "
 msgstr ""
 
