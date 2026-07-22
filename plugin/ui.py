@@ -43,6 +43,28 @@ FRIENDLY = {
 	}
 
 
+ARCHIVE_FILTERS_RESTORE = {
+	"mac": True,
+	"hostname": True,
+	"image": True,
+	"slot": True,
+	"alphabetical": False,
+}
+ARCHIVE_FILTERS_MANUAL = {
+	"mac": True,
+	"hostname": False,
+	"image": False,
+	"slot": False,
+	"alphabetical": False,
+}
+ARCHIVE_FILTERS_RESTORE_FALLBACK = {
+	"mac": True,
+	"hostname": False,
+	"image": False,
+	"slot": False,
+	"alphabetical": False,
+}
+
 def getLocationChoices():
 	result = []
 	for line in open('/proc/mounts', 'r'):
@@ -203,11 +225,11 @@ def validateArchiveParameters(info, filters):
 
 	mismatch = []
 	for key, value in current.items():
-		# Skip disabled parameter filters.
+		# skip disabled parameter filters
 		if not filters.get(key):
 			continue
 
-		# Validate only parameters available in autobackup.info.
+		# validate only parameters available in autobackup.info
 		if key not in archiveInfo:
 			continue
 
@@ -296,15 +318,6 @@ class Config(ConfigListScreen, Screen):
 		self.setTitle(_("AutoBackup Configuration"))
 		self.activeArchiveFilters = None
 
-		# match filters default setting
-		self.archiveFilters = {
-			"mac": True,
-			"hostname": True,
-			"image": True,
-			"slot": True,
-			"alphabetical": False,
-		}
-
 	def createSetup(self):
 		self.list = []
 		self.list.append((_("Backup location"), self.cfgwhere, _("Directory where backup files are created.")))
@@ -383,7 +396,7 @@ class Config(ConfigListScreen, Screen):
 			(_("Remove autoinstall list"), self.doremoveautoinstall, _("Remove the 'autoinstall' file from a backup.")),
 			(_("Restore"), self.dorestore, _("Restore settings from the current backup.")),
 			(_("Create archive with current settings"), self.doArchiveCurrentBackup, _("Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name.")),
-			(_("Restore previous backup"), self.doRestorePrevious, _("Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored.")),
+			(_("Restore previous backup"), self.doRestorePreviousManual, _("Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored.")),
 		]
 		self.session.openWithCallback(self.menuDone, ChoiceBox, list=lst)
 
@@ -552,7 +565,7 @@ class Config(ConfigListScreen, Screen):
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
 
 		if self.activeArchiveFilters is None:
-			self.activeArchiveFilters = self.archiveFilters.copy()
+			self.activeArchiveFilters = ARCHIVE_FILTERS_RESTORE.copy()
 
 		archives = getArchives(backupDir, self.activeArchiveFilters)
 		if archives:
@@ -565,20 +578,18 @@ class Config(ConfigListScreen, Screen):
 				list=backupList
 			)
 		else:
-			# call with only MAC filter
-			self.activeArchiveFilters = {
-				"mac": True,
-				"hostname": False,
-				"image": False,
-				"slot": False,
-				"alphabetical": False,
-			}
+			# retry with less strict filters - f.eg. using MAC only - and let the user choose from available archives
+			self.activeArchiveFilters = ARCHIVE_FILTERS_RESTORE_FALLBACK.copy()
 			self.doRestorePrevious()
+
+	def doRestorePreviousManual(self):
+		self.activeArchiveFilters = ARCHIVE_FILTERS_MANUAL.copy()
+		self.doRestorePrevious()
 
 	def doRestorePrevious(self, selectedIndex=None):
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
 		if self.activeArchiveFilters is None:
-			self.activeArchiveFilters = self.archiveFilters.copy()
+			self.activeArchiveFilters = ARCHIVE_FILTERS_RESTORE.copy()
 		self.session.openWithCallback(
 			self.doRestorePreviousClosed,
 			ArchiveList,
@@ -610,9 +621,8 @@ class Config(ConfigListScreen, Screen):
 					files.append("\c00b0b0b0%s B\C  %s" % (size, member.name))
 			contents = "\n".join(sorted(files, key=str.lower))
 
-		archiveInfo = self.readAutoBackupInfo(backupFile)
-
 		if hasArchiveInfo:
+			archiveInfo = self.readAutoBackupInfo(backupFile)
 			mismatch = validateArchiveParameters(archiveInfo, {
 				"mac": True,
 				"hostname": True,
@@ -622,10 +632,10 @@ class Config(ConfigListScreen, Screen):
 			info = self.formatAutoBackupInfo(archiveInfo, mismatch)
 		else:
 			mismatch = []
-			info = archiveInfo
+			info = _(" - no backup information available")
 
 		if mismatch:
-			info = "%s\n\n%s" % (_("Red values do not match current receiver."), info)
+			info = "%s\n\n%s" % (_(" - red values do not match this receiver"), info)
 
 		choices = [
 			(_("Cancel"), "cancel"),
@@ -728,11 +738,11 @@ class Config(ConfigListScreen, Screen):
 			print("[AutoBackup] failed to execute")
 		self.showOutput()
 
-	def formatAutoBackupInfo(self, info, mismatch=None):
+	def formatAutoBackupInfo(self, archiveInfo, mismatch=None):
 		mismatch = set(mismatch or [])
 		result = []
 
-		for line in info.splitlines():
+		for line in archiveInfo.splitlines():
 			if "=" not in line:
 				result.append(line)
 				continue
@@ -757,7 +767,7 @@ class Config(ConfigListScreen, Screen):
 		except Exception as ex:
 			print("[AutoBackup] Failed to read autobackup.info:", ex)
 
-		return _(" - no backup information available.")
+		return _("- unable to read autobackup.info")
 
 	def checkPreviousBackup(self, backupFile):
 		try:
