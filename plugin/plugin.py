@@ -17,8 +17,7 @@ config.plugins.autobackup.enabled = ConfigEnableDisable(default = False)
 config.plugins.autobackup.autoinstall = ConfigOnOff(default = True)
 config.plugins.autobackup.where = ConfigText(default = "/media/hdd")
 config.plugins.autobackup.epgcache = ConfigOnOff(default = False)
-config.plugins.autobackup.prevbackup = ConfigOnOff(default = False)
-config.plugins.autobackup.backuparchive = ConfigOnOff(default = False) # temporary for create archiv too
+config.plugins.autobackup.backuparchive = ConfigOnOff(default = False)
 
 # Global variables
 autoStartTimer = None
@@ -34,7 +33,6 @@ def backupCommand(where=None, fullArchive=False):
 	if config.plugins.autobackup.autoinstall.value or fullArchive:
 		cmd += " -a"
 	cmd += " " + (where or config.plugins.autobackup.where.value)
-	cmd += " " + str(int(config.plugins.autobackup.prevbackup.value))
 	return cmd
 
 
@@ -55,7 +53,7 @@ def runBackup():
 			cmd = backupCommand()
 			if config.plugins.autobackup.backuparchive.value:
 				from .ui import ArchiveCreator
-				cmd += " && " + ArchiveCreator(destination).buildCommand()
+				cmd += " && " + ArchiveCreator(destination).buildCurrentSettingsCommand()
 			container = enigma.eConsoleAppContainer()
 			if container.execute(cmd):
 				raise (Exception, "failed to execute:" + cmd)

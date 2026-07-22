@@ -36,13 +36,6 @@ MACADDR=`cat /sys/class/net/eth0/address | tr -d :`
 echo "Backup to $BACKUPDIR/backup/"
 [ ! -d "$BACKUPDIR/backup" ] && mkdir -p "$BACKUPDIR/backup"
 
-if [ "$2" == "1" -a -f "$BACKUPDIR/backup/PLi-AutoBackup.tar.gz" ] ; then
-    echo "save previous backup to $BACKUPDIR/backup/"
-    cd "$BACKUPDIR/backup/"
-    now=$(date +"%Y%m%d_%H%M")
-    tar -czf "$BACKUPDIR/backup/backup.$now.tar.gz" "PLi-AutoBackup$MACADDR.tar.gz" "autoinstall$MACADDR"
-fi
-
 for bckfile in $BACKUPFILE $USER_BACKUPFILE ; do
     if [ -f $bckfile ] ; then
 	while read file ; do

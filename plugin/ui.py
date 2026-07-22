@@ -24,7 +24,7 @@ from Screens.MessageBox import MessageBox
 from Tools.FuzzyDate import FuzzyTime
 from Screens.Standby import getReasons
 from Tools.BoundFunction import boundFunction
-from time import mktime
+from time import mktime, strftime
 
 
 def writeLog(text, mode="a"):
@@ -297,8 +297,8 @@ class Config(ConfigListScreen, Screen):
 		{
 			"red": self.cancel,
 			"green": self.save,
-			"yellow": self.dobackup,
-			"blue": self.dorestore,
+			"yellow": self.doBackup,
+			"blue": self.doRestore,
 			"save": self.save,
 			"cancel": self.cancel,
 			"ok": self.ok,
@@ -312,7 +312,7 @@ class Config(ConfigListScreen, Screen):
 
 		writeLog("","w")
 
-		self.archiveAfterBackup = False  # temporary for create archive too
+		self.archiveAfterBackup = False
 		self.cfgwhere.addNotifier(self.changedWhere)
 		self.onClose.append(self.__onClose)
 		self.setTitle(_("AutoBackup Configuration"))
@@ -327,8 +327,7 @@ class Config(ConfigListScreen, Screen):
 			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup, _("Time when the daily automatic backup starts.")))
 		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Creates an Autoinstall file with a list of installed packages.")))
 		self.list.append((_("EPG cache backup"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a backup.")))
-		self.list.append((_("Save previous backup"), self.cfg.prevbackup, _("Saves the previous backup before creating a new one.")))
-		self.list.append((_("Create backup archive after backup"), self.cfg.backuparchive, _("Automatically creates a backup archive after every successful backup, both manual and scheduled."))) # temporary for create archiv too
+		self.list.append((_("Create backup archive after backup"), self.cfg.backuparchive, _("Automatically creates a backup archive after every successful backup, both manual and scheduled.")))
 
 	# for summary:
 	def changedEntry(self):
@@ -406,12 +405,12 @@ class Config(ConfigListScreen, Screen):
 	def menu(self):
 		lst = [
 			(_("Select files to backup"), self.selectFiles, _("Select files and folders to include in the backup. Basic backup items are already selected.")),
-			(_("Run a backup now"), self.dobackup, _("Create a backup of the current settings.")),
+			(_("Run a backup now"), self.doBackup, _("Create a backup of the current settings.")),
 			(_("Backup EPG cache"), self.doepgcachebackup, _("Save current contents of EPG cache to a file.")),
 			(_("Run autoinstall"), self.doautoinstall, _("Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped.")),
 			(_("Remove autoinstall list"), self.doremoveautoinstall, _("Remove the 'autoinstall' file from a backup.")),
-			(_("Restore"), self.dorestore, _("Restore settings from the current backup.")),
-			(_("Create archive with current settings"), self.doArchiveCurrentBackup, _("Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name.")),
+			(_("Restore"), self.doRestore, _("Restore settings from the current backup.")),
+			(_("Create archive with current settings"), self.doArchiveCurrentSettings, _("Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name.")),
 			(_("Restore previous backup"), self.doRestorePreviousManual, _("Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored.")),
 		]
 		self.session.openWithCallback(self.menuDone, ChoiceBox, list=lst)
@@ -427,11 +426,11 @@ class Config(ConfigListScreen, Screen):
 	def showOutput(self):
 		self["status"].setText(self.data)
 
-	def dobackup(self):
+	def doBackup(self):
 		if not self.cfgwhere.value:
 			return
 
-		self.archiveAfterBackup = self.cfg.backuparchive.value  # temporary for create archive too
+		self.archiveAfterBackup = self.cfg.backuparchive.value
 
 		self.saveAll()
 		# Write config file before creating the backup so we have it all
@@ -444,49 +443,7 @@ class Config(ConfigListScreen, Screen):
 		cmd = plugin.backupCommand()
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
-			self.archiveAfterBackup = False  # temporary for create archive too
-			self.showOutput()
-
-	def dorestore(self):
-		if 1:
-			self.doRestoreNew()
-		else:
-			backupList = []
-			foundBackupLocations = [media for media in os.listdir("/media/") if os.path.isdir(os.path.join("/media/", media))]
-			for backupMedia in foundBackupLocations:
-				path = "/media/%s/backup/" % backupMedia
-				if os.path.isfile(path + "PLi-AutoBackup.tar.gz") and os.path.isfile(path + ".timestamp"):
-					try:
-						st = os.stat(os.path.join(path, ".timestamp"))
-						backupList.append(("/media/%s " % backupMedia + _("from: ") + " ".join(FuzzyTime(st.st_mtime, inPast=True)), "/media/%s" % backupMedia, st.st_mtime))
-					except Exception as ex:
-						print("Failed to stat %s: %s" % (path, ex))
-
-			if not backupList:
-				self.session.open(MessageBox, _("No settings backups found"), type=MessageBox.TYPE_ERROR, timeout=10)
-				return
-			backupList.sort(key=lambda b: b[2], reverse=True)
-			self.session.openWithCallback(self.dorestorenow_reason, MessageBox, _("Choose settings backup which should be restored.\nDo you really want to restore these settings and restart?"), list=backupList)
-
-	def dorestorenow_reason(self, path):
-		if not path:
-			return
-		reason = getReasons(self.session)
-		if reason:
-			text = reason + "\n" + _("Do you want to restore your settings?")
-			self.session.openWithCallback(boundFunction(self.dorestorenow, path), MessageBox, text, simple=True)
-		else:
-			self.dorestorenow(path)
-
-	def dorestorenow(self, path, answer=True):
-		if not path or not answer:
-			return
-		self.data = ''
-		self.showOutput()
-		self["statusbar"].setText(_('Running...'))
-		cmd = '/etc/init.d/settings-restore.sh ' + path + ' ; killall -9 enigma2'
-		if self.container.execute(cmd):
-			print("[AutoBackup] failed to execute")
+			self.archiveAfterBackup = False
 			self.showOutput()
 
 	def doautoinstall(self):
@@ -556,7 +513,7 @@ class Config(ConfigListScreen, Screen):
 	def appClosed(self, retval):
 		print("[AutoBackup] done:", retval)
 
-		if not retval and self.archiveAfterBackup: # temporary for create archive too
+		if not retval and self.archiveAfterBackup:
 			self.archiveAfterBackup = False
 			self.doArchiveCurrentBackup()
 			return
@@ -577,7 +534,7 @@ class Config(ConfigListScreen, Screen):
 
 		writeLog(s, "a")
 
-	def doRestoreNew(self):
+	def doRestore(self):
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
 
 		if self.activeArchiveFilters is None:
@@ -700,11 +657,42 @@ class Config(ConfigListScreen, Screen):
 		self["statusbar"].setText(_('Running...'))
 
 		archive = ArchiveCreator(self.cfgwhere.value)
-		cmd = archive.buildCommand()
+		backupDir = os.path.join(self.cfgwhere.value, "backup")
+		archive.createInfo(backupDir)
+		cmd = archive.buildArchiveCommand(backupDir, removeInfo=True)
 
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
 			self.showOutput()
+
+	def doArchiveCurrentSettings(self):
+		if not self.cfgwhere.value:
+			return
+
+		self.data = ''
+		self.showOutput()
+		self["statusbar"].setText(_('Running...'))
+
+		archive = ArchiveCreator(self.cfgwhere.value)
+		cmd = archive.buildCurrentSettingsCommand()
+
+		self.container.appClosed.remove(self.appClosed)
+		self.container.appClosed.append(self.archiveCurrentSettingsClosed)
+
+		if self.container.execute(cmd):
+			print("[AutoBackup] failed to execute")
+			self.showOutput()
+
+	def archiveCurrentSettingsClosed(self, retval):
+		self.container.appClosed.remove(self.archiveCurrentSettingsClosed)
+		self.container.appClosed.append(self.appClosed)
+
+		if not retval:
+			self["statusbar"].setText(_("Done"))
+			self["status"].setText(_("Backup archive created"))
+		else:
+			self["statusbar"].setText(_("Failed"))
+			self["status"].setText(_("Archive creation failed"))
 
 	def doRestorePreviousAction(self, backupFile, backupDir, selectedIndex, archiveList, action):
 		if action == "restore":
@@ -750,14 +738,14 @@ class Config(ConfigListScreen, Screen):
 
 		cmd = 'tar -tzf "%s" && tar -xzf "%s" -C "%s" && /etc/init.d/settings-restore.sh %s ; killall -9 enigma2' % (backupFile, backupFile, backupDir, self.cfgwhere.value)
 
-#	no symlinks
-#		cmd = (
-#			'tar -tzf "%s" && '
-#			'tar -xzf "%s" -C "%s" '
-#			'--exclude="PLi-AutoBackup.tar.gz" '
-#			'--exclude="autoinstall" '
-#			'&& /etc/init.d/settings-restore.sh %s ; killall -9 enigma2'
-#		) % (backupFile, backupFile, backupDir, self.cfgwhere.value)
+		# Alternative restore without extracting symlinks:
+		# cmd = (
+		#	'tar -tzf "%s" && '
+		#	'tar -xzf "%s" -C "%s" '
+		#	'--exclude="PLi-AutoBackup.tar.gz" '
+		#	'--exclude="autoinstall" '
+		#	'&& /etc/init.d/settings-restore.sh %s ; killall -9 enigma2'
+		#	) % (backupFile, backupFile, backupDir, self.cfgwhere.value)
 
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
@@ -818,10 +806,9 @@ class ArchiveCreator:
 		self.hostname = getHostName()
 		self.image = getImageShortName()
 		self.slot = getCurrentSlot()
+		self.archiveName = None
 
-	def createInfo(self):
-		backupDir = os.path.join(self.tmpBackupDir, "backup")
-
+	def createInfo(self, backupDir):
 		if not os.path.isdir(backupDir):
 			os.makedirs(backupDir)
 
@@ -837,33 +824,52 @@ class ArchiveCreator:
 			if self.slot is not None:
 				f.write("slot=slot%d\n" % self.slot)
 
-	def buildCommand(self):
+	def prepareArchive(self):
+		if os.path.isdir(self.tmpBackupDir):
+			shutil.rmtree(self.tmpBackupDir)
+
+		backupDir = os.path.join(self.tmpBackupDir, "backup")
+		os.makedirs(backupDir)
+		self.createInfo(backupDir)
+
+	def buildArchiveCommand(self, backupDir, removeInfo=False):
 		slotSuffix = ""
 		if self.slot is not None:
 			slotSuffix = ".slot%02d" % self.slot
 
-		if os.path.isdir(self.tmpBackupDir):
-			shutil.rmtree(self.tmpBackupDir)
+		removeInfoCommand = ""
+		if removeInfo:
+			removeInfoCommand = 'rm -f "%s/autobackup.info"; ' % backupDir
 
-		os.makedirs(os.path.join(self.tmpBackupDir, "backup"))
-		self.createInfo()
-
-		return (
-			'%s && '
-			'cd "%s/backup" && '
-			'tar -czf "%s/backup/$(date +%%Y%%m%%d_%%H%%M).%s.%s.%s%s.tar.gz" '
-			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
-		#	'PLi-AutoBackup????????????.tar.gz autoinstall???????????? autobackup.info; ' # no symlinks
-			'rm -rf "%s"'
-		) % (
-			plugin.backupCommand(self.tmpBackupDir, fullArchive=True),
-			self.tmpBackupDir,
-			self.destination,
+		timestamp = strftime("%Y%m%d_%H%M")
+		self.archiveName = "%s.%s.%s.%s%s.tar.gz" % (
+			timestamp,
 			self.mac,
 			self.hostname,
 			self.image,
-			slotSuffix,
+			slotSuffix
+		)
+
+		return (
+			'cd "%s" && '
+			'tar -czf "%s/backup/%s" '
+			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
+			'%s'
+			'rm -rf "%s"'
+		) % (
+			backupDir,
+			self.destination,
+			self.archiveName,
+			removeInfoCommand,
 			self.tmpBackupDir
+		)
+
+	def buildCurrentSettingsCommand(self):
+		self.prepareArchive()
+
+		return '%s && %s' % (
+			plugin.backupCommand(self.tmpBackupDir, fullArchive=True),
+			self.buildArchiveCommand(os.path.join(self.tmpBackupDir, "backup"))
 		)
 
 
