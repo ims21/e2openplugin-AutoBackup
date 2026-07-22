@@ -732,7 +732,13 @@ class Config(ConfigListScreen, Screen):
 		self.showOutput()
 		self["statusbar"].setText(_('Running...'))
 
-		cmd = 'tar -tzf "%s" && tar -xzf "%s" -C "%s" && /etc/init.d/settings-restore.sh %s ; killall -9 enigma2' % (backupFile, backupFile, backupDir, self.cfgwhere.value)
+		cmd = (
+			'tar -tzf "%s" && '
+			'tar -xzf "%s" -C "%s" '
+			'--exclude="PLi-AutoBackup.tar.gz" '
+			'--exclude="autoinstall" '
+			'&& /etc/init.d/settings-restore.sh %s ; killall -9 enigma2'
+		) % (backupFile, backupFile, backupDir, self.cfgwhere.value)
 
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
@@ -827,7 +833,7 @@ class ArchiveCreator:
 			'%s && '
 			'cd "%s/backup" && '
 			'tar -czf "%s/backup/$(date +%%Y%%m%%d_%%H%%M).%s.%s.%s%s.tar.gz" '
-			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
+			'PLi-AutoBackup????????????.tar.gz autoinstall???????????? autobackup.info; '
 			'rm -rf "%s"'
 		) % (
 			plugin.backupCommand(self.tmpBackupDir, fullArchive=True),
