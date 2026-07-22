@@ -648,40 +648,34 @@ class Config(ConfigListScreen, Screen):
 		)
 		return
 
-	def doArchiveCurrentBackup(self):
+	def prepareCommand(self):
 		if not self.cfgwhere.value:
-			return
-
+			return False
 		self.data = ''
 		self.showOutput()
 		self["statusbar"].setText(_('Running...'))
+		return True
 
+	def executeCommand(self, cmd):
+		if self.container.execute(cmd):
+			print("[AutoBackup] failed to execute")
+			self.showOutput()
+
+	def doArchiveCurrentBackup(self):
+		if not self.prepareCommand():
+			return
 		archive = ArchiveCreator(self.cfgwhere.value)
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
 		archive.createInfo(backupDir)
-		cmd = archive.buildArchiveCommand(backupDir, removeInfo=True)
-
-		if self.container.execute(cmd):
-			print("[AutoBackup] failed to execute")
-			self.showOutput()
+		self.executeCommand(archive.buildArchiveCommand(backupDir, removeInfo=True))
 
 	def doArchiveCurrentSettings(self):
-		if not self.cfgwhere.value:
+		if not self.prepareCommand():
 			return
-
-		self.data = ''
-		self.showOutput()
-		self["statusbar"].setText(_('Running...'))
-
 		archive = ArchiveCreator(self.cfgwhere.value)
-		cmd = archive.buildCurrentSettingsCommand()
-
 		self.container.appClosed.remove(self.appClosed)
 		self.container.appClosed.append(self.archiveCurrentSettingsClosed)
-
-		if self.container.execute(cmd):
-			print("[AutoBackup] failed to execute")
-			self.showOutput()
+		self.executeCommand(archive.buildCurrentSettingsCommand())
 
 	def archiveCurrentSettingsClosed(self, retval):
 		self.container.appClosed.remove(self.archiveCurrentSettingsClosed)
