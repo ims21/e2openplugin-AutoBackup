@@ -383,9 +383,25 @@ class Config(ConfigListScreen, Screen):
 		self.close(True, self.session)
 
 	def cancel(self):
+		if self["config"].isChanged():
+			self.session.openWithCallback(
+				self.cancelConfirmed,
+				MessageBox,
+				_("Discard unsaved changes?"),
+				type=MessageBox.TYPE_YESNO,
+				default=False
+			)
+			return
+
 		for x in self["config"].list:
 			x[1].cancel()
 		self.close(False, self.session)
+
+	def cancelConfirmed(self, answer):
+		if answer:
+			for x in self["config"].list:
+				x[1].cancel()
+			self.close(False, self.session)
 
 	def menu(self):
 		lst = [
