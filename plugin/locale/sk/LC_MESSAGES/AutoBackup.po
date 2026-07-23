@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 23:53+0200\n"
+"POT-Creation-Date: 2026-07-23 09:34+0200\n"
 "PO-Revision-Date: 2019-02-01 14:31+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,36 +18,36 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
 
-#: ../ui.py:608
+#: ../ui.py:605
 #, fuzzy
 msgid " - no backup information available"
 msgstr "Umiestnenie zálohy"
 
-#: ../ui.py:611
+#: ../ui.py:608
 msgid " - red values do not match this receiver"
 msgstr ""
 
-#: ../ui.py:783
+#: ../ui.py:774
 msgid "- unable to read autobackup.info"
 msgstr ""
 
-#: ../ui.py:1174
+#: ../ui.py:1165
 msgid "Apply filters"
 msgstr ""
 
-#: ../ui.py:643
+#: ../ui.py:640
 msgid "Archive contents"
 msgstr ""
 
-#: ../ui.py:695
+#: ../ui.py:686
 msgid "Archive creation failed"
 msgstr ""
 
-#: ../ui.py:1156
+#: ../ui.py:1147
 msgid "Archive filters"
 msgstr ""
 
-#: ../plugin.py:142
+#: ../plugin.py:151
 #, fuzzy
 msgid "Auto backup"
 msgstr "Automatické nastavenie zálohy"
@@ -56,7 +56,7 @@ msgstr "Automatické nastavenie zálohy"
 msgid "AutoBackup Configuration"
 msgstr "Konfigurácia AutoBackup"
 
-#: ../plugin.py:146
+#: ../plugin.py:155
 msgid "Automatic settings backup"
 msgstr "Automatické nastavenie zálohy"
 
@@ -64,29 +64,25 @@ msgstr "Automatické nastavenie zálohy"
 msgid "Automatic start time"
 msgstr "Čas automatického spustenia"
 
-#: ../ui.py:330
-msgid "Automatically creates a backup archive after every successful backup, both manual and scheduled."
-msgstr ""
-
 #: ../ui.py:325
 msgid "Automatically creates a backup every day at the specified time."
 msgstr ""
 
-#: ../ui.py:409
+#: ../ui.py:408
 msgid "Backup EPG cache"
 msgstr "Zálohovať pamäť programového sprievodcu EPG"
 
-#: ../ui.py:692
+#: ../ui.py:683
 #, fuzzy
 msgid "Backup archive created"
 msgstr "Zálohovať pamäť programového sprievodcu EPG"
 
-#: ../ui.py:1035
+#: ../ui.py:1026
 #, fuzzy
 msgid "Backup archive list"
 msgstr "Zálohovať pamäť programového sprievodcu EPG"
 
-#: ../ui.py:641
+#: ../ui.py:638
 #, fuzzy
 msgid "Backup information"
 msgstr "Umiestnenie zálohy"
@@ -95,7 +91,7 @@ msgstr "Umiestnenie zálohy"
 msgid "Backup location"
 msgstr "Umiestnenie zálohy"
 
-#: ../ui.py:622
+#: ../ui.py:619
 #, python-format
 msgid ""
 "Backup was created for another receiver.\n"
@@ -107,7 +103,7 @@ msgstr ""
 msgid "CF"
 msgstr "CF"
 
-#: ../ui.py:288 ../ui.py:614 ../ui.py:1042 ../ui.py:1173 ../ui.py:1226
+#: ../ui.py:288 ../ui.py:611 ../ui.py:1033 ../ui.py:1164 ../ui.py:1217
 msgid "Cancel"
 msgstr "Zrušiť"
 
@@ -128,7 +124,7 @@ msgstr ""
 "Budú preinštalované všetky doplnky zo zálohy na %s.\n"
 "Chcete spustiť reinštaláciu?"
 
-#: ../ui.py:550
+#: ../ui.py:547
 #, fuzzy
 msgid ""
 "Choose settings backup which should be restored.\n"
@@ -141,20 +137,16 @@ msgstr ""
 msgid "Create Autoinstall"
 msgstr "Vytvoriť autoinštaláciu"
 
-#: ../ui.py:408
+#: ../ui.py:407
 msgid "Create a backup of the current settings."
 msgstr ""
 
-#: ../ui.py:413
+#: ../ui.py:412
 msgid "Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name."
 msgstr ""
 
-#: ../ui.py:413
+#: ../ui.py:412
 msgid "Create archive with current settings"
-msgstr ""
-
-#: ../ui.py:330
-msgid "Create backup archive after backup"
 msgstr ""
 
 #: ../ui.py:328
@@ -165,11 +157,11 @@ msgstr ""
 msgid "Daily automatic backup"
 msgstr "Denná automatická záloha"
 
-#: ../ui.py:616
+#: ../ui.py:613
 msgid "Delete this archive"
 msgstr ""
 
-#: ../ui.py:1265
+#: ../ui.py:1256
 msgid "Deselect"
 msgstr "Odškrtnúť"
 
@@ -177,39 +169,35 @@ msgstr "Odškrtnúť"
 msgid "Directory where backup files are created."
 msgstr ""
 
-#: ../ui.py:389
+#: ../ui.py:388
 msgid "Discard unsaved changes?"
 msgstr ""
 
-#: ../ui.py:710
+#: ../ui.py:701
 #, fuzzy
 msgid "Do you really want to delete this backup archive?"
 msgstr ""
 "Bude vykonané obnovenie zo zálohy na %s.\n"
 "Chcete obnoviť tieto nastavenia a reštartovať?"
 
-#: ../ui.py:524 ../ui.py:691
+#: ../ui.py:521 ../ui.py:682
 msgid "Done"
 msgstr "Hotovo"
-
-#: ../ui.py:329
-msgid "EPG cache backup"
-msgstr "Záloha pamäte EPG"
 
 #: ../ui.py:324
 msgid "Experimental: Archive information priority"
 msgstr ""
 
-#: ../ui.py:522 ../ui.py:694
+#: ../ui.py:521 ../ui.py:685
 msgid "Failed"
 msgstr "Neúspešné"
 
-#: ../ui.py:724
+#: ../ui.py:715
 #, fuzzy
 msgid "Failed to delete backup."
 msgstr "Vybrať súbory na zálohovanie"
 
-#: ../ui.py:1044
+#: ../ui.py:1035
 msgid "Filters"
 msgstr ""
 
@@ -217,19 +205,19 @@ msgstr ""
 msgid "Harddisk"
 msgstr "Pevný disk"
 
-#: ../ui.py:1167
+#: ../ui.py:1158
 msgid "Hostname"
 msgstr ""
 
-#: ../ui.py:1168
+#: ../ui.py:1159
 msgid "Image"
 msgstr ""
 
-#: ../ui.py:410
+#: ../ui.py:409
 msgid "Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."
 msgstr ""
 
-#: ../ui.py:362
+#: ../ui.py:361
 msgid "Last backup date"
 msgstr "Dátum poslednej zálohy"
 
@@ -241,19 +229,19 @@ msgstr ""
 msgid "Manual"
 msgstr "Manuálne"
 
-#: ../ui.py:1167
+#: ../ui.py:1158
 msgid "Match the current hostname using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1168
+#: ../ui.py:1159
 msgid "Match the current image name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1166
+#: ../ui.py:1157
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr ""
 
-#: ../ui.py:1169
+#: ../ui.py:1160
 msgid "Match the current slot number using the archive name or the info file."
 msgstr ""
 
@@ -262,18 +250,18 @@ msgstr ""
 msgid "No autoinstall list found"
 msgstr "Odstrániť zoznam automatickej inštalácie"
 
-#: ../ui.py:1076 ../ui.py:1130
+#: ../ui.py:1067 ../ui.py:1121
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
 "Try changing the filter settings."
 msgstr ""
 
-#: ../ui.py:364 ../ui.py:367
+#: ../ui.py:363 ../ui.py:366
 msgid "No backup present"
 msgstr "Žiadna záloha"
 
-#: ../ui.py:355
+#: ../ui.py:354
 msgid "No suitable media found, insert USB stick, flash card or harddisk."
 msgstr "Nenájdené vhodné médium. Vložte USB disk, pamäťovú kartu alebo pevný disk."
 
@@ -281,52 +269,52 @@ msgstr "Nenájdené vhodné médium. Vložte USB disk, pamäťovú kartu alebo p
 msgid "Nowhere"
 msgstr "Nikde"
 
-#: ../ui.py:1279
+#: ../ui.py:1270
 msgid "Really close without saving settings?"
 msgstr ""
 
-#: ../ui.py:1166
+#: ../ui.py:1157
 msgid "Receiver MAC"
 msgstr ""
 
-#: ../ui.py:411
+#: ../ui.py:410
 msgid "Remove autoinstall list"
 msgstr "Odstrániť zoznam automatickej inštalácie"
 
-#: ../ui.py:411
+#: ../ui.py:410
 msgid "Remove the 'autoinstall' file from a backup."
 msgstr ""
 
-#: ../ui.py:291 ../ui.py:412
+#: ../ui.py:291 ../ui.py:411
 msgid "Restore"
 msgstr "Obnoviť"
 
-#: ../ui.py:414
+#: ../ui.py:413
 #, fuzzy
 msgid "Restore previous backup"
 msgstr "Uložiť predchádzajúcu zálohu"
 
-#: ../ui.py:414
+#: ../ui.py:413
 msgid "Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored."
 msgstr ""
 
-#: ../ui.py:412
+#: ../ui.py:411
 msgid "Restore settings from the current backup."
 msgstr ""
 
-#: ../ui.py:615
+#: ../ui.py:612
 msgid "Restore settings now"
 msgstr ""
 
-#: ../ui.py:408
+#: ../ui.py:407
 msgid "Run a backup now"
 msgstr "Spustiť zálohovanie"
 
-#: ../ui.py:410
+#: ../ui.py:409
 msgid "Run autoinstall"
 msgstr "Spustiť automatickú inštaláciu"
 
-#: ../ui.py:442 ../ui.py:472 ../ui.py:657 ../ui.py:674 ../ui.py:737
+#: ../ui.py:439 ../ui.py:472 ../ui.py:653 ../ui.py:728
 msgid "Running..."
 msgstr "Beží..."
 
@@ -334,11 +322,16 @@ msgstr "Beží..."
 msgid "SD"
 msgstr "SD"
 
-#: ../ui.py:289 ../ui.py:1227
+#: ../ui.py:289 ../ui.py:1218
 msgid "Save"
 msgstr "Uložiť"
 
-#: ../ui.py:409
+#: ../ui.py:329
+#, fuzzy
+msgid "Save EPG cache"
+msgstr "Zálohovať pamäť programového sprievodcu EPG"
+
+#: ../ui.py:408
 msgid "Save current contents of EPG cache to a file."
 msgstr ""
 
@@ -346,19 +339,19 @@ msgstr ""
 msgid "Saves the contents of the EPG cache to a file before creating a backup."
 msgstr ""
 
-#: ../ui.py:1043 ../ui.py:1267
+#: ../ui.py:1034 ../ui.py:1258
 msgid "Select"
 msgstr "Zvoliť"
 
-#: ../ui.py:407
+#: ../ui.py:406
 msgid "Select files and folders to include in the backup. Basic backup items are already selected."
 msgstr ""
 
-#: ../ui.py:407
+#: ../ui.py:406
 msgid "Select files to backup"
 msgstr "Vybrať súbory na zálohovanie"
 
-#: ../ui.py:1258
+#: ../ui.py:1249
 msgid "Select files/folders to backup"
 msgstr "Vybrať súbory / zložky na zálohovanie"
 
@@ -366,15 +359,15 @@ msgstr "Vybrať súbory / zložky na zálohovanie"
 msgid "Select whether archive information is read from autobackup.info first or from the archive filename first."
 msgstr ""
 
-#: ../ui.py:1169
+#: ../ui.py:1160
 msgid "Slot"
 msgstr ""
 
-#: ../ui.py:1170
+#: ../ui.py:1161
 msgid "Sort alphabetically"
 msgstr ""
 
-#: ../ui.py:1170
+#: ../ui.py:1161
 msgid "Sort archives alphabetically instead of by creation time."
 msgstr ""
 
@@ -391,11 +384,11 @@ msgstr "USB"
 msgid "Unknown time"
 msgstr ""
 
-#: ../ui.py:645
+#: ../ui.py:642
 msgid "What do you want to do?"
 msgstr ""
 
-#: ../ui.py:457 ../ui.py:486 ../ui.py:546
+#: ../ui.py:457 ../ui.py:486 ../ui.py:543
 msgid "from: "
 msgstr ""
 
