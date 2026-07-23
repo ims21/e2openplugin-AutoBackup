@@ -7,7 +7,7 @@ if [ -z "$1" ] ; then
 fi
 
 AUTOINSTALL="no"
-if [ "$1" == "-a" ] ; then
+if [ "$1" = "-a" ] ; then
 	AUTOINSTALL="yes"
 	shift
 fi
@@ -29,6 +29,9 @@ USER_AUTOINSTALL=/etc/autoinstall
 INSTALLED=/etc/installed
 TEMP_INSTALLED=/tmp/installed
 RESTORE_TEMP=/tmp/restore.cfg
+
+rm -f "$RESTORE_TEMP" /tmp/rootcron /tmp/crontab /tmp/fstab /tmp/passwd /tmp/shadow "$TEMP_INSTALLED"
+
 MACADDR=`cat /sys/class/net/eth0/address | tr -d :`
 [ -z "$MACADDR" ] && MACADDR=nomac
 
@@ -69,12 +72,15 @@ if [ -f /tmp/rootcron ]; then
 fi
 
 # create the backup tarball
-tar -czf "$BACKUPDIR/backup/PLi-AutoBackup$MACADDR.tar.gz" --files-from=$RESTORE_TEMP 2> /dev/null
+if ! tar -czf "$BACKUPDIR/backup/PLi-AutoBackup$MACADDR.tar.gz" --files-from="$RESTORE_TEMP" 2> /dev/null; then
+	echo "Failed to create backup archive"
+	exit 1
+fi
 ln -f -s PLi-AutoBackup$MACADDR.tar.gz "$BACKUPDIR/backup/PLi-AutoBackup.tar.gz" || \
 cp -p "$BACKUPDIR/backup/PLi-AutoBackup$MACADDR.tar.gz" "$BACKUPDIR/backup/PLi-AutoBackup.tar.gz"
 
 # create the autoinstall file
-if [ "$AUTOINSTALL" == "yes" -a -f $INSTALLED ] ; then
+if [ "$AUTOINSTALL" = "yes" -a -f $INSTALLED ] ; then
 	echo "Generating $BACKUPDIR/backup/autoinstall$MACADDR"
 	opkg list_installed | cut -d ' ' -f 1 > $TEMP_INSTALLED
 	diff $INSTALLED $TEMP_INSTALLED | grep "^+" | grep -v "^+++ $TEMP_INSTALLED" | \
@@ -95,7 +101,7 @@ fi
 # mark the backup done
 touch "$BACKUPDIR/backup/.timestamp"
 
-# cleanuo
+# cleanup
 rm -f /tmp/restore.cfg
 rm -f /tmp/crontab
 rm -f /tmp/fstab
