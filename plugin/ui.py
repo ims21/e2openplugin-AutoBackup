@@ -544,7 +544,7 @@ class Config(ConfigListScreen, Screen):
 			self.session.openWithCallback(
 				boundFunction(self.doRestorePreviousConfirmed, backupFile, backupDir),
 				MessageBox,
-				_("Choose settings backup which should be restored.\nDo you really want to restore these settings and restart?"),
+				_("Restore this backup archive and restart?\n\n\n\n%s") % filename.replace(".tar.gz",""),
 				list=backupList
 			)
 		else:
