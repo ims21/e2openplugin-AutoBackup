@@ -62,9 +62,11 @@ fi
 [ -f /var/spool/cron/crontabs/root ] && cat /var/spool/cron/crontabs/root >> /tmp/rootcron
 
 # remove duplicate lines in case multiple are found
-awk '{!seen[$0]++};END{for(i in seen) if(seen[i]==1)print i}' /tmp/rootcron > /tmp/crontab
-rm /tmp/rootcron
-echo /tmp/crontab >> $RESTORE_TEMP
+if [ -f /tmp/rootcron ]; then
+	awk '{!seen[$0]++};END{for(i in seen) if(seen[i]==1)print i}' /tmp/rootcron > /tmp/crontab
+	rm /tmp/rootcron
+	echo /tmp/crontab >> $RESTORE_TEMP
+fi
 
 # create the backup tarball
 tar -czf "$BACKUPDIR/backup/PLi-AutoBackup$MACADDR.tar.gz" --files-from=$RESTORE_TEMP 2> /dev/null
