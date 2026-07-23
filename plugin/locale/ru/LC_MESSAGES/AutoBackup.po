@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ims\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: neoatomic <neoatomic@users.noreply.github.com>\n"
 "Language-Team: \n"
@@ -120,14 +120,6 @@ msgstr ""
 "Выберите бэкап.\n"
 "Это переустановит все плагины из Вашего бэкапа.\n"
 "Вы действительно хотите переустановить?"
-
-#: ../ui.py:547
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Выберите настройки резервного копирования, которые должны быть восстановлены.\n"
-"Вы действительно хотите восстановить эти настройки и сделать рестарт?"
 
 #: ../ui.py:328
 msgid "Create Autoinstall"
@@ -299,6 +291,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #: ../ui.py:407

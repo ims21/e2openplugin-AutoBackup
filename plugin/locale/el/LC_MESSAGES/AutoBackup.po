@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: MCelliot_g <mcelliot_g@hotmail.com>\n"
 "Language-Team: \n"
@@ -113,12 +113,6 @@ msgid ""
 "This will reinstall all plugins from your backup.\n"
 "Do you really want to reinstall?"
 msgstr "Επιλέξτε αντίγραφο ασφαλείας. Αυτό θα επανεγκαταστήσει όλα τα πρόσθετα από το αντίγραφο ασφαλείας σας. Θέλετε να γίνει επανεγκατάσταση;"
-
-#: ../ui.py:547
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr "Επιλέξτε το αντίγραφο ασφαλείας των ρυθμίσεων που επιθυμείτε να επαναφέρετε. Θέλετε να γίνει επαναφορά αυτών των ρυθμίσεων και επανεκκίνηση;"
 
 #: ../ui.py:328
 msgid "Create Autoinstall"
@@ -288,6 +282,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #: ../ui.py:407

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enigma2-plugin-extensions-autobackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: 2021-11-07 11:02+0100\n"
 "Last-Translator: Pr2\n"
 "Language-Team: french\n"
@@ -120,14 +120,6 @@ msgstr ""
 "Choisir une sauvegarde.\n"
 "Ceci va réinstaller tous les plugins/extensions de votre sauvegarde sur.\n"
 "Voulez-vous vraiment les réinstaller?"
-
-#: ../ui.py:547
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Choisir les paramètres de la sauvegarde que vous voulez restaurer.\n"
-"Voulez-vous vraiment restaurer ces réglages et redémarrer?"
 
 #: ../ui.py:328
 msgid "Create Autoinstall"
@@ -299,6 +291,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #: ../ui.py:407

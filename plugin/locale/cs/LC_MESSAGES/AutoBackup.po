@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ims\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ims <ims@openpli.org>\n"
 "Language-Team: PLi <ims21@users.sourceforge.net>\n"
@@ -131,14 +131,6 @@ msgstr ""
 "Zvolte zálohu.\n"
 "Přeinstaluje všechny pluginy z Vaší zálohy.\n"
 "Chcete opravdu přeinstalovat?"
-
-#: ../ui.py:547
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Zvolte zálohu nastavení, která by měla být obnovena.\n"
-"Chcete opravdu obnovit tato nastavení a restartovat?"
 
 #
 #: ../ui.py:328
@@ -319,6 +311,21 @@ msgstr "Obnova aktuálního uloženého nastavení."
 #: ../ui.py:612
 msgid "Restore settings now"
 msgstr "Obnovit nastavení"
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
+msgstr ""
+"Obnovit zálohu z tohoto archivu a restartovat?\r\n"
+"\r\n"
+"\r\n"
+"\r\n"
+"%s"
 
 #: ../ui.py:407
 msgid "Run a backup now"

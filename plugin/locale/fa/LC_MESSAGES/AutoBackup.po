@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: auto backup Persian Translation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: 2016-05-06 14:13+0200\n"
 "Last-Translator: neoatomic <neoatomic@users.noreply.github.com>\n"
 "Language-Team: Persian Professionals <persianpros@yahoo.com>\n"
@@ -122,16 +122,6 @@ msgid ""
 "Choose a backup.\n"
 "This will reinstall all plugins from your backup.\n"
 "Do you really want to reinstall?"
-msgstr ""
-"فایل شما بازگردانی خواهد شد %s.\n"
-" آیا واقعا قصد بازگردانی تنظیمات و راه اندازی مجدد را دارید ؟"
-
-#
-#: ../ui.py:547
-#, fuzzy
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
 msgstr ""
 "فایل شما بازگردانی خواهد شد %s.\n"
 " آیا واقعا قصد بازگردانی تنظیمات و راه اندازی مجدد را دارید ؟"
@@ -321,6 +311,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #

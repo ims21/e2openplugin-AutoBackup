@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e 2openplugin-AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: 2020-06-03 19:42+0200\n"
 "Last-Translator: Željko <zeljko2@hi.ht.hr>\n"
 "Language-Team: Željko\n"
@@ -120,14 +120,6 @@ msgstr ""
 "Odaberite backup.\n"
 "To će ponovo instalirati sve dodatke iz backupa.\n"
 "Želite li stvarno ponovo instalirati?"
-
-#: ../ui.py:547
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Odaberite backup postavki koje treba vratiti.\n"
-"Želite li zaista vratiti te postavke i ponovno pokrenuti?"
 
 #: ../ui.py:328
 msgid "Create Autoinstall"
@@ -299,6 +291,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #: ../ui.py:407

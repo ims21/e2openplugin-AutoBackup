@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enigma2-plugin-extensions-autobackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: 2019-07-25 21:34+0200\n"
 "Last-Translator: Pike_Bishop <alfredzngr023@gmail.com>\n"
 "Language-Team: daddelfalk\n"
@@ -132,16 +132,6 @@ msgid ""
 msgstr ""
 "Damit werden alle Plugins aus der Sicherung neu installiert auf  %s.\n"
 "Möchten Sie wirklich neu installieren ?"
-
-#
-#: ../ui.py:547
-#, fuzzy
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Damit wird Ihre Sicherung aus %s wiederhergestellt.\n"
-"Möchten Sie die Einstellungen wirklich wiederherstellen und neu starten ?"
 
 #
 #: ../ui.py:328
@@ -328,6 +318,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #

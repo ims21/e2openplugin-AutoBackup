@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: 2018-12-25 21:50+0200\n"
 "Last-Translator: Taapat <taapat@gmail.com>\n"
 "Language-Team: Taapat <taapat@gmail.com>\n"
@@ -115,15 +115,6 @@ msgid ""
 "Do you really want to reinstall?"
 msgstr ""
 "Tiks uzstādīti visi spraudņi dublējumkopijā no %s.\n"
-"Vai tiešām vēlaties turpināt?"
-
-#: ../ui.py:547
-#, fuzzy
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Tiks uzstādīta dublējumkopija no %s.\n"
 "Vai tiešām vēlaties turpināt?"
 
 #: ../ui.py:328
@@ -297,6 +288,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #: ../ui.py:407

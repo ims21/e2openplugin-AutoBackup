@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: 2020-06-02 09:52+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -125,14 +125,6 @@ msgstr ""
 "Válasszon egy biztonsági mentést.\n"
 "Ez újratelepíti az összes plugint a biztonsági mentésből.\n"
 "Biztosan folytatja?"
-
-#: ../ui.py:547
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Válassza ki a beállításmentést, amelyeket vissza szeretne állítani.\n"
-"Valóban ezeket szeretné visszaállítani, és újraindítani a készüléket?"
 
 #: ../ui.py:328
 msgid "Create Autoinstall"
@@ -304,6 +296,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #: ../ui.py:407

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: kvinto\n"
 "Language-Team: http://gisclub.tv\n"
@@ -120,14 +120,6 @@ msgstr ""
 "Виберіть резервну копію.\n"
 "Дана дія перевстановить усі плагіни з Вашої резервної копії.\n"
 "Ви дійсно хочете перестановити?"
-
-#: ../ui.py:547
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Виберіть резервну копію налаштувань, яку потрібно відновити.\n"
-"Ви дійсно хочете відновити ці налаштування та перезапустити?"
 
 #: ../ui.py:328
 msgid "Create Autoinstall"
@@ -300,6 +292,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #: ../ui.py:407

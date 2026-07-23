@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Vytenis P. <vyteniui@gmail.com>\n"
 "Language-Team: Vytenis P. vyteniui@gmail.com\n"
@@ -121,14 +121,6 @@ msgstr ""
 "Pasirinkite atsarginę kopiją.\n"
 "Tai iš naujo įdiegs visus įskiepius iš atsarginės kopijos.\n"
 "Ar tikrai norite įdiegti iš naujo?"
-
-#: ../ui.py:547
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Pasirinkite nustatymų atsarginę kopiją, kuri turėtų būti atkurta.\n"
-"Ar tikrai norite atkurti šiuos parametrus ir paleisti iš naujo?"
 
 #: ../ui.py:328
 msgid "Create Autoinstall"
@@ -300,6 +292,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #: ../ui.py:407

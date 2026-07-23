@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 09:34+0200\n"
+"POT-Creation-Date: 2026-07-23 17:21+0200\n"
 "PO-Revision-Date: 2020-05-19 21:25+0100\n"
 "Last-Translator: Pereiira69 <pereira69@gmail.com>\n"
 "Language-Team: \n"
@@ -120,14 +120,6 @@ msgstr ""
 "Escolha um backup.\n"
 "Isso reinstalará todos os plugins do seu backup.\n"
 "Deseja mesmo reinstalar?"
-
-#: ../ui.py:547
-msgid ""
-"Choose settings backup which should be restored.\n"
-"Do you really want to restore these settings and restart?"
-msgstr ""
-"Escolha configurações de backup que devem ser restauradas.\n"
-"Deseja realmente restaurar essas configurações e reiniciar?"
 
 #: ../ui.py:328
 msgid "Create Autoinstall"
@@ -299,6 +291,16 @@ msgstr ""
 
 #: ../ui.py:612
 msgid "Restore settings now"
+msgstr ""
+
+#: ../ui.py:547
+#, python-format
+msgid ""
+"Restore this backup archive and restart?\n"
+"\n"
+"\n"
+"\n"
+"%s"
 msgstr ""
 
 #: ../ui.py:407
