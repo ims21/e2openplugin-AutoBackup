@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-from __future__ import print_function
 from . import _
 import time
 import os
@@ -17,7 +15,7 @@ config.plugins.autobackup.enabled = ConfigEnableDisable(default = False)
 config.plugins.autobackup.autoinstall = ConfigOnOff(default = True)
 config.plugins.autobackup.where = ConfigText(default = "/media/hdd")
 config.plugins.autobackup.epgcache = ConfigOnOff(default = False)
-config.plugins.autobackup.backuparchive = ConfigOnOff(default = False)
+
 
 # Global variables
 autoStartTimer = None
@@ -41,24 +39,35 @@ def runBackup():
 	if destination:
 		try:
 			global container  # Need to keep a ref alive...
+			archivePending = [True]
 
 			def appClosed(retval):
 				global container
+				if not retval and archivePending[0]:
+					archivePending[0] = False
+					from .ui import ArchiveCreator
+					archive = ArchiveCreator(destination)
+					backupDir = os.path.join(destination, "backup")
+					archive.createInfo(backupDir)
+					if container.execute(archive.buildArchiveCommand(backupDir, removeInfo=True)):
+						print("[AutoBackup] failed to execute archive")
+						container = None
+					return
 				print("[AutoBackup] complete, result:", retval)
 				container = None
 
 			def dataAvail(data):
+				if isinstance(data, bytes):
+					data = data.decode("utf-8", errors="replace")
 				print("[AutoBackup]", data.rstrip())
+
 			print("[AutoBackup] start daily backup")
 			cmd = backupCommand()
-			if config.plugins.autobackup.backuparchive.value:
-				from .ui import ArchiveCreator
-				cmd += " && " + ArchiveCreator(destination).buildCurrentSettingsCommand()
 			container = enigma.eConsoleAppContainer()
-			if container.execute(cmd):
-				raise (Exception, "failed to execute:" + cmd)
 			container.appClosed.append(appClosed)
 			container.dataAvail.append(dataAvail)
+			if container.execute(cmd):
+				raise Exception("failed to execute: " + cmd)
 		except Exception as e:
 			print("[AutoBackup] FAIL:", e)
 

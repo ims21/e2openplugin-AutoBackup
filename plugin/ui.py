@@ -312,7 +312,7 @@ class Config(ConfigListScreen, Screen):
 
 		writeLog("","w")
 
-		self.archiveAfterBackup = False
+		self.archivePending = False
 		self.cfgwhere.addNotifier(self.changedWhere)
 		self.onClose.append(self.__onClose)
 		self.setTitle(_("AutoBackup Configuration"))
@@ -326,8 +326,7 @@ class Config(ConfigListScreen, Screen):
 		if self.cfg.enabled.value:
 			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup, _("Time when the daily automatic backup starts.")))
 		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Creates an Autoinstall file with a list of installed packages.")))
-		self.list.append((_("EPG cache backup"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a backup.")))
-		self.list.append((_("Create backup archive after backup"), self.cfg.backuparchive, _("Automatically creates a backup archive after every successful backup, both manual and scheduled.")))
+		self.list.append((_("Save EPG cache"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a backup.")))
 
 	# for summary:
 	def changedEntry(self):
@@ -430,8 +429,6 @@ class Config(ConfigListScreen, Screen):
 		if not self.cfgwhere.value:
 			return
 
-		self.archiveAfterBackup = self.cfg.backuparchive.value
-
 		self.saveAll()
 		# Write config file before creating the backup so we have it all
 		configfile.save()
@@ -440,10 +437,13 @@ class Config(ConfigListScreen, Screen):
 		self.data = ''
 		self.showOutput()
 		self["statusbar"].setText(_('Running...'))
+
 		cmd = plugin.backupCommand()
+		self.archivePending = True
+
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
-			self.archiveAfterBackup = False
+			self.archivePending = True
 			self.showOutput()
 
 	def doautoinstall(self):
@@ -513,15 +513,12 @@ class Config(ConfigListScreen, Screen):
 	def appClosed(self, retval):
 		print("[AutoBackup] done:", retval)
 
-		if not retval and self.archiveAfterBackup:
-			self.archiveAfterBackup = False
+		if not retval and self.archivePending:
+			self.archivePending = False
 			self.doArchiveCurrentBackup()
 			return
 
-		if retval:
-			txt = _("Failed")
-		else:
-			txt = _("Done")
+		txt = _("Failed") if retval else _("Done")
 		self.showOutput()
 		self.data = ''
 		self["statusbar"].setText(txt)
