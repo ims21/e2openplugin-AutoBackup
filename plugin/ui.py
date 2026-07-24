@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import print_function
-##################################
-##################################
 # Configuration GUI
 from . import _
 from . import plugin
@@ -24,7 +20,13 @@ from Screens.MessageBox import MessageBox
 from Tools.FuzzyDate import FuzzyTime
 from Screens.Standby import getReasons
 from Tools.BoundFunction import boundFunction
-from time import mktime, strftime
+from time import mktime, strftime, time
+
+
+# All code guarded by this flag is temporary and will be removed later,
+# together with the two related configuration definitions (method, measureTime) in plugin.py.
+# It enables the experimental archive information method and timing options.
+ENABLE_EXPERIMENTAL_FEATURES = True
 
 
 def writeLog(text, mode="a"):
@@ -238,6 +240,15 @@ def validateArchiveParameters(info, filters):
 
 	return mismatch
 
+# for ENABLE_EXPERIMENTAL_FEATURES
+def timedCall(function, *args, **kwargs):
+	if not config.plugins.autobackup.measureTime.value:
+		return function(*args, **kwargs), None
+
+	started = time()
+	result = function(*args, **kwargs)
+	return result, time() - started
+
 
 class Config(ConfigListScreen, Screen):
 	skin = """
@@ -321,12 +332,14 @@ class Config(ConfigListScreen, Screen):
 	def createSetup(self):
 		self.list = []
 		self.list.append((_("Backup location"), self.cfgwhere, _("Directory where backup files are created.")))
-		self.list.append((_("Experimental: Archive information priority"), self.cfg.method, _("Select whether archive information is read from autobackup.info first or from the archive filename first."))),
 		self.list.append((_("Daily automatic backup"), self.cfg.enabled, _("Automatically creates a backup every day at the specified time.")))
 		if self.cfg.enabled.value:
 			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup, _("Time when the daily automatic backup starts.")))
 		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Creates an Autoinstall file with a list of installed packages.")))
 		self.list.append((_("Save EPG cache"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a backup.")))
+		if ENABLE_EXPERIMENTAL_FEATURES == True:
+			self.list.append((_("Archive information priority"), self.cfg.method, _("Select whether archive information is read from autobackup.info first or from the archive filename first.")))
+			self.list.append((_("Enable timing measurements"), self.cfg.measureTime, _("Display the time needed to find and filter backup archives.")))
 
 	# for summary:
 	def changedEntry(self):
@@ -537,7 +550,12 @@ class Config(ConfigListScreen, Screen):
 		if self.activeArchiveFilters is None:
 			self.activeArchiveFilters = ARCHIVE_FILTERS_RESTORE.copy()
 
-		archives = getArchives(backupDir, self.activeArchiveFilters)
+		if ENABLE_EXPERIMENTAL_FEATURES:
+			archives, elapsed = getArchivesTimed(backupDir, self.activeArchiveFilters)
+			timingText = "\n\nsearch time: %.3f s" % elapsed if elapsed is not None else ""
+		else:
+			archives = getArchives(backupDir, self.activeArchiveFilters)
+
 		if archives:
 			filename, backupFile = archives[0][:2]
 			text = filename[:-7] if filename.endswith(".tar.gz") else filename
@@ -546,6 +564,8 @@ class Config(ConfigListScreen, Screen):
 				if len(parts) > 1:
 					parts[1] = "\c0040a040-mac-\C"
 					text = ".".join(parts)
+			if ENABLE_EXPERIMENTAL_FEATURES:
+				text += timingText
 			backupList = [("%s %s %s" % (self.cfgwhere.value, _("from: "), getArchiveDateTime(filename)), True)]
 			self.session.openWithCallback(
 				boundFunction(self.doRestorePreviousConfirmed, backupFile, backupDir),
@@ -1009,6 +1029,17 @@ def getArchives(backupDir, filters):
 
 	return archives
 
+# for ENABLE_EXPERIMENTAL_FEATURES
+def getArchivesTimed(backupDir, filters):
+	if not config.plugins.autobackup.measureTime.value:
+		return getArchives(backupDir, filters), None
+
+	started = time()
+	archives = getArchives(backupDir, filters)
+	elapsed = time() - started
+
+	return archives, elapsed
+
 
 class ArchiveList(Screen):
 	skin = """
@@ -1068,8 +1099,16 @@ class ArchiveList(Screen):
 			self["list"].moveToIndex(min(self.selectedIndex, len(self["list"].list) - 1))
 
 	def loadArchives(self):
-		archives = getArchives(self.backupDir, self.archiveFilters)
+		if ENABLE_EXPERIMENTAL_FEATURES:
+			archives, elapsed = getArchivesTimed(self.backupDir, self.archiveFilters)
+		else:
+			archives = getArchives(self.backupDir, self.archiveFilters)
+
 		self["list"].setList(archives)
+		title = _("Backup archive list")
+		if ENABLE_EXPERIMENTAL_FEATURES and elapsed is not None:
+			title += (" - %.3f s" % elapsed)
+		self.setTitle(title)
 		self["message"].setText("" if archives else _("No backup archives match the current filters.\n\nTry changing the filter settings."))
 
 	def openFilter(self):

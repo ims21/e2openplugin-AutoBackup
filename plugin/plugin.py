@@ -3,18 +3,18 @@ import time
 import os
 import enigma
 from Plugins.Plugin import PluginDescriptor
-from Components.config import config, \
-			ConfigEnableDisable, ConfigSubsection, \
-			ConfigClock, ConfigOnOff, ConfigText
+from Components.config import config, ConfigEnableDisable, ConfigSubsection, ConfigClock, ConfigOnOff, ConfigText
 
 #Set default configuration
 config.plugins.autobackup = ConfigSubsection()
-config.plugins.autobackup.method = ConfigOnOff(default = True)
 config.plugins.autobackup.wakeup = ConfigClock(default = ((3*60) + 0) * 60) # 3:00
 config.plugins.autobackup.enabled = ConfigEnableDisable(default = False)
 config.plugins.autobackup.autoinstall = ConfigOnOff(default = True)
 config.plugins.autobackup.where = ConfigText(default = "/media/hdd")
 config.plugins.autobackup.epgcache = ConfigOnOff(default = False)
+# for ENABLE_EXPERIMENTAL_FEATURES
+config.plugins.autobackup.method = ConfigOnOff(default = True)
+config.plugins.autobackup.measureTime = ConfigOnOff(default=False)
 
 
 # Global variables
