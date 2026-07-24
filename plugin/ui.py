@@ -540,11 +540,17 @@ class Config(ConfigListScreen, Screen):
 		archives = getArchives(backupDir, self.activeArchiveFilters)
 		if archives:
 			filename, backupFile = archives[0][:2]
+			text = filename[:-7] if filename.endswith(".tar.gz") else filename
+			if not text.startswith("backup."):
+				parts = text.split(".")
+				if len(parts) > 1:
+					parts[1] = "\c0040a040-mac-\C"
+					text = ".".join(parts)
 			backupList = [("%s %s %s" % (self.cfgwhere.value, _("from: "), getArchiveDateTime(filename)), True)]
 			self.session.openWithCallback(
 				boundFunction(self.doRestorePreviousConfirmed, backupFile, backupDir),
 				MessageBox,
-				_("Restore this backup archive and restart?\n\n\n\n%s") % filename.replace(".tar.gz",""),
+				_("Restore this backup archive and restart?\n\n\n\n%s") % text,
 				list=backupList
 			)
 		else:
