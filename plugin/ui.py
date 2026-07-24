@@ -982,8 +982,11 @@ def readArchiveInfoFile(archiveFile, filename, filters):
 def archiveMatchesFilters(fullpath, filename, filters):
 		if not any(filters[key] for key in ("mac", "hostname", "image", "slot")):
 			return True
-		readArchiveInfo = (readArchiveInfoFile if config.plugins.autobackup.method.value else readArchiveInfoName)
-		info = readArchiveInfo(fullpath, filename, filters)
+		if ENABLE_EXPERIMENTAL_FEATURES:
+			readArchiveInfo = (readArchiveInfoFile if config.plugins.autobackup.method.value else readArchiveInfoName)
+			info = readArchiveInfo(fullpath, filename, filters)
+		else:
+			info = readArchiveInfoFile(fullpath, filename, filters)
 
 		if filters["mac"] and info.get("mac", "").lower() != getMacAddress().lower():
 			return False
