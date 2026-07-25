@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ims\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 11:48+0200\n"
+"POT-Creation-Date: 2026-07-25 17:54+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Мартин Петков <marto74bg@yahoo.co.uk>\n"
 "Language-Team: \n"
@@ -13,40 +13,40 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: ../ui.py:555
+#: ../ui.py:556
 #, python-format
 msgid ""
 "\n"
 "\n"
-"Search time: %s%.3f s%s"
+"Checked %s%d%s archives\n"
 msgstr ""
 
-#: ../ui.py:631
+#: ../ui.py:635
 #, fuzzy
 msgid " - no backup information available"
 msgstr "Местоположение за резервно копие"
 
-#: ../ui.py:634
+#: ../ui.py:638
 msgid " - red values do not match this receiver"
 msgstr ""
 
-#: ../ui.py:800
+#: ../ui.py:804
 msgid "- unable to read autobackup.info"
 msgstr ""
 
-#: ../ui.py:1213
+#: ../ui.py:1234
 msgid "Apply filters"
 msgstr ""
 
-#: ../ui.py:666
+#: ../ui.py:670
 msgid "Archive contents"
 msgstr ""
 
-#: ../ui.py:712
+#: ../ui.py:716
 msgid "Archive creation failed"
 msgstr ""
 
-#: ../ui.py:1195
+#: ../ui.py:1216
 msgid "Archive filters"
 msgstr ""
 
@@ -78,17 +78,17 @@ msgstr ""
 msgid "Backup EPG cache"
 msgstr "Резервно копие на EPG кеша"
 
-#: ../ui.py:709
+#: ../ui.py:713
 #, fuzzy
 msgid "Backup archive created"
 msgstr "Резервно копие на EPG кеша"
 
-#: ../ui.py:1066 ../ui.py:1111
+#: ../ui.py:1085 ../ui.py:1130
 #, fuzzy
 msgid "Backup archive list"
 msgstr "Резервно копие на EPG кеша"
 
-#: ../ui.py:664
+#: ../ui.py:668
 #, fuzzy
 msgid "Backup information"
 msgstr "Местоположение за резервно копие"
@@ -97,7 +97,7 @@ msgstr "Местоположение за резервно копие"
 msgid "Backup location"
 msgstr "Местоположение за резервно копие"
 
-#: ../ui.py:645
+#: ../ui.py:649
 #, python-format
 msgid ""
 "Backup was created for another receiver.\n"
@@ -109,7 +109,7 @@ msgstr ""
 msgid "CF"
 msgstr "CF"
 
-#: ../ui.py:299 ../ui.py:637 ../ui.py:1073 ../ui.py:1212 ../ui.py:1265
+#: ../ui.py:299 ../ui.py:641 ../ui.py:1092 ../ui.py:1233 ../ui.py:1286
 msgid "Cancel"
 msgstr "Отказ"
 
@@ -156,11 +156,11 @@ msgstr ""
 msgid "Daily automatic backup"
 msgstr "Ежедневно автоматично резервно копие"
 
-#: ../ui.py:639
+#: ../ui.py:643
 msgid "Delete this archive"
 msgstr ""
 
-#: ../ui.py:1304
+#: ../ui.py:1325
 msgid "Deselect"
 msgstr "Отмяна Избор"
 
@@ -176,14 +176,14 @@ msgstr ""
 msgid "Display the time needed to find and filter backup archives."
 msgstr ""
 
-#: ../ui.py:727
+#: ../ui.py:731
 #, fuzzy
 msgid "Do you really want to delete this backup archive?"
 msgstr ""
 "Изберете кое резервно копие с настройки да се възстанови.\n"
 "Искате ли да възстановите тези настройки и да рестартирате?"
 
-#: ../ui.py:534 ../ui.py:708
+#: ../ui.py:534 ../ui.py:712
 msgid "Done"
 msgstr "Изпълнено"
 
@@ -191,16 +191,16 @@ msgstr "Изпълнено"
 msgid "Enable timing measurements"
 msgstr ""
 
-#: ../ui.py:534 ../ui.py:711
+#: ../ui.py:534 ../ui.py:715
 msgid "Failed"
 msgstr "Грешка"
 
-#: ../ui.py:741
+#: ../ui.py:745
 #, fuzzy
 msgid "Failed to delete backup."
 msgstr "Изберете файлове за резервно копие"
 
-#: ../ui.py:1075
+#: ../ui.py:1094
 msgid "Filters"
 msgstr ""
 
@@ -208,11 +208,11 @@ msgstr ""
 msgid "Harddisk"
 msgstr "Твърд диск"
 
-#: ../ui.py:1206
+#: ../ui.py:1227
 msgid "Hostname"
 msgstr ""
 
-#: ../ui.py:1207
+#: ../ui.py:1228
 msgid "Image"
 msgstr ""
 
@@ -232,19 +232,19 @@ msgstr ""
 msgid "Manual"
 msgstr "Ръчно"
 
-#: ../ui.py:1206
+#: ../ui.py:1227
 msgid "Match the current hostname using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1207
+#: ../ui.py:1228
 msgid "Match the current image name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1205
+#: ../ui.py:1226
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr ""
 
-#: ../ui.py:1208
+#: ../ui.py:1229
 msgid "Match the current slot number using the archive name or the info file."
 msgstr ""
 
@@ -252,7 +252,7 @@ msgstr ""
 msgid "No autoinstall list found"
 msgstr "Не са открити файловете с автоинсталация"
 
-#: ../ui.py:1115 ../ui.py:1169
+#: ../ui.py:1136 ../ui.py:1190
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
@@ -271,11 +271,11 @@ msgstr "Няма подходящо устройство, необходимо �
 msgid "Nowhere"
 msgstr "Никъде"
 
-#: ../ui.py:1318
+#: ../ui.py:1339
 msgid "Really close without saving settings?"
 msgstr ""
 
-#: ../ui.py:1205
+#: ../ui.py:1226
 msgid "Receiver MAC"
 msgstr ""
 
@@ -304,11 +304,11 @@ msgstr ""
 msgid "Restore settings from the current backup."
 msgstr ""
 
-#: ../ui.py:638
+#: ../ui.py:642
 msgid "Restore settings now"
 msgstr ""
 
-#: ../ui.py:573
+#: ../ui.py:577
 #, python-format
 msgid ""
 "Restore this backup archive and restart?\n"
@@ -326,7 +326,7 @@ msgstr "Направи резервно копие сега"
 msgid "Run autoinstall"
 msgstr "Направи автоинсталация"
 
-#: ../ui.py:452 ../ui.py:485 ../ui.py:679 ../ui.py:754
+#: ../ui.py:452 ../ui.py:485 ../ui.py:683 ../ui.py:758
 msgid "Running..."
 msgstr "Изпълнява се..."
 
@@ -334,7 +334,7 @@ msgstr "Изпълнява се..."
 msgid "SD"
 msgstr "SD"
 
-#: ../ui.py:300 ../ui.py:1266
+#: ../ui.py:300 ../ui.py:1287
 msgid "Save"
 msgstr "Запази"
 
@@ -351,7 +351,12 @@ msgstr ""
 msgid "Saves the contents of the EPG cache to a file before creating a backup."
 msgstr ""
 
-#: ../ui.py:1074 ../ui.py:1306
+#: ../ui.py:559
+#, python-format
+msgid "Search time: %s%.3f s%s"
+msgstr ""
+
+#: ../ui.py:1093 ../ui.py:1327
 msgid "Select"
 msgstr "Избери"
 
@@ -363,7 +368,7 @@ msgstr ""
 msgid "Select files to backup"
 msgstr "Изберете файлове за резервно копие"
 
-#: ../ui.py:1297
+#: ../ui.py:1318
 msgid "Select files/folders to backup"
 msgstr "Изберете файлове/папки за резервно копие"
 
@@ -371,15 +376,15 @@ msgstr "Изберете файлове/папки за резервно коп�
 msgid "Select whether archive information is read from autobackup.info first or from the archive filename first."
 msgstr ""
 
-#: ../ui.py:1208
+#: ../ui.py:1229
 msgid "Slot"
 msgstr ""
 
-#: ../ui.py:1209
+#: ../ui.py:1230
 msgid "Sort alphabetically"
 msgstr ""
 
-#: ../ui.py:1209
+#: ../ui.py:1230
 msgid "Sort archives alphabetically instead of by creation time."
 msgstr ""
 
@@ -396,11 +401,11 @@ msgstr "USB"
 msgid "Unknown time"
 msgstr ""
 
-#: ../ui.py:668
+#: ../ui.py:672
 msgid "What do you want to do?"
 msgstr ""
 
-#: ../ui.py:470 ../ui.py:499 ../ui.py:569
+#: ../ui.py:470 ../ui.py:499 ../ui.py:573
 msgid "from: "
 msgstr "от: "
 
