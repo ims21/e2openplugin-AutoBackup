@@ -862,6 +862,11 @@ class ArchiveCreator:
 		if removeInfo:
 			removeInfoCommand = 'rm -f "%s/autobackup.info"; ' % backupDir
 
+		backupFiles = "PLi-AutoBackup%s.tar.gz autoinstall%s autobackup.info" % (
+			self.mac,
+			self.mac
+		)
+
 		timestamp = strftime("%Y%m%d_%H%M")
 		self.archiveName = "%s.%s.%s.%s%s.tar.gz" % (
 			timestamp,
@@ -873,14 +878,14 @@ class ArchiveCreator:
 
 		return (
 			'cd "%s" && '
-			'tar -czf "%s/backup/%s" '
-			'PLi-AutoBackup*.tar.gz autoinstall* autobackup.info; '
+			'tar -czf "%s/backup/%s" %s; '
 			'%s'
 			'rm -rf "%s"'
 		) % (
 			backupDir,
 			self.destination,
 			self.archiveName,
+			backupFiles,
 			removeInfoCommand,
 			self.tmpBackupDir
 		)
