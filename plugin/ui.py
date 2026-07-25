@@ -551,8 +551,12 @@ class Config(ConfigListScreen, Screen):
 			self.activeArchiveFilters = ARCHIVE_FILTERS_RESTORE.copy()
 
 		if ENABLE_EXPERIMENTAL_FEATURES:
-			archives, elapsed = getArchivesTimed(backupDir, self.activeArchiveFilters)
-			timingText = _("\n\nSearch time: %s%.3f s%s") % ("\c00a0ffa0", elapsed if elapsed is not None else "", "\C")
+			archives, elapsed, checked = getArchivesTimed(backupDir, self.activeArchiveFilters)
+			if checked:
+				timingText = _("\n\nChecked %s%d%s archives\n") % ("\\c00a0ffa0", checked, "\\C")
+			else:
+				timingText = "\n\n"
+			timingText += _("Search time: %s%.3f s%s") % ("\\c00a0ffa0", elapsed, "\\C") if elapsed is not None else ""
 		else:
 			archives = getArchives(backupDir, self.activeArchiveFilters)
 
@@ -562,7 +566,7 @@ class Config(ConfigListScreen, Screen):
 			if not text.startswith("backup."):
 				parts = text.split(".")
 				if len(parts) > 1:
-					parts[1] = "\c0040a040-mac-\C"
+					parts[1] = "\\c0040a040-mac-\\C"
 					text = ".".join(parts)
 			if ENABLE_EXPERIMENTAL_FEATURES:
 				text += timingText
@@ -614,7 +618,7 @@ class Config(ConfigListScreen, Screen):
 					hasArchiveInfo = True
 				if not member.issym() and not member.islnk():
 					size = padSize(member.size, 8)
-					files.append("\c00b0b0b0%s B\C  %s" % (size, member.name))
+					files.append("\\c00b0b0b0%s B\\C  %s" % (size, member.name))
 			contents = "\n".join(sorted(files, key=str.lower))
 
 		if hasArchiveInfo:
@@ -782,7 +786,7 @@ class Config(ConfigListScreen, Screen):
 			formatted = "%s:\t%s" % (key, value.strip())
 
 			if key in mismatch:
-				formatted = "\c00ff4040%s\C" % formatted
+				formatted = "\\c00ff4040%s\\C" % formatted
 
 			result.append(formatted)
 
@@ -1009,8 +1013,12 @@ def archiveMatchesFilters(fullpath, filename, filters):
 
 		return True
 
-def getArchives(backupDir, filters):
+def getArchives(backupDir, filters, stats=None):
 	archives = []
+
+	if ENABLE_EXPERIMENTAL_FEATURES:
+		if stats is not None:
+			stats["checked"] = 0
 
 	if os.path.isdir(backupDir):
 		for entry in os.scandir(backupDir):
@@ -1018,6 +1026,9 @@ def getArchives(backupDir, filters):
 				continue
 			if not isArchiveName(entry.name):
 				continue
+			if ENABLE_EXPERIMENTAL_FEATURES:
+				if stats is not None:
+					stats["checked"] += 1
 			if not archiveMatchesFilters(entry.path, entry.name, filters):
 				continue
 
@@ -1034,14 +1045,17 @@ def getArchives(backupDir, filters):
 
 # for ENABLE_EXPERIMENTAL_FEATURES
 def getArchivesTimed(backupDir, filters):
+	stats = {}
+
 	if not config.plugins.autobackup.measureTime.value:
-		return getArchives(backupDir, filters), None
+		archives = getArchives(backupDir, filters)
+		return archives, None, None
 
 	started = time()
-	archives = getArchives(backupDir, filters)
+	archives = getArchives(backupDir, filters, stats)
 	elapsed = time() - started
 
-	return archives, elapsed
+	return archives, elapsed, stats["checked"]
 
 
 class ArchiveList(Screen):
@@ -1103,14 +1117,16 @@ class ArchiveList(Screen):
 
 	def loadArchives(self):
 		if ENABLE_EXPERIMENTAL_FEATURES:
-			archives, elapsed = getArchivesTimed(self.backupDir, self.archiveFilters)
+			archives, elapsed, checked = getArchivesTimed(self.backupDir, self.archiveFilters)
 		else:
 			archives = getArchives(self.backupDir, self.archiveFilters)
 
 		self["list"].setList(archives)
 		title = _("Backup archive list")
 		if ENABLE_EXPERIMENTAL_FEATURES and elapsed is not None:
-			title += ("%s - %.3f s%s") % ("\c00c0ffc0", elapsed, "\C")
+			title += ("%s - %.3f s%s") % ("\\c00c0ffc0", elapsed, "\\C")
+			if checked:
+				title += " / " + ("%s%d%s") % ("\\c00c0ffc0", checked, "\\C")
 		self.setTitle(title)
 		self["message"].setText("" if archives else _("No backup archives match the current filters.\n\nTry changing the filter settings."))
 
