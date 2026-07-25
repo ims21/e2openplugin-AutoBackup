@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-24 16:20+0200\n"
+"POT-Creation-Date: 2026-07-25 11:48+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Dario Croci <spaeleus@croci.org>\n"
 "Language-Team: Dario Croci <spaeleus@croci.org>\n"
@@ -21,6 +21,14 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: ../../../../../../../../..\n"
 "X-Poedit-SearchPath-0: .\n"
+
+#: ../ui.py:555
+#, python-format
+msgid ""
+"\n"
+"\n"
+"Search time: %s%.3f s%s"
+msgstr ""
 
 #: ../ui.py:631
 #, fuzzy
@@ -35,7 +43,7 @@ msgstr ""
 msgid "- unable to read autobackup.info"
 msgstr ""
 
-#: ../ui.py:1210
+#: ../ui.py:1213
 msgid "Apply filters"
 msgstr ""
 
@@ -47,7 +55,7 @@ msgstr ""
 msgid "Archive creation failed"
 msgstr ""
 
-#: ../ui.py:1192
+#: ../ui.py:1195
 msgid "Archive filters"
 msgstr ""
 
@@ -84,7 +92,7 @@ msgstr "Salvare cache EPG"
 msgid "Backup archive created"
 msgstr "Salvare cache EPG"
 
-#: ../ui.py:1063 ../ui.py:1108
+#: ../ui.py:1066 ../ui.py:1111
 #, fuzzy
 msgid "Backup archive list"
 msgstr "Salvare cache EPG"
@@ -110,7 +118,7 @@ msgstr ""
 msgid "CF"
 msgstr "Scheda CF"
 
-#: ../ui.py:299 ../ui.py:637 ../ui.py:1070 ../ui.py:1209 ../ui.py:1262
+#: ../ui.py:299 ../ui.py:637 ../ui.py:1073 ../ui.py:1212 ../ui.py:1265
 msgid "Cancel"
 msgstr "Annullare"
 
@@ -162,7 +170,7 @@ msgstr "Backup giornaliero automatico"
 msgid "Delete this archive"
 msgstr ""
 
-#: ../ui.py:1301
+#: ../ui.py:1304
 msgid "Deselect"
 msgstr "Deselezionare"
 
@@ -202,7 +210,7 @@ msgstr "Fallito"
 msgid "Failed to delete backup."
 msgstr "Selezionare file di cui fare il backup"
 
-#: ../ui.py:1072
+#: ../ui.py:1075
 msgid "Filters"
 msgstr ""
 
@@ -210,11 +218,11 @@ msgstr ""
 msgid "Harddisk"
 msgstr "Hard disk"
 
-#: ../ui.py:1203
+#: ../ui.py:1206
 msgid "Hostname"
 msgstr ""
 
-#: ../ui.py:1204
+#: ../ui.py:1207
 msgid "Image"
 msgstr ""
 
@@ -234,19 +242,19 @@ msgstr ""
 msgid "Manual"
 msgstr "Manuale"
 
-#: ../ui.py:1203
+#: ../ui.py:1206
 msgid "Match the current hostname using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1204
+#: ../ui.py:1207
 msgid "Match the current image name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1202
+#: ../ui.py:1205
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr ""
 
-#: ../ui.py:1205
+#: ../ui.py:1208
 msgid "Match the current slot number using the archive name or the info file."
 msgstr ""
 
@@ -254,7 +262,7 @@ msgstr ""
 msgid "No autoinstall list found"
 msgstr "Nessun elenco di ripristino automatico"
 
-#: ../ui.py:1112 ../ui.py:1166
+#: ../ui.py:1115 ../ui.py:1169
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
@@ -273,11 +281,11 @@ msgstr "Nessun supporto adatto: inserire una chiave USB/scheda flash/hard disk."
 msgid "Nowhere"
 msgstr "Nessuna destinazione"
 
-#: ../ui.py:1315
+#: ../ui.py:1318
 msgid "Really close without saving settings?"
 msgstr "Chiudere senza salvare le impostazioni?"
 
-#: ../ui.py:1202
+#: ../ui.py:1205
 msgid "Receiver MAC"
 msgstr ""
 
@@ -336,7 +344,7 @@ msgstr "In esecuzione..."
 msgid "SD"
 msgstr "Scheda SD"
 
-#: ../ui.py:300 ../ui.py:1263
+#: ../ui.py:300 ../ui.py:1266
 msgid "Save"
 msgstr "Salvare"
 
@@ -353,7 +361,7 @@ msgstr ""
 msgid "Saves the contents of the EPG cache to a file before creating a backup."
 msgstr ""
 
-#: ../ui.py:1071 ../ui.py:1303
+#: ../ui.py:1074 ../ui.py:1306
 msgid "Select"
 msgstr "Selezionare"
 
@@ -365,7 +373,7 @@ msgstr ""
 msgid "Select files to backup"
 msgstr "Selezionare file di cui fare il backup"
 
-#: ../ui.py:1294
+#: ../ui.py:1297
 msgid "Select files/folders to backup"
 msgstr "Selezionare file/directory da includere nel backup"
 
@@ -373,15 +381,15 @@ msgstr "Selezionare file/directory da includere nel backup"
 msgid "Select whether archive information is read from autobackup.info first or from the archive filename first."
 msgstr ""
 
-#: ../ui.py:1205
+#: ../ui.py:1208
 msgid "Slot"
 msgstr ""
 
-#: ../ui.py:1206
+#: ../ui.py:1209
 msgid "Sort alphabetically"
 msgstr ""
 
-#: ../ui.py:1206
+#: ../ui.py:1209
 msgid "Sort archives alphabetically instead of by creation time."
 msgstr ""
 

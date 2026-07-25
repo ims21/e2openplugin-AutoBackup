@@ -552,7 +552,7 @@ class Config(ConfigListScreen, Screen):
 
 		if ENABLE_EXPERIMENTAL_FEATURES:
 			archives, elapsed = getArchivesTimed(backupDir, self.activeArchiveFilters)
-			timingText = "\n\nsearch time: %.3f s" % elapsed if elapsed is not None else ""
+			timingText = _("\n\nSearch time: %s%.3f s%s") % ("\c00a0ffa0", elapsed if elapsed is not None else "", "\C")
 		else:
 			archives = getArchives(backupDir, self.activeArchiveFilters)
 
@@ -1110,7 +1110,7 @@ class ArchiveList(Screen):
 		self["list"].setList(archives)
 		title = _("Backup archive list")
 		if ENABLE_EXPERIMENTAL_FEATURES and elapsed is not None:
-			title += (" - %.3f s" % elapsed)
+			title += ("%s - %.3f s%s") % ("\c00c0ffc0", elapsed, "\C")
 		self.setTitle(title)
 		self["message"].setText("" if archives else _("No backup archives match the current filters.\n\nTry changing the filter settings."))
 
