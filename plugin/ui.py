@@ -767,7 +767,7 @@ class ArchiveCreator:
 				)
 			removeInfoCommand += "; "
 
-		backupFiles = "PLi-AutoBackup%s.tar.gz autoinstall%s autobackup.info" % (
+		backupFiles = "autobackup.info PLi-AutoBackup%s.tar.gz autoinstall%s" % (
 			self.mac,
 			self.mac
 		)
@@ -831,37 +831,38 @@ def readArchiveInfoFromTar(archiveFile, required):
 	info = {}
 
 	try:
-		with tarfile.open(archiveFile, "r:gz") as tar:
-			try:
-				f = tar.extractfile("autobackup.info")
-				if f:
-					for line in f.read().decode("utf-8").splitlines():
-						if "=" not in line:
-							continue
+		with tarfile.open(archiveFile, "r|gz") as tar:
+			for member in tar:
+				if member.name == "autobackup.info":
+					f = tar.extractfile(member)
+					if f:
+						for line in f.read().decode("utf-8").splitlines():
+							if "=" not in line:
+								continue
 
-						key, value = line.split("=", 1)
-						key = key.strip()
-						value = value.strip()
+							key, value = line.split("=", 1)
+							key = key.strip()
+							value = value.strip()
 
-						if key == "image":
-							value = getImageShortName(value)
-						elif key == "enigma":
-							value = getEnigmaName(value)
+							if key == "image":
+								value = getImageShortName(value)
+							elif key == "enigma":
+								value = getEnigmaName(value)
 
-						info[key] = value
-			except KeyError:
-				pass
+							info[key] = value
 
-			# Fallback for older archives: try to extract MAC
-			# address from filenames inside the archive.
-			if "mac" in required and "mac" not in info:
-				for name in tar.getnames():
-					base = os.path.basename(name)
+					# Only MAC can be obtained from another archive member.
+					if "mac" not in required or "mac" in info:
+						break
+
+				elif "mac" in required and "mac" not in info:
+					base = os.path.basename(member.name)
 					match = re.search(r"([0-9a-fA-F]{12})\.tar\.gz$", base)
 
 					if match:
 						info["mac"] = match.group(1).lower()
-						break
+						if all(key in info for key in required):
+							break
 
 	except Exception as ex:
 		print("[AutoBackup] Failed to read archive information from %s: %s" % (archiveFile, ex))
