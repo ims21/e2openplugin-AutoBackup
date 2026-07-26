@@ -699,7 +699,7 @@ class Config(ConfigListScreen, Screen):
 		self.showOutput()
 		self["statusbar"].setText(_('Running...'))
 
-		cmd = 'tar -tzf "%s" && tar -xzf "%s" -C "%s" && /etc/init.d/settings-restore.sh %s ; killall -9 enigma2' % (backupFile, backupFile, backupDir, self.cfgwhere.value)
+		cmd = 'tar -tzf "%s" && tar -xzf "%s" -C "%s" && /etc/init.d/settings-restore.sh %s && killall -9 enigma2' % (backupFile, backupFile, backupDir, self.cfgwhere.value)
 
 		# Alternative restore without extracting symlinks:
 		# cmd = (
@@ -707,7 +707,7 @@ class Config(ConfigListScreen, Screen):
 		#	'tar -xzf "%s" -C "%s" '
 		#	'--exclude="PLi-AutoBackup.tar.gz" '
 		#	'--exclude="autoinstall" '
-		#	'&& /etc/init.d/settings-restore.sh %s ; killall -9 enigma2'
+		#	'&& /etc/init.d/settings-restore.sh %s && killall -9 enigma2'
 		#	) % (backupFile, backupFile, backupDir, self.cfgwhere.value)
 
 		if self.container.execute(cmd):
