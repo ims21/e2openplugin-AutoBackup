@@ -641,9 +641,11 @@ class Config(ConfigListScreen, Screen):
 		return True
 
 	def executeCommand(self, cmd):
-		if self.container.execute(cmd):
+		result = self.container.execute(cmd)
+		if result:
 			print("[AutoBackup] failed to execute")
 			self.showOutput()
+		return result
 
 	def doArchiveCurrentBackup(self):
 		if not self.prepareCommand():
@@ -657,9 +659,12 @@ class Config(ConfigListScreen, Screen):
 		if not self.prepareCommand():
 			return
 		archive = ArchiveCreator(self.cfgwhere.value)
+		cmd = archive.buildCurrentSettingsCommand()
 		self.container.appClosed.remove(self.appClosed)
 		self.container.appClosed.append(self.archiveCurrentSettingsClosed)
-		self.executeCommand(archive.buildCurrentSettingsCommand())
+		if self.executeCommand(cmd):
+			self.container.appClosed.remove(self.archiveCurrentSettingsClosed)
+			self.container.appClosed.append(self.appClosed)
 
 	def archiveCurrentSettingsClosed(self, retval):
 		self.container.appClosed.remove(self.archiveCurrentSettingsClosed)
