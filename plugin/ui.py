@@ -440,16 +440,16 @@ class Config(ConfigListScreen, Screen):
 			self.close(False, self.session)
 
 	def menu(self):
-		lst = [
-			(_("Select files to backup"), self.selectFiles, _("Select files and folders to include in the backup. Basic backup items are already selected.")),
-			(_("Run a backup now"), self.doBackup, _("Create a backup of the current settings.")),
-			(_("Backup EPG cache"), self.doepgcachebackup, _("Save current contents of EPG cache to a file.")),
-			(_("Run autoinstall"), self.doautoinstall, _("Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped.")),
-			(_("Remove autoinstall list"), self.doremoveautoinstall, _("Remove the 'autoinstall' file from a backup.")),
-			(_("Restore"), self.doRestore, _("Restore settings from the current backup.")),
-			(_("Create archive with current settings"), self.doArchiveCurrentSettings, _("Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name.")),
-			(_("Restore previous backup"), self.doRestorePreviousManual, _("Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored.")),
-		]
+		lst = []
+		lst.append((_("Select files to backup"), self.selectFiles, _("Select files and folders to include in the backup. Basic backup items are already selected."))),
+		lst.append((_("Run a backup now"), self.doBackup, _("Create a backup of the current settings."))),
+		lst.append((_("Backup EPG cache"), self.doepgcachebackup, _("Save current contents of EPG cache to a file."))),
+		lst.append((_("Run autoinstall"), self.doautoinstall, _("Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."))),
+		lst.append((_("Remove autoinstall list"), self.doremoveautoinstall, _("Remove the 'autoinstall' file from a backup."))),
+		lst.append((_("Restore"), self.doRestore, _("Restore settings from the current backup."))),
+		lst.append((_("Create archive with current settings"), self.doArchiveCurrentSettings, _("Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name."))),
+		lst.append((_("Restore from archive"), self.doRestorePreviousManual, _("Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored."))),
+
 		self.session.openWithCallback(self.menuDone, ChoiceBox, list=lst)
 
 	def menuDone(self, result):
@@ -462,7 +462,7 @@ class Config(ConfigListScreen, Screen):
 
 	def showOutput(self):
 		self["status"].setText(self.data)
-
+	
 	def doBackup(self):
 		if not self.cfgwhere.value:
 			return
@@ -628,80 +628,6 @@ class Config(ConfigListScreen, Screen):
 	def doRestorePreviousClosed(self, result):
 		self.activeArchiveFilters = None
 
-	def doRestorePreviousNow(self, backupDir, result, archiveList):
-		selection, self.activeArchiveFilters, selectedIndex = result
-
-		backupFile = selection[1]
-
-		currentMac = getMacAddress()
-		backupMac = self.checkPreviousBackup(backupFile)
-
-		with tarfile.open(backupFile, "r:gz") as tar:
-			files = []
-			hasArchiveInfo = False
-			for member in tar.getmembers():
-				if member.name == "autobackup.info":
-					hasArchiveInfo = True
-				if not member.issym() and not member.islnk():
-					size = padSize(member.size, 8)
-					files.append("%s  %s" % (colorText(COLOR_GRAY, "%s B" % size), member.name))
-			contents = "\n".join(sorted(files, key=str.lower))
-
-		if hasArchiveInfo:
-			archiveInfo = self.readAutoBackupInfo(backupFile)
-			mismatch = validateArchiveParameters(archiveInfo, {
-				"mac": True,
-				"hostname": True,
-				"image": True,
-				"enigma": True,
-				"slot": True,
-			})
-			info = self.formatAutoBackupInfo(archiveInfo, mismatch)
-		else:
-			mismatch = []
-			info = _(" - no backup information available")
-
-		if mismatch:
-			info = "%s\n\n%s" % (_(" - red values do not match this receiver"), info)
-
-		choices = [
-			(_("Cancel"), "cancel"),
-			(_("Restore settings now"), "restore"),
-			(_("Delete this archive"), "delete"),
-		]
-
-		warning = ""
-
-		if backupMac != currentMac:
-			warning = _("Backup was created for another receiver.\nCurrent receiver MAC: %s\n\n") % currentMac
-
-		if backupMac != currentMac:
-			picon = MessageBox.TYPE_ERROR
-		elif mismatch:
-			picon = MessageBox.TYPE_WARNING
-		else:
-			picon = MessageBox.TYPE_YESNO
-
-		self.session.openWithCallback(
-			boundFunction(
-				self.doRestorePreviousAction,
-				backupFile,
-				backupDir,
-				selectedIndex,
-				archiveList
-			),
-			MessageBox,
-			warning +
-			_("Backup information") +
-			":\n\n" + info +
-			"\n\n" + _("Archive contents") +
-			":\n" + contents +
-			"\n\n" + _("What do you want to do?"),
-			list=choices,
-			picon = picon
-		)
-		return
-
 	def prepareCommand(self):
 		if not self.cfgwhere.value:
 			return False
@@ -742,24 +668,6 @@ class Config(ConfigListScreen, Screen):
 			self["statusbar"].setText(_("Failed"))
 			self["status"].setText(_("Archive creation failed"))
 
-	def doRestorePreviousAction(self, backupFile, backupDir, selectedIndex, archiveList, action):
-		if action == "restore":
-			archiveList.close(None)
-			self.doRestorePreviousConfirmed(backupFile, backupDir, True)
-		elif action == "delete":
-			self.session.openWithCallback(
-				boundFunction(
-					self.doDeletePreviousConfirmed,
-					backupFile,
-					selectedIndex,
-					archiveList
-				),
-				MessageBox,
-				_("Do you really want to delete this backup archive?") + "\n\n" + os.path.basename(backupFile),
-				type=MessageBox.TYPE_YESNO,
-				default=False
-			)
-
 	def doDeletePreviousConfirmed(self, backupFile, selectedIndex, archiveList, answer):
 		if not answer:
 			return
@@ -798,52 +706,6 @@ class Config(ConfigListScreen, Screen):
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
 		self.showOutput()
-
-	def formatAutoBackupInfo(self, archiveInfo, mismatch=None):
-		mismatch = set(mismatch or [])
-		result = []
-
-		for line in archiveInfo.splitlines():
-			if "=" not in line:
-				result.append(line)
-				continue
-
-			key, value = line.split("=", 1)
-			key = key.strip()
-			formatted = "%s:\t%s" % (key, value.strip())
-
-			if key in mismatch:
-				formatted = colorText(COLOR_RED,"%s" % formatted)
-
-			result.append(formatted)
-
-		return "\n".join(result)
-
-	def readAutoBackupInfo(self, backupFile):
-		try:
-			with tarfile.open(backupFile, "r:gz") as tar:
-				f = tar.extractfile("autobackup.info")
-				if f:
-					return f.read().decode("utf-8")
-		except Exception as ex:
-			print("[AutoBackup] Failed to read autobackup.info:", ex)
-
-		return _("- unable to read autobackup.info")
-
-	def checkPreviousBackup(self, backupFile):
-		try:
-			with tarfile.open(backupFile, "r:gz") as tar:
-				for name in tar.getnames():
-					base = os.path.basename(name)
-					if base.endswith(".tar.gz"):
-						base = base[:-7]
-					if len(base) >= 12:
-						mac = base[-12:]
-						if all(c in "0123456789abcdefABCDEF" for c in mac):
-							return mac.lower()
-		except Exception as ex:
-			print("[AutoBackup] Failed to check backup: %s" % ex)
-		return None
 
 
 class ArchiveCreator:
@@ -990,12 +852,121 @@ def readArchiveInfoFromTar(archiveFile, required):
 
 	return info
 
+def readArchiveDetails(backupFile):
+	archiveInfo = None
+	backupMac = None
+	files = []
+
+	with tarfile.open(backupFile, "r:gz") as tar:
+		for member in tar.getmembers():
+			if member.name == "autobackup.info":
+				f = tar.extractfile(member)
+				if f:
+					archiveInfo = f.read().decode("utf-8")
+
+			if not member.issym() and not member.islnk():
+				files.append((
+					member.name,
+					member.size
+				))
+
+			if backupMac is None:
+				base = os.path.basename(member.name)
+				if base.endswith(".tar.gz"):
+					base = base[:-7]
+				if len(base) >= 12:
+					mac = base[-12:]
+					if all(c in "0123456789abcdefABCDEF" for c in mac):
+						backupMac = mac.lower()
+
+	# Prefer the MAC explicitly stored in autobackup.info.
+	if archiveInfo:
+		for line in archiveInfo.splitlines():
+			if "=" not in line:
+				continue
+			key, value = line.split("=", 1)
+			if key.strip() == "mac":
+				backupMac = value.strip().lower()
+				break
+
+	return archiveInfo, files, backupMac
+
+def formatArchiveMacWarning(backupMac):
+	currentMac = getMacAddress()
+
+
+	if backupMac != currentMac:
+		return _(
+			"Backup was created for another receiver.\n"
+			"Current receiver MAC: %s\n\n"
+		) % currentMac
+
+	return ""
+
+def formatAutoBackupInfo(archiveInfo, mismatch=None):
+	mismatch = set(mismatch or [])
+	result = []
+
+	for line in archiveInfo.splitlines():
+		if "=" not in line:
+			result.append(line)
+			continue
+
+		key, value = line.split("=", 1)
+		key = key.strip()
+		formatted = "%s:\t%s" % (key, value.strip())
+
+		if key in mismatch:
+			formatted = colorText(COLOR_RED, formatted)
+
+		result.append(formatted)
+
+	return "\n".join(result)
+
+
+def formatArchiveDetails(archiveInfo, files):
+	if archiveInfo is not None:
+		mismatch = validateArchiveParameters(archiveInfo, {
+			"mac": True,
+			"hostname": True,
+			"image": True,
+			"enigma": True,
+			"slot": True,
+		})
+		info = formatAutoBackupInfo(archiveInfo, mismatch)
+	else:
+		mismatch = []
+		info = _("autobackup.info file is missing in archive")
+
+	infoLines = len(info.splitlines())
+	info += "\n" * max(0, 7 - infoLines)
+
+	contents = []
+	for name, size in files:
+		size = padSize(size, 8)
+		contents.append(
+			"%s  %s" % (
+				colorText(COLOR_GRAY, "%s B" % size),
+				name
+			)
+		)
+
+	text = (
+		info +
+		"\n\n" + _("Archive contents") +
+		":\n" + "\n".join(sorted(contents, key=str.lower))
+	)
+
+	return text, mismatch
+
+
 def mergeMissingArchiveInfo(info, fallbackInfo):
 	for key, value in fallbackInfo.items():
 		if key not in info:
 			info[key] = value
 
 	return info
+
 
 def readArchiveInfoName(archiveFile, filename, filters):
 	required = getRequiredArchiveInfo(filters)
@@ -1008,6 +979,7 @@ def readArchiveInfoName(archiveFile, filename, filters):
 
 	archiveInfo = readArchiveInfoFromTar(archiveFile, required)
 	return mergeMissingArchiveInfo(info, archiveInfo)
+
 
 def readArchiveInfoFile(archiveFile, filename, filters):
 	required = getRequiredArchiveInfo(filters)
@@ -1098,17 +1070,21 @@ def getArchivesTimed(backupDir, filters):
 
 class ArchiveList(Screen):
 	skin = """
-	<screen position="center,center" size="900,400" title="Backup archive list">
+	<screen position="center,center" size="1180,550" title="Backup archive list">
 		<ePixmap name="red"    position="0,0"   zPosition="2" size="140,40" pixmap="skin_default/buttons/red.png" transparent="1" alphatest="on" />
 		<ePixmap name="green"  position="140,0" zPosition="2" size="140,40" pixmap="skin_default/buttons/green.png" transparent="1" alphatest="on" />
 		<ePixmap name="yellow" position="280,0" zPosition="2" size="140,40" pixmap="skin_default/buttons/yellow.png" transparent="1" alphatest="on" />
 		<ePixmap name="blue"   position="420,0" zPosition="2" size="140,40" pixmap="skin_default/buttons/blue.png" transparent="1" alphatest="on" />
-		<widget source="key_red" render="Label" position="0,0" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
-		<widget source="key_green" render="Label" position="140,0" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
-		<widget source="key_yellow" render="Label" position="280,0" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
-		<widget source="key_blue" render="Label" position="420,0" size="140,40" valign="center" halign="center" zPosition="4"  foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
-		<widget name="list" position="10,40" size="880,350" scrollbarMode="showOnDemand" />
-		<widget name="message" position="10,40" size="880,350" font="Regular;20" halign="center" valign="center" transparent="1" />
+
+		<widget source="key_red" render="Label" position="0,0" size="140,40" valign="center" halign="center" zPosition="4" foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
+		<widget source="key_green" render="Label" position="140,0" size="140,40" valign="center" halign="center" zPosition="4" foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
+		<widget source="key_yellow" render="Label" position="280,0" size="140,40" valign="center" halign="center" zPosition="4" foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
+		<widget source="key_blue" render="Label" position="420,0" size="140,40" valign="center" halign="center" zPosition="4" foregroundColor="white" font="Regular;20" transparent="1" shadowColor="background" shadowOffset="-2,-2" />
+
+		<widget name="list" position="10,40" size="650,500" scrollbarMode="showOnDemand" />
+		<widget name="message" position="10,40" size="650,500" font="Regular;20" halign="center" valign="center" transparent="1" />
+
+		<widget name="preview" position="680,40" size="490,500" font="Regular;20" scrollbarMode="showOnDemand" />
 	</screen>
 	"""
 
@@ -1121,18 +1097,21 @@ class ArchiveList(Screen):
 		self.archiveFilters = filters.copy()
 		self.selectedIndex = selectedIndex
 		self.configScreen = configScreen
+		self.backupMac = None
 
-		self["key_red"] = StaticText(_("Cancel"))
-		self["key_green"] = StaticText(_("Select"))
+		self["key_red"] = StaticText(_("Delete"))
+		self["key_green"] = StaticText(_("Restore"))
 		self["key_blue"] = StaticText(_("Filters"))
 		self["list"] = MenuList([])
 		self["message"] = Label("")
+		self["preview"] = ScrollLabel("")
+		self["list"].onSelectionChanged.append(self.selectionChanged)
 
 		self["actions"] = ActionMap(
 			["OkCancelActions", "ColorActions", "DirectionActions"],
 			{
 				"cancel": self.exit,
-				"red": self.exit,
+				"red": self.delete,
 				"green": self.select,
 				"blue": self.openFilter,
 				"ok": self.select,
@@ -1168,6 +1147,8 @@ class ArchiveList(Screen):
 		self.setTitle(title)
 		self["message"].setText("" if archives else _("No backup archives match the current filters.\n\nTry changing the filter settings."))
 
+		self.selectionChanged()
+
 	def openFilter(self):
 		self.session.openWithCallback(self.filterClosed, ArchiveFilter, self.archiveFilters)
 
@@ -1196,19 +1177,49 @@ class ArchiveList(Screen):
 		self.restoreSelection()
 
 	def select(self):
-		if not self["list"].list:
+		current = self["list"].getCurrent()
+		if not current:
 			return
 
-		index = self["list"].getSelectedIndex()
-		self.selectedIndex = index
-		self.configScreen.doRestorePreviousNow(
-			self.backupDir,
-			(
-				self["list"].getCurrent(),
-				self.archiveFilters.copy(),
-				index
+		backupFile = current[1]
+
+		text = (
+			_("Restore this backup archive and restart?") +
+			"\n\n" + os.path.basename(backupFile)
+		)
+
+		if self.backupMac != getMacAddress():
+			text = formatArchiveMacWarning(self.backupMac) + text
+
+		self.session.openWithCallback(
+			boundFunction(
+				self.configScreen.doRestorePreviousConfirmed,
+				backupFile,
+				self.backupDir
 			),
-			self
+			MessageBox,
+			text,
+			type=MessageBox.TYPE_YESNO,
+			default=False
+		)
+
+	def delete(self):
+		current = self["list"].getCurrent()
+		if not current:
+			return
+
+		self.session.openWithCallback(
+			boundFunction(
+				self.configScreen.doDeletePreviousConfirmed,
+				current[1],
+				self["list"].getSelectedIndex(),
+				self
+			),
+			MessageBox,
+			_("Do you really want to delete this backup archive?") +
+			"\n\n" + os.path.basename(current[1]),
+			type=MessageBox.TYPE_YESNO,
+			default=False
 		)
 
 	def removeArchive(self, index):
@@ -1229,8 +1240,36 @@ class ArchiveList(Screen):
 		else:
 			self.selectedIndex = None
 
+		self.selectionChanged()
+
 	def exit(self):
 		self.close(None)
+
+	def selectionChanged(self):
+		current = self["list"].getCurrent()
+
+		if not current:
+			self.backupMac = None
+			self["preview"].setText("")
+			return
+
+		backupFile = current[1]
+
+		try:
+			archiveInfo, files, backupMac = readArchiveDetails(backupFile)
+			self.backupMac = backupMac
+			details, _ = formatArchiveDetails(archiveInfo, files)
+			self["preview"].setText(details)
+		except Exception as ex:
+			print(
+				"[AutoBackup] Failed to preview archive %s: %s" %
+				(backupFile, ex)
+			)
+			self.backupMac = None
+			self["preview"].setText(
+				_("Unable to read backup archive.")
+			)
+
 
 class ArchiveFilter(ConfigListScreen, Screen):
 	skin = """
