@@ -596,6 +596,12 @@ class Config(ConfigListScreen, Screen):
 					text = ".".join(parts)
 			if ENABLE_EXPERIMENTAL_FEATURES:
 				text += timingText
+
+			# for display details of the found archive - enable this 3 lines
+			# archiveInfo, files, dummy = readArchiveDetails(backupFile)
+			# details, dummy = formatArchiveDetails(archiveInfo, files)
+			# text += "\n\n" + details
+
 			backupList = [("%s %s %s" % (self.cfgwhere.value, _("from: "), getArchiveDateTime(filename)), True)]
 			self.session.openWithCallback(
 				boundFunction(self.doRestorePreviousConfirmed, backupFile, backupDir),
@@ -893,8 +899,6 @@ def readArchiveDetails(backupFile):
 
 def formatArchiveMacWarning(backupMac):
 	currentMac = getMacAddress()
-
-
 	if backupMac != currentMac:
 		return _(
 			"Backup was created for another receiver.\n"
@@ -1186,13 +1190,11 @@ class ArchiveList(Screen):
 
 		backupFile = current[1]
 
-		text = (
-			_("Restore this backup archive and restart?") +
-			"\n\n" + os.path.basename(backupFile)
-		)
-
+		text = _("Restore this backup archive and restart?")
 		if self.backupMac != getMacAddress():
+			text = _("Restore this backup archive anyway and restart?")
 			text = formatArchiveMacWarning(self.backupMac) + text
+		text += "\n\n" + os.path.basename(backupFile)
 
 		self.session.openWithCallback(
 			boundFunction(
@@ -1203,6 +1205,7 @@ class ArchiveList(Screen):
 			MessageBox,
 			text,
 			type=MessageBox.TYPE_YESNO,
+			picon=MessageBox.TYPE_ERROR if self.backupMac != getMacAddress() else MessageBox.TYPE_YESNO,
 			default=False
 		)
 
@@ -1261,7 +1264,7 @@ class ArchiveList(Screen):
 		try:
 			archiveInfo, files, backupMac = readArchiveDetails(backupFile)
 			self.backupMac = backupMac
-			details, _ = formatArchiveDetails(archiveInfo, files)
+			details, dummy = formatArchiveDetails(archiveInfo, files)
 			self["preview"].setText(details)
 		except Exception as ex:
 			print(
