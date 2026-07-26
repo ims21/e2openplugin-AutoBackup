@@ -62,7 +62,7 @@ def runBackup():
 				print("[AutoBackup]", data.rstrip())
 
 			print("[AutoBackup] start daily backup")
-			cmd = backupCommand()
+			cmd = backupCommand(fullArchive=True)
 			container = enigma.eConsoleAppContainer()
 			container.appClosed.append(appClosed)
 			container.dataAvail.append(dataAvail)

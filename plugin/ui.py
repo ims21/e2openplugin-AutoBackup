@@ -476,7 +476,7 @@ class Config(ConfigListScreen, Screen):
 		self.showOutput()
 		self["statusbar"].setText(_('Running...'))
 
-		cmd = plugin.backupCommand()
+		cmd = plugin.backupCommand(fullArchive=True)
 		self.archivePending = True
 
 		if self.container.execute(cmd):
@@ -755,7 +755,14 @@ class ArchiveCreator:
 
 		removeInfoCommand = ""
 		if removeInfo:
-			removeInfoCommand = 'rm -f "%s/autobackup.info"; ' % backupDir
+			removeInfoCommand = 'rm -f "%s/autobackup.info"' % backupDir
+			if not config.plugins.autobackup.autoinstall.value:
+				removeInfoCommand += ' "%s/autoinstall%s" "%s/autoinstall"' % (
+					backupDir,
+					self.mac,
+					backupDir
+				)
+			removeInfoCommand += "; "
 
 		backupFiles = "PLi-AutoBackup%s.tar.gz autoinstall%s autobackup.info" % (
 			self.mac,
