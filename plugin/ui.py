@@ -49,6 +49,7 @@ ARCHIVE_FILTERS_RESTORE = {
 	"mac": True,
 	"hostname": True,
 	"image": True,
+	"enigma": False,
 	"slot": True,
 	"alphabetical": False,
 }
@@ -56,6 +57,7 @@ ARCHIVE_FILTERS_MANUAL = {
 	"mac": True,
 	"hostname": False,
 	"image": False,
+	"enigma": False,
 	"slot": False,
 	"alphabetical": False,
 }
@@ -63,6 +65,7 @@ ARCHIVE_FILTERS_RESTORE_FALLBACK = {
 	"mac": True,
 	"hostname": False,
 	"image": False,
+	"enigma": False,
 	"slot": False,
 	"alphabetical": False,
 }
@@ -154,12 +157,19 @@ def getImageShortName(image=None):
 		return parts[1].lower()
 	return image.lower().replace(" ", "")
 
+
 def getOEVersion():
 	return about.getOEVersionString()
 
 
 def getEnigmaVersion():
 	return about.getEnigmaVersionString()
+
+
+def getEnigmaName(enigma=None):
+	if enigma is None:
+		enigma = getEnigmaVersion()
+	return enigma[11:]
 
 
 def getCurrentSlot():
@@ -222,6 +232,7 @@ def validateArchiveParameters(info, filters):
 		"mac": getMacAddress(),
 		"hostname": getHostName(),
 		"image": getImageName(),
+		"enigma": getEnigmaName(),
 		"slot": "slot%d" % getCurrentSlot() if getCurrentSlot() is not None else "",
 	}
 
@@ -235,7 +246,11 @@ def validateArchiveParameters(info, filters):
 		if key not in archiveInfo:
 			continue
 
-		if archiveInfo[key] != value:
+		archiveValue = archiveInfo[key]
+		if key == "enigma":
+			archiveValue = getEnigmaName(archiveValue)
+
+		if archiveValue != value:
 			mismatch.append(key)
 
 	return mismatch
@@ -627,6 +642,7 @@ class Config(ConfigListScreen, Screen):
 				"mac": True,
 				"hostname": True,
 				"image": True,
+				"enigma": True,
 				"slot": True,
 			})
 			info = self.formatAutoBackupInfo(archiveInfo, mismatch)
@@ -900,7 +916,7 @@ class ArchiveCreator:
 
 
 def getRequiredArchiveInfo(filters):
-	return [key for key in ("mac", "hostname", "image", "slot") if filters[key]]
+	return [key for key in ("mac", "hostname", "image", "enigma", "slot") if filters[key]]
 
 
 def readArchiveInfoFromName(filename):
@@ -940,6 +956,8 @@ def readArchiveInfoFromTar(archiveFile, required):
 
 						if key == "image":
 							value = getImageShortName(value)
+						elif key == "enigma":
+							value = getEnigmaName(value)
 
 						info[key] = value
 			except KeyError:
@@ -989,7 +1007,7 @@ def readArchiveInfoFile(archiveFile, filename, filters):
 
 
 def archiveMatchesFilters(fullpath, filename, filters):
-		if not any(filters[key] for key in ("mac", "hostname", "image", "slot")):
+		if not any(filters[key] for key in ("mac", "hostname", "image", "enigma", "slot")):
 			return True
 		if ENABLE_EXPERIMENTAL_FEATURES:
 			readArchiveInfo = (readArchiveInfoFile if config.plugins.autobackup.method.value else readArchiveInfoName)
@@ -1005,6 +1023,10 @@ def archiveMatchesFilters(fullpath, filename, filters):
 
 		if filters["image"] and info.get("image", "") != getImageShortName():
 			return False
+
+		if filters["enigma"] and info.get("enigma", "") != getEnigmaName():
+			return False
+
 
 		if filters["slot"]:
 			currentSlot = getCurrentSlot()
@@ -1146,7 +1168,7 @@ class ArchiveList(Screen):
 
 		reloadRequired = any(
 			filters[key] != self.archiveFilters[key]
-			for key in ("mac", "hostname", "image", "slot")
+			for key in ("mac", "hostname", "image", "enigma", "slot")
 		)
 
 		self.archiveFilters = filters
@@ -1218,6 +1240,7 @@ class ArchiveFilter(ConfigListScreen, Screen):
 		self.filterMac = ConfigYesNo(default=filters.get("mac", True))
 		self.filterHostname = ConfigYesNo(default=filters.get("hostname", False))
 		self.filterImage = ConfigYesNo(default=filters.get("image", False))
+		self.filterEnigma = ConfigYesNo(default=filters.get("enigma", False))
 		self.filterSlot = ConfigYesNo(default=filters.get("slot", False))
 		self.filterAlphabetical = ConfigYesNo(default=filters.get("alphabetical", False))
 
@@ -1226,6 +1249,7 @@ class ArchiveFilter(ConfigListScreen, Screen):
 		configList.append((_("Receiver MAC"), self.filterMac, _("Match the current receiver MAC address using the archive name, info file or filenames in the archive.")))
 		configList.append((_("Hostname"), self.filterHostname, _("Match the current hostname using the archive name or the info file.")))
 		configList.append((_("Image"), self.filterImage, _("Match the current image name using the archive name or the info file.")))
+		configList.append((_("Enigma"), self.filterEnigma, _("Match the current enigma name using the archive name or the info file.")))
 		configList.append((_("Slot"), self.filterSlot, _("Match the current slot number using the archive name or the info file.")))
 		configList.append((_("Sort alphabetically"), self.filterAlphabetical, _("Sort archives alphabetically instead of by creation time.")))
 		ConfigListScreen.__init__(self, configList, session=session)
@@ -1258,6 +1282,7 @@ class ArchiveFilter(ConfigListScreen, Screen):
 			"mac": self.filterMac.value,
 			"hostname": self.filterHostname.value,
 			"image": self.filterImage.value,
+			"enigma": self.filterEnigma.value,
 			"slot": self.filterSlot.value,
 			"alphabetical": self.filterAlphabetical.value,
 		})
