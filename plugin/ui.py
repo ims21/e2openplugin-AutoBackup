@@ -481,7 +481,7 @@ class Config(ConfigListScreen, Screen):
 
 		if self.container.execute(cmd):
 			print("[AutoBackup] failed to execute")
-			self.archivePending = True
+			self.archivePending = False
 			self.showOutput()
 
 	def doautoinstall(self):
@@ -551,10 +551,11 @@ class Config(ConfigListScreen, Screen):
 	def appClosed(self, retval):
 		print("[AutoBackup] done:", retval)
 
-		if not retval and self.archivePending:
+		if self.archivePending:
 			self.archivePending = False
-			self.doArchiveCurrentBackup()
-			return
+			if not retval:
+				self.doArchiveCurrentBackup()
+				return
 
 		txt = _("Failed") if retval else _("Done")
 		self.showOutput()
