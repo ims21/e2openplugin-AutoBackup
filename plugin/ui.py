@@ -1004,7 +1004,7 @@ def readArchiveInfoFile(archiveFile, filename, filters):
 	return mergeMissingArchiveInfo(info, filenameInfo)
 
 
-def archiveMatchesFilters(fullpath, filename, filters):
+def archiveMatchesFilters(fullpath, filename, filters, currentInfo):
 		if not any(filters[key] for key in ("mac", "hostname", "image", "enigma", "slot")):
 			return True
 		if ENABLE_EXPERIMENTAL_FEATURES:
@@ -1013,21 +1013,21 @@ def archiveMatchesFilters(fullpath, filename, filters):
 		else:
 			info = readArchiveInfoFile(fullpath, filename, filters)
 
-		if filters["mac"] and info.get("mac", "").lower() != getMacAddress().lower():
+		if filters["mac"] and info.get("mac", "").lower() != currentInfo["mac"]:
 			return False
 
-		if filters["hostname"] and info.get("hostname", "") != getHostName():
+		if filters["hostname"] and info.get("hostname", "") != currentInfo["hostname"]:
 			return False
 
-		if filters["image"] and info.get("image", "") != getImageShortName():
+		if filters["image"] and info.get("image", "") != currentInfo["image"]:
 			return False
 
-		if filters["enigma"] and info.get("enigma", "") != getEnigmaName():
+		if filters["enigma"] and info.get("enigma", "") != currentInfo["enigma"]:
 			return False
 
 
 		if filters["slot"]:
-			currentSlot = getCurrentSlot()
+			currentSlot = currentInfo["slot"]
 			archiveSlot = info.get("slot")
 
 			if currentSlot is None:
@@ -1040,6 +1040,18 @@ def archiveMatchesFilters(fullpath, filename, filters):
 
 def getArchives(backupDir, filters, stats=None):
 	archives = []
+	currentInfo = {}
+
+	if filters["mac"]:
+		currentInfo["mac"] = getMacAddress().lower()
+	if filters["hostname"]:
+		currentInfo["hostname"] = getHostName()
+	if filters["image"]:
+		currentInfo["image"] = getImageShortName()
+	if filters["enigma"]:
+		currentInfo["enigma"] = getEnigmaName()
+	if filters["slot"]:
+		currentInfo["slot"] = getCurrentSlot()
 
 	if ENABLE_EXPERIMENTAL_FEATURES:
 		if stats is not None:
@@ -1054,7 +1066,7 @@ def getArchives(backupDir, filters, stats=None):
 			if ENABLE_EXPERIMENTAL_FEATURES:
 				if stats is not None:
 					stats["checked"] += 1
-			if not archiveMatchesFilters(entry.path, entry.name, filters):
+			if not archiveMatchesFilters(entry.path, entry.name, filters, currentInfo):
 				continue
 
 			match = re.search(r"\d{8}_\d{4}", entry.name)
