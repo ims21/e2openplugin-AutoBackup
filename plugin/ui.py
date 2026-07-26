@@ -1143,7 +1143,10 @@ class ArchiveList(Screen):
 		if ENABLE_EXPERIMENTAL_FEATURES and elapsed is not None:
 			title += " - " + colorText(COLOR_LIGHTGREEN, "%.3f s" % elapsed)
 			if checked:
-				title += " / " + colorText(COLOR_LIGHTGREEN, str(checked))
+				title += " - %s / %s" % (
+					colorText(COLOR_LIGHTGREEN, str(len(archives))),
+					colorText(COLOR_LIGHTGREEN, str(checked))
+				)
 		self.setTitle(title)
 		self["message"].setText("" if archives else _("No backup archives match the current filters.\n\nTry changing the filter settings."))
 
