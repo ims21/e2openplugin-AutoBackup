@@ -51,7 +51,6 @@ ARCHIVE_FILTERS_RESTORE = {
 	"image": True,
 	"enigma": False,
 	"slot": True,
-	"alphabetical": False,
 }
 ARCHIVE_FILTERS_MANUAL = {
 	"mac": True,
@@ -59,7 +58,6 @@ ARCHIVE_FILTERS_MANUAL = {
 	"image": False,
 	"enigma": False,
 	"slot": False,
-	"alphabetical": False,
 }
 ARCHIVE_FILTERS_RESTORE_FALLBACK = {
 	"mac": True,
@@ -67,7 +65,6 @@ ARCHIVE_FILTERS_RESTORE_FALLBACK = {
 	"image": False,
 	"enigma": False,
 	"slot": False,
-	"alphabetical": False,
 }
 
 def getLocationChoices():
@@ -1058,10 +1055,7 @@ def getArchives(backupDir, filters, stats=None):
 			sortKey = match.group(0).replace("_", "")
 			archives.append((entry.name, entry.path, sortKey))
 
-	if filters["alphabetical"]:
-		archives.sort(key=lambda archive: archive[0].lower(), reverse=True)
-	else:
-		archives.sort(key=lambda archive: archive[2], reverse=True)
+	archives.sort(key=lambda archive: archive[2], reverse=True)
 
 	return archives
 
@@ -1110,9 +1104,11 @@ class ArchiveList(Screen):
 		self.selectedIndex = selectedIndex
 		self.configScreen = configScreen
 		self.backupMac = None
+		self.reverseOrder = False
 
 		self["key_red"] = StaticText(_("Delete"))
 		self["key_green"] = StaticText(_("Restore"))
+		self["key_yellow"] = StaticText(_("Reverse list"))
 		self["key_blue"] = StaticText(_("Filters"))
 		self["list"] = MenuList([])
 		self["message"] = Label("")
@@ -1125,6 +1121,7 @@ class ArchiveList(Screen):
 				"cancel": self.exit,
 				"red": self.delete,
 				"green": self.select,
+				"yellow": self.reverseList,
 				"blue": self.openFilter,
 				"ok": self.select,
 				"up": self["list"].up,
@@ -1150,6 +1147,9 @@ class ArchiveList(Screen):
 		else:
 			archives = getArchives(self.backupDir, self.archiveFilters)
 
+		if self.reverseOrder:
+			archives.reverse()
+
 		self["list"].setList(archives)
 		title = _("Backup archive list")
 		if ENABLE_EXPERIMENTAL_FEATURES and elapsed is not None:
@@ -1164,6 +1164,15 @@ class ArchiveList(Screen):
 
 		self.selectionChanged()
 
+	def reverseList(self):
+		archives = list(self["list"].list)
+		if not archives:
+			return
+		archives.reverse()
+		self["list"].setList(archives)
+		self.reverseOrder = not self.reverseOrder
+		self.restoreSelection()
+
 	def openFilter(self):
 		self.session.openWithCallback(self.filterClosed, ArchiveFilter, self.archiveFilters)
 
@@ -1173,22 +1182,9 @@ class ArchiveList(Screen):
 		if filters == self.archiveFilters:
 			return
 
-		reloadRequired = any(
-			filters[key] != self.archiveFilters[key]
-			for key in ("mac", "hostname", "image", "enigma", "slot")
-		)
-
 		self.archiveFilters = filters
 
-		if reloadRequired:
-			# active filters changed, rebuild the archive list
-			self.loadArchives()
-		else:
-			# only sorting changed, reorder the current list
-			archives = list(self["list"].list)
-			archives.reverse()
-			self["list"].setList(archives)
-
+		self.loadArchives()
 		self.restoreSelection()
 
 	def select(self):
@@ -1306,7 +1302,6 @@ class ArchiveFilter(ConfigListScreen, Screen):
 		self.filterImage = ConfigYesNo(default=filters.get("image", False))
 		self.filterEnigma = ConfigYesNo(default=filters.get("enigma", False))
 		self.filterSlot = ConfigYesNo(default=filters.get("slot", False))
-		self.filterAlphabetical = ConfigYesNo(default=filters.get("alphabetical", False))
 
 		configList = []
 
@@ -1315,7 +1310,6 @@ class ArchiveFilter(ConfigListScreen, Screen):
 		configList.append((_("Image"), self.filterImage, _("Match the current image name using the archive name or the info file.")))
 		configList.append((_("Enigma"), self.filterEnigma, _("Match the current enigma name using the archive name or the info file.")))
 		configList.append((_("Slot"), self.filterSlot, _("Match the current slot number using the archive name or the info file.")))
-		configList.append((_("Sort alphabetically"), self.filterAlphabetical, _("Sort archives alphabetically instead of by creation time.")))
 		ConfigListScreen.__init__(self, configList, session=session)
 
 		self["key_red"] = StaticText(_("Cancel"))
@@ -1348,7 +1342,6 @@ class ArchiveFilter(ConfigListScreen, Screen):
 			"image": self.filterImage.value,
 			"enigma": self.filterEnigma.value,
 			"slot": self.filterSlot.value,
-			"alphabetical": self.filterAlphabetical.value,
 		})
 
 	def cancel(self):
