@@ -1127,7 +1127,7 @@ class ArchiveList(Screen):
 
 		self["key_red"] = StaticText(_("Delete"))
 		self["key_green"] = StaticText(_("Restore"))
-		self["key_yellow"] = StaticText(_("Reverse list"))
+		self["key_yellow"] = StaticText(_("Reverse order"))
 		self["key_blue"] = StaticText(_("Filters"))
 		self["list"] = MenuList([])
 		self["message"] = Label("")
@@ -1190,6 +1190,7 @@ class ArchiveList(Screen):
 		archives.reverse()
 		self["list"].setList(archives)
 		self.reverseOrder = not self.reverseOrder
+		self["key_yellow"].setText(_("Original order") if self.reverseOrder else _("Reverse order"))
 		self.restoreSelection()
 
 	def openFilter(self):
