@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ims\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-26 17:03+0200\n"
+"POT-Creation-Date: 2026-07-26 18:16+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ims <ims@openpli.org>\n"
 "Language-Team: PLi <ims21@users.sourceforge.net>\n"
@@ -25,19 +25,19 @@ msgstr ""
 "\n"
 "Prohledáno %s archivů\n"
 
-#: ../ui.py:1308
+#: ../ui.py:1314
 msgid "Apply filters"
 msgstr "Použít filtry"
 
-#: ../ui.py:956
+#: ../ui.py:960
 msgid "Archive contents"
 msgstr "Obsah archivu"
 
-#: ../ui.py:669
+#: ../ui.py:675
 msgid "Archive creation failed"
 msgstr "Založení archivu zálohy se nezdařilo"
 
-#: ../ui.py:1288
+#: ../ui.py:1294
 msgid "Archive filters"
 msgstr "Filtry archivů"
 
@@ -73,11 +73,11 @@ msgstr "Automaticky vytváří zálohu každý den v nastavený čas."
 msgid "Backup EPG cache"
 msgstr "Uložit EPG cache"
 
-#: ../ui.py:666
+#: ../ui.py:672
 msgid "Backup archive created"
 msgstr "Archiv zálohy vytvořen"
 
-#: ../ui.py:1094 ../ui.py:1142
+#: ../ui.py:1098 ../ui.py:1146
 msgid "Backup archive list"
 msgstr "Seznam archivů záloh"
 
@@ -88,7 +88,7 @@ msgstr "Seznam archivů záloh"
 msgid "Backup location"
 msgstr "Umístění zálohy"
 
-#: ../ui.py:900
+#: ../ui.py:904
 #, python-format
 msgid ""
 "Backup was created for another receiver.\n"
@@ -104,7 +104,7 @@ msgid "CF"
 msgstr "CF"
 
 #
-#: ../ui.py:324 ../ui.py:1307 ../ui.py:1361
+#: ../ui.py:324 ../ui.py:1313 ../ui.py:1367
 msgid "Cancel"
 msgstr "Zavřít"
 
@@ -154,12 +154,12 @@ msgstr "Vytváří soubor autoinstall obsahující seznam nainstalovaných balí
 msgid "Daily automatic backup"
 msgstr "Denně automaticky zálohovat"
 
-#: ../ui.py:1102
+#: ../ui.py:1106
 msgid "Delete"
 msgstr "Smazat"
 
 #
-#: ../ui.py:1400
+#: ../ui.py:1406
 msgid "Deselect"
 msgstr "Odebrat"
 
@@ -175,12 +175,12 @@ msgstr "Zavřít bez uloženého nastavení?"
 msgid "Display the time needed to find and filter backup archives."
 msgstr "Zobrazovat dobu potřebnou k nalezení a filtrování archivů záloh."
 
-#: ../ui.py:1219
+#: ../ui.py:1225
 msgid "Do you really want to delete this backup archive?"
 msgstr "Opravdu chcete smazat tento archiv se zálohou?"
 
 #
-#: ../ui.py:559 ../ui.py:665
+#: ../ui.py:559 ../ui.py:671
 msgid "Done"
 msgstr "Dokončeno"
 
@@ -188,20 +188,20 @@ msgstr "Dokončeno"
 msgid "Enable timing measurements"
 msgstr "Povolit měření časů"
 
-#: ../ui.py:1302
+#: ../ui.py:1308
 msgid "Enigma"
 msgstr "Enigma"
 
 #
-#: ../ui.py:559 ../ui.py:668
+#: ../ui.py:559 ../ui.py:674
 msgid "Failed"
 msgstr "Selhalo"
 
-#: ../ui.py:680
+#: ../ui.py:686
 msgid "Failed to delete backup."
 msgstr "Smazání archivu selhalo."
 
-#: ../ui.py:1104
+#: ../ui.py:1108
 msgid "Filters"
 msgstr "Filtry"
 
@@ -210,11 +210,11 @@ msgstr "Filtry"
 msgid "Harddisk"
 msgstr "Pevný disk"
 
-#: ../ui.py:1300
+#: ../ui.py:1306
 msgid "Hostname"
 msgstr "Hostname"
 
-#: ../ui.py:1301
+#: ../ui.py:1307
 msgid "Image"
 msgstr "Image"
 
@@ -236,23 +236,23 @@ msgstr ""
 msgid "Manual"
 msgstr "Ručně"
 
-#: ../ui.py:1302
+#: ../ui.py:1308
 msgid "Match the current enigma name using the archive name or the info file."
 msgstr "Porovnává aktuální název enigma s názvem uloženým v autobackup.info."
 
-#: ../ui.py:1300
+#: ../ui.py:1306
 msgid "Match the current hostname using the archive name or the info file."
 msgstr "Porovnává aktuální hostname s názvem archivu nebo se souborem autobackup.info."
 
-#: ../ui.py:1301
+#: ../ui.py:1307
 msgid "Match the current image name using the archive name or the info file."
 msgstr "Porovnává aktuální image s názvem archivu nebo se souborem autobackup.info."
 
-#: ../ui.py:1299
+#: ../ui.py:1305
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr "Porovnává aktuální MAC adresu přijímače s názvem archivu, souborem autobackup.info nebo s názvy souborů v archivu."
 
-#: ../ui.py:1303
+#: ../ui.py:1309
 msgid "Match the current slot number using the archive name or the info file."
 msgstr "Porovnává aktuální číslo slotu s názvem archivu nebo se souborem autobackup.info."
 
@@ -260,7 +260,7 @@ msgstr "Porovnává aktuální číslo slotu s názvem archivu nebo se souborem 
 msgid "No autoinstall list found"
 msgstr "Nenalezen autoinstall"
 
-#: ../ui.py:1148 ../ui.py:1234
+#: ../ui.py:1155 ../ui.py:1240
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
@@ -283,11 +283,11 @@ msgstr "Žádné vhodné médium nebylo nalezeno. Vložte USB, flash kartu nebo 
 msgid "Nowhere"
 msgstr "Nikde"
 
-#: ../ui.py:1414
+#: ../ui.py:1420
 msgid "Really close without saving settings?"
 msgstr "Opravdu zavřít bez uloženého nastavení?"
 
-#: ../ui.py:1299
+#: ../ui.py:1305
 msgid "Receiver MAC"
 msgstr "MAC přijímače"
 
@@ -300,7 +300,7 @@ msgid "Remove the 'autoinstall' file from a backup."
 msgstr "Odstraní soubor 'autoinstall' ze zálohy."
 
 #
-#: ../ui.py:327 ../ui.py:449 ../ui.py:1103
+#: ../ui.py:327 ../ui.py:449 ../ui.py:1107
 msgid "Restore"
 msgstr "Obnovit"
 
@@ -316,11 +316,11 @@ msgstr "Obnova nastavení ze zvoleného archivu. Zkontroluje se MAC adresa, arch
 msgid "Restore settings from the current backup."
 msgstr "Obnova aktuálního uloženého nastavení."
 
-#: ../ui.py:1187
+#: ../ui.py:1193
 msgid "Restore this backup archive and restart?"
 msgstr "Obnovit zálohu z tohoto archivu a restartovat?"
 
-#: ../ui.py:603
+#: ../ui.py:609
 #, python-format
 msgid ""
 "Restore this backup archive and restart?\n"
@@ -335,6 +335,10 @@ msgstr ""
 "\n"
 "%s"
 
+#: ../ui.py:1195
+msgid "Restore this backup archive anyway and restart?"
+msgstr "Obnovit přesto zálohu z tohoto archivu a restartovat?"
+
 #: ../ui.py:445
 msgid "Run a backup now"
 msgstr "Spustit zálohu nyní"
@@ -344,7 +348,7 @@ msgid "Run autoinstall"
 msgstr "Spustit autoinstall"
 
 #
-#: ../ui.py:477 ../ui.py:510 ../ui.py:636 ../ui.py:693
+#: ../ui.py:477 ../ui.py:510 ../ui.py:642 ../ui.py:699
 msgid "Running..."
 msgstr "Probíhá..."
 
@@ -353,7 +357,7 @@ msgid "SD"
 msgstr "SD"
 
 #
-#: ../ui.py:325 ../ui.py:1362
+#: ../ui.py:325 ../ui.py:1368
 msgid "Save"
 msgstr "Uložit"
 
@@ -375,7 +379,7 @@ msgid "Search time: %s"
 msgstr "Čas hledání: %s"
 
 #
-#: ../ui.py:1402
+#: ../ui.py:1408
 msgid "Select"
 msgstr "Zvolit"
 
@@ -388,7 +392,7 @@ msgid "Select files to backup"
 msgstr "Výběr souborů pro zálohování"
 
 #
-#: ../ui.py:1393
+#: ../ui.py:1399
 msgid "Select files/folders to backup"
 msgstr "Vyberte soubory/složky pro zálohování"
 
@@ -396,15 +400,15 @@ msgstr "Vyberte soubory/složky pro zálohování"
 msgid "Select whether archive information is read from autobackup.info first or from the archive filename first."
 msgstr "Vyberte, zda se informace o archivu mají přednostně načítat ze souboru autobackup.info, nebo z názvu archivu."
 
-#: ../ui.py:1303
+#: ../ui.py:1309
 msgid "Slot"
 msgstr "Slot"
 
-#: ../ui.py:1304
+#: ../ui.py:1310
 msgid "Sort alphabetically"
 msgstr "Abecední řazení"
 
-#: ../ui.py:1304
+#: ../ui.py:1310
 msgid "Sort archives alphabetically instead of by creation time."
 msgstr "Řadí archivy abecedně místo podle času vytvoření."
 
@@ -417,7 +421,7 @@ msgstr "Čas spuštění denní automatické zálohy."
 msgid "USB"
 msgstr "USB"
 
-#: ../ui.py:1270
+#: ../ui.py:1276
 msgid "Unable to read backup archive."
 msgstr "Nepodařilo se přečíst archiv."
 
@@ -425,11 +429,11 @@ msgstr "Nepodařilo se přečíst archiv."
 msgid "Unknown time"
 msgstr "Neznámý čas"
 
-#: ../ui.py:939
+#: ../ui.py:943
 msgid "autobackup.info file is missing in archive"
 msgstr "archiv neobsahuje soubor autobackup.info"
 
-#: ../ui.py:495 ../ui.py:524 ../ui.py:599
+#: ../ui.py:495 ../ui.py:524 ../ui.py:605
 msgid "from: "
 msgstr "z: "
 
