@@ -1187,11 +1187,13 @@ class ArchiveList(Screen):
 		archives = list(self["list"].list)
 		if not archives:
 			return
+		current = self["list"].getCurrent()
 		archives.reverse()
 		self["list"].setList(archives)
 		self.reverseOrder = not self.reverseOrder
 		self["key_yellow"].setText(_("Original order") if self.reverseOrder else _("Reverse order"))
-		self.restoreSelection()
+		if current in archives:
+			self["list"].moveToIndex(archives.index(current))
 
 	def openFilter(self):
 		self.session.openWithCallback(self.filterClosed, ArchiveFilter, self.archiveFilters)
