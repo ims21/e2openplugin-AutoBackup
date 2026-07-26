@@ -462,7 +462,7 @@ class Config(ConfigListScreen, Screen):
 
 	def showOutput(self):
 		self["status"].setText(self.data)
-	
+
 	def doBackup(self):
 		if not self.cfgwhere.value:
 			return
