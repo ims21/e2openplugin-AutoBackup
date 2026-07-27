@@ -1224,15 +1224,25 @@ class ArchiveList(Screen):
 
 		self.session.openWithCallback(
 			boundFunction(
-				self.configScreen.doRestorePreviousConfirmed,
-				backupFile,
-				self.backupDir
+				self.restoreConfirmed,
+				backupFile
 			),
 			MessageBox,
 			text,
 			type=MessageBox.TYPE_YESNO,
 			picon=MessageBox.TYPE_ERROR if self.backupMac != getMacAddress() else MessageBox.TYPE_YESNO,
 			default=False
+		)
+
+	def restoreConfirmed(self, backupFile, answer):
+		if not answer:
+			return
+
+		self.close(None)
+		self.configScreen.doRestorePreviousConfirmed(
+			backupFile,
+			self.backupDir,
+			True
 		)
 
 	def delete(self):
