@@ -354,10 +354,11 @@ class Config(ConfigListScreen, Screen):
 	def createSetup(self):
 		self.list = []
 		self.list.append((_("Backup location"), self.cfgwhere, _("Directory where backup files are created.")))
-		self.list.append((_("Daily automatic backup"), self.cfg.enabled, _("Automatically creates a backup every day at the specified time.")))
+		self.list.append((_("Automatic backup"), self.cfg.enabled, _("Automatically creates backups at the selected frequency and start time.")))
 		if self.cfg.enabled.value:
-			self.list.append((4 * " " + _("Automatic start time"), self.cfg.wakeup, _("Time when the daily automatic backup starts.")))
-		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Creates an Autoinstall file with a list of installed packages.")))
+			self.list.append((4 * " " + _("Backup frequency"), self.cfg.frequency, _("Select how often an automatic backup is created.")))
+			self.list.append((4 * " " + _("Start time"), self.cfg.wakeup, _("Set the reference time for automatic backups.")))
+		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Keep an Autoinstall file with a list of installed packages in the local backup.")))
 		self.list.append((_("Save EPG cache"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a backup.")))
 		if ENABLE_EXPERIMENTAL_FEATURES == True:
 			self.list.append((_("Archive information priority"), self.cfg.method, _("Select whether archive information is read from autobackup.info first or from the archive filename first.")))
