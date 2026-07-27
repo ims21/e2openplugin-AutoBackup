@@ -118,6 +118,8 @@ def doneConfiguring(session, retval):
 # Autostart section
 
 class AutoStartTimer:
+	STARTUP_DELAY = 120
+
 	WEEKDAYS = (
 		"monday",
 		"tuesday",
@@ -133,8 +135,8 @@ class AutoStartTimer:
 		self.timer = enigma.eTimer()
 		self.timer.callback.append(self.onTimer)
 		self.wakeTime = -1
-		backupStarted = self.checkMissedBackup()
-		self.update(60 if backupStarted else 0)
+		self.startupCheck = True
+		self.timer.startLongTimer(self.STARTUP_DELAY)
 
 	def getScheduleTimes(self, now=None):
 		if not config.plugins.autobackup.enabled.value:
@@ -196,6 +198,7 @@ class AutoStartTimer:
 
 	def update(self, atLeast=0):
 		self.timer.stop()
+		self.startupCheck = False
 		now = int(time.time())
 		unused, self.wakeTime = self.getScheduleTimes(now + atLeast)
 		if self.wakeTime > 0:
@@ -214,6 +217,12 @@ class AutoStartTimer:
 
 	def onTimer(self):
 		self.timer.stop()
+		if self.startupCheck:
+			self.startupCheck = False
+			backupStarted = self.checkMissedBackup()
+			self.update(60 if backupStarted else 0)
+			return
+
 		now = int(time.time())
 		# If we're close enough, we're okay...
 		atLeast = 0
