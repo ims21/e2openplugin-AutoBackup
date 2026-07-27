@@ -135,8 +135,9 @@ class AutoStartTimer:
 		self.timer = enigma.eTimer()
 		self.timer.callback.append(self.onTimer)
 		self.wakeTime = -1
-		self.startupCheck = True
-		self.timer.startLongTimer(self.STARTUP_DELAY)
+		self.startupCheck = config.plugins.autobackup.enabled.value
+		if self.startupCheck:
+			self.timer.startLongTimer(self.STARTUP_DELAY)
 
 	def getScheduleTimes(self, now=None):
 		if not config.plugins.autobackup.enabled.value:
