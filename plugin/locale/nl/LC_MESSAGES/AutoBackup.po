@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: milo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-27 17:01+0200\n"
+"POT-Creation-Date: 2026-07-27 17:28+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Frenske <voorzitter@openpli.org>\n"
 "Language-Team: PLi <ims21@users.sourceforge.net>\n"
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Archive information priority"
 msgstr ""
 
-#: ../plugin.py:236
+#: ../plugin.py:245
 msgid "Auto backup"
 msgstr "Auto Backup"
 
@@ -54,7 +54,7 @@ msgstr "Autobackup instellingen"
 msgid "Automatic backup"
 msgstr "Auto Backup"
 
-#: ../plugin.py:240
+#: ../plugin.py:249
 msgid "Automatic settings backup"
 msgstr "Automatische reservekopie"
 
@@ -405,7 +405,7 @@ msgid "Save current contents of EPG cache to a file."
 msgstr ""
 
 #: ../ui.py:362
-msgid "Saves the contents of the EPG cache to a file before creating a backup."
+msgid "Saves the contents of the EPG cache to a file before creating a manual backup."
 msgstr ""
 
 #: ../ui.py:585

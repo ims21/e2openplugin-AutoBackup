@@ -359,7 +359,7 @@ class Config(ConfigListScreen, Screen):
 			self.list.append((4 * " " + _("Backup frequency"), self.cfg.frequency, _("Select how often an automatic backup is created.")))
 			self.list.append((4 * " " + _("Start time"), self.cfg.wakeup, _("Set the reference time for automatic backups.")))
 		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Keep an Autoinstall file with a list of installed packages in the local backup.")))
-		self.list.append((_("Save EPG cache"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a backup.")))
+		self.list.append((_("Save EPG cache"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a manual backup.")))
 		if ENABLE_EXPERIMENTAL_FEATURES == True:
 			self.list.append((_("Archive information priority"), self.cfg.method, _("Select whether archive information is read from autobackup.info first or from the archive filename first.")))
 			self.list.append((_("Enable timing measurements"), self.cfg.measureTime, _("Display the time needed to find and filter backup archives.")))
