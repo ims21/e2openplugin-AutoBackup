@@ -769,7 +769,7 @@ class ArchiveCreator:
 				)
 			removeInfoCommand += "; "
 
-		backupFiles = "autobackup.info PLi-AutoBackup%s.tar.gz autoinstall%s" % (
+		backupFiles = "autobackup.info PLi-AutoBackup%s.tar.gz autoinstall%s PLi-AutoBackup.tar.gz autoinstall" % (
 			self.mac,
 			self.mac
 		)
