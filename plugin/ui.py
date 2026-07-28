@@ -503,7 +503,7 @@ class Config(ConfigListScreen, Screen):
 					print("Failed to stat %s: %s" % (path, ex))
 
 		if not backupList:
-			self.session.open(MessageBox, _("No 'autoinstall' list found"), type=MessageBox.TYPE_ERROR, timeout=10)
+			self.session.open(MessageBox, _("No 'autoinstall' file found"), type=MessageBox.TYPE_ERROR, timeout=10)
 			return
 		backupList.sort(key=lambda b: b[2], reverse=True)
 		self.session.openWithCallback(self.doAutoinstallNow, MessageBox, _("Choose a backup.\n\nPlugins from the 'autoinstall' list will be installed. Already installed plugins will be skipped.\n\nDo you really want to continue?"), list=backupList)
@@ -516,7 +516,7 @@ class Config(ConfigListScreen, Screen):
 			self.session.openWithCallback(
 				boundFunction(self.doAutoinstallNow, result),
 				MessageBox,
-				_("No 'autoinstall' list matching this receiver's MAC address was found.\n\nThe generic 'autoinstall' list may belong to another receiver.\n\nUse it anyway?"),
+				_("No 'autoinstall' file matching this receiver's MAC address was found.\n\nThe generic 'autoinstall' file may belong to another receiver.\n\nUse it anyway?"),
 				type=MessageBox.TYPE_YESNO,
 				default=False,
 				picon=MessageBox.TYPE_ERROR
@@ -550,7 +550,7 @@ class Config(ConfigListScreen, Screen):
 					print("Failed to stat %s: %s" % (path, ex))
 
 		if not backupList:
-			self.session.open(MessageBox, _("No 'autoinstall' list found"), type=MessageBox.TYPE_ERROR, timeout=10)
+			self.session.open(MessageBox, _("No 'autoinstall' file found"), type=MessageBox.TYPE_ERROR, timeout=10)
 			return
 
 		backupList.sort(key=lambda b: b[2], reverse=True)
@@ -595,7 +595,7 @@ class Config(ConfigListScreen, Screen):
 				self.session.openWithCallback(
 					boundFunction(self.doRemoveAutoinstallNow, path, "deleteGeneric"),
 					MessageBox,
-					_("No 'autoinstall' list matching this receiver's MAC address was found.\n\nThe generic 'autoinstall' list may belong to another receiver.\n\nDelete it anyway?"),
+					_("No 'autoinstall' list matching this receiver's MAC address was found.\n\nThe generic 'autoinstall' file may belong to another receiver.\n\nDelete it anyway?"),
 					type=MessageBox.TYPE_YESNO,
 					default=False,
 					picon=MessageBox.TYPE_ERROR
@@ -608,7 +608,7 @@ class Config(ConfigListScreen, Screen):
 			]
 			if genericExists and not linkMatchesMac and not brokenLink:
 				actions.append((
-					_("Delete including the generic 'autoinstall' list"),
+					_("Delete including the generic 'autoinstall' file"),
 					"deleteBoth"
 				))
 			self.session.openWithCallback(
@@ -627,7 +627,7 @@ class Config(ConfigListScreen, Screen):
 			self.session.openWithCallback(
 				boundFunction(self.doRemoveAutoinstallNow, path, action),
 				MessageBox,
-				_("Do you really want to delete the generic 'autoinstall' list too?\n\nOn shared storage, it may belong to another receiver!"),
+				_("Do you really want to delete the generic 'autoinstall' file too?\n\nOn shared storage, it may belong to another receiver!"),
 				type=MessageBox.TYPE_YESNO,
 				default=False,
 				picon=MessageBox.TYPE_ERROR
