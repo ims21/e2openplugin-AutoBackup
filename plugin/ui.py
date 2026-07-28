@@ -346,6 +346,7 @@ class Config(ConfigListScreen, Screen):
 		writeLog("","w")
 
 		self.archivePending = False
+		self.archiveCreator = None
 		self.cfgwhere.addNotifier(self.changedWhere)
 		self.onClose.append(self.__onClose)
 		self.setTitle(_("AutoBackup Configuration"))
@@ -360,6 +361,7 @@ class Config(ConfigListScreen, Screen):
 			self.list.append((4 * " " + _("Start time"), self.cfg.wakeup, _("Set the reference time for automatic backups.")))
 		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Keep an Autoinstall file with a list of installed packages in the local backup.")))
 		self.list.append((_("Save EPG cache"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a manual backup.")))
+		self.list.append((_("Keep backup archives"), self.cfg.keeparchives, _("Select how many backup archives of each type are kept.")))
 		if ENABLE_EXPERIMENTAL_FEATURES == True:
 			self.list.append((_("Archive information priority"), self.cfg.method, _("Select whether archive information is read from autobackup.info first or from the archive filename first.")))
 			self.list.append((_("Enable timing measurements"), self.cfg.measureTime, _("Display the time needed to find and filter backup archives.")))
@@ -663,6 +665,12 @@ class Config(ConfigListScreen, Screen):
 				self.doArchiveCurrentBackup()
 				return
 
+		if self.archiveCreator is not None:
+			archiveCreator = self.archiveCreator
+			self.archiveCreator = None
+			if not retval:
+				archiveCreator.removeOldArchives()
+
 		txt = _("Failed") if retval else _("Done")
 		self.showOutput()
 		self.data = ''
@@ -763,16 +771,20 @@ class Config(ConfigListScreen, Screen):
 		archive = ArchiveCreator(self.cfgwhere.value)
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
 		archive.createInfo(backupDir)
-		self.executeCommand(archive.buildArchiveCommand(backupDir, removeInfo=True))
+		self.archiveCreator = archive
+		if self.executeCommand(archive.buildArchiveCommand(backupDir, removeInfo=True)):
+			self.archiveCreator = None
 
 	def doArchiveCurrentSettings(self):
 		if not self.prepareCommand():
 			return
 		archive = ArchiveCreator(self.cfgwhere.value)
 		cmd = archive.buildCurrentSettingsCommand()
+		self.archiveCreator = archive
 		self.container.appClosed.remove(self.appClosed)
 		self.container.appClosed.append(self.archiveCurrentSettingsClosed)
 		if self.executeCommand(cmd):
+			self.archiveCreator = None
 			self.container.appClosed.remove(self.archiveCurrentSettingsClosed)
 			self.container.appClosed.append(self.appClosed)
 
@@ -780,7 +792,11 @@ class Config(ConfigListScreen, Screen):
 		self.container.appClosed.remove(self.archiveCurrentSettingsClosed)
 		self.container.appClosed.append(self.appClosed)
 
+		archiveCreator = self.archiveCreator
+		self.archiveCreator = None
 		if not retval:
+			if archiveCreator is not None:
+				archiveCreator.removeOldArchives()
 			self["statusbar"].setText(_("Done"))
 			self["status"].setText(_("Backup archive created"))
 		else:
@@ -899,8 +915,10 @@ class ArchiveCreator:
 		return (
 			'cd "%s" && '
 			'tar -czf "%s/backup/%s" %s %s; '
+			'archiveStatus=$?; '
 			'%s'
-			'rm -rf "%s"'
+			'rm -rf "%s"; '
+			'exit $archiveStatus'
 		) % (
 			backupDir,
 			self.destination,
@@ -918,6 +936,42 @@ class ArchiveCreator:
 			plugin.backupCommand(self.tmpBackupDir, fullArchive=True),
 			self.buildArchiveCommand(os.path.join(self.tmpBackupDir, "backup"))
 		)
+
+	def removeOldArchives(self):
+		keepArchives = config.plugins.autobackup.keeparchives.value
+		if keepArchives == "all" or self.archiveName is None:
+			return
+
+		match = re.match(r"^\d{8}_\d{4}(\..+)$", self.archiveName)
+		if not match:
+			return
+
+		archivePattern = re.compile(
+			r"^\d{8}_\d{4}%s$" % re.escape(match.group(1))
+		)
+		backupDir = os.path.join(self.destination, "backup")
+
+		try:
+			archives = [
+				entry.name
+				for entry in os.scandir(backupDir)
+				if archivePattern.match(entry.name)
+			]
+		except Exception as ex:
+			print("[AutoBackup] Failed to list backup archives: %s" % ex)
+			return
+
+		archives.sort(reverse=True)
+		for archiveName in archives[int(keepArchives):]:
+			archiveFile = os.path.join(backupDir, archiveName)
+			try:
+				os.remove(archiveFile)
+				print("[AutoBackup] Removed old backup archive: %s" % archiveFile)
+			except Exception as ex:
+				print(
+					"[AutoBackup] Failed to remove old backup archive %s: %s" %
+					(archiveFile, ex)
+				)
 
 
 def getRequiredArchiveInfo(filters):

@@ -28,6 +28,14 @@ config.plugins.autobackup.lastbackup = ConfigText(default="0")
 config.plugins.autobackup.autoinstall = ConfigOnOff(default = True)
 config.plugins.autobackup.where = ConfigText(default = "/media/hdd")
 config.plugins.autobackup.epgcache = ConfigOnOff(default = False)
+config.plugins.autobackup.keeparchives = ConfigSelection(default="all", choices=[
+	("1", "1"),
+	("2", "2"),
+	("5", "5"),
+	("10", "10"),
+	("20", "20"),
+	("all", _("All")),
+])
 # for ENABLE_EXPERIMENTAL_FEATURES
 config.plugins.autobackup.method = ConfigOnOff(default = True)
 config.plugins.autobackup.measureTime = ConfigOnOff(default=False)
@@ -66,20 +74,23 @@ def runBackup():
 	if destination:
 		try:
 			archivePending = [True]
+			archiveCreator = [None]
 
 			def appClosed(retval):
 				global container
 				if not retval and archivePending[0]:
 					archivePending[0] = False
 					from .ui import ArchiveCreator
-					archive = ArchiveCreator(destination)
+					archiveCreator[0] = ArchiveCreator(destination)
 					backupDir = os.path.join(destination, "backup")
-					archive.createInfo(backupDir)
-					if container.execute(archive.buildArchiveCommand(backupDir, removeInfo=True)):
+					archiveCreator[0].createInfo(backupDir)
+					if container.execute(archiveCreator[0].buildArchiveCommand(backupDir, removeInfo=True)):
 						print("[AutoBackup] failed to execute archive")
 						container = None
 					return
 				if not retval:
+					if archiveCreator[0] is not None:
+						archiveCreator[0].removeOldArchives()
 					setLastBackupTime()
 				print("[AutoBackup] complete, result:", retval)
 				container = None
