@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 12:33+0200\n"
+"POT-Creation-Date: 2026-07-28 21:08+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: kvinto\n"
 "Language-Team: http://gisclub.tv\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Poedit 3.0\n"
 
-#: ../ui.py:689
+#: ../ui.py:697
 #, python-format
 msgid ""
 "\n"
@@ -21,71 +21,75 @@ msgid ""
 "Checked %s archives\n"
 msgstr ""
 
-#: ../ui.py:1463
+#: ../plugin.py:37
+msgid "All"
+msgstr ""
+
+#: ../ui.py:1517
 msgid "Apply filters"
 msgstr ""
 
-#: ../ui.py:1087
+#: ../ui.py:1141
 msgid "Archive contents"
 msgstr ""
 
-#: ../ui.py:788
+#: ../ui.py:804
 msgid "Archive creation failed"
 msgstr ""
 
-#: ../ui.py:1445
+#: ../ui.py:1499
 msgid "Archive filters"
 msgstr ""
 
-#: ../ui.py:364
+#: ../ui.py:366
 msgid "Archive information priority"
 msgstr ""
 
-#: ../plugin.py:246
+#: ../plugin.py:257
 msgid "Auto backup"
 msgstr "Авто Бекап"
 
-#: ../ui.py:302 ../ui.py:351
+#: ../ui.py:302 ../ui.py:352
 msgid "AutoBackup Configuration"
 msgstr "Налаштування AutoBackup"
 
-#: ../ui.py:357
+#: ../ui.py:358
 #, fuzzy
 msgid "Automatic backup"
 msgstr "Авто Бекап"
 
-#: ../plugin.py:250
+#: ../plugin.py:261
 msgid "Automatic settings backup"
 msgstr "Налаштування автоматичного резервного копіювання"
 
-#: ../ui.py:357
+#: ../ui.py:358
 msgid "Automatically creates backups at the selected frequency and start time."
 msgstr ""
 
-#: ../ui.py:444
+#: ../ui.py:446
 msgid "Backup EPG cache"
 msgstr "Резервне копіювання кешу EPG"
 
-#: ../ui.py:785
+#: ../ui.py:801
 #, fuzzy
 msgid "Backup archive created"
 msgstr "Резервне копіювання кешу EPG"
 
-#: ../ui.py:1234 ../ui.py:1288
+#: ../ui.py:1288 ../ui.py:1342
 #, fuzzy
 msgid "Backup archive list"
 msgstr "Резервне копіювання кешу EPG"
 
-#: ../ui.py:359
+#: ../ui.py:360
 #, fuzzy
 msgid "Backup frequency"
 msgstr "Відсутній backup"
 
-#: ../ui.py:356
+#: ../ui.py:357
 msgid "Backup location"
 msgstr "Місце зберження"
 
-#: ../ui.py:1031
+#: ../ui.py:1085
 #, python-format
 msgid ""
 "Backup was created for another receiver.\n"
@@ -97,15 +101,15 @@ msgstr ""
 msgid "CF"
 msgstr "CF"
 
-#: ../ui.py:321 ../ui.py:1462 ../ui.py:1515
+#: ../ui.py:321 ../ui.py:1516 ../ui.py:1569
 msgid "Cancel"
 msgstr "Відмінити"
 
-#: ../ui.py:560
+#: ../ui.py:562
 msgid "Choose a backup."
 msgstr ""
 
-#: ../ui.py:509
+#: ../ui.py:511
 #, fuzzy
 msgid ""
 "Choose a backup.\n"
@@ -118,19 +122,19 @@ msgstr ""
 "Буде видалено список автовстановлення. \n"
 "Ви дійсно хочете продовжити?"
 
-#: ../ui.py:361
+#: ../ui.py:362
 msgid "Create Autoinstall"
 msgstr "Створення AutoInstall"
 
-#: ../ui.py:443
+#: ../ui.py:445
 msgid "Create a backup of the current settings."
 msgstr ""
 
-#: ../ui.py:448
+#: ../ui.py:450
 msgid "Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name."
 msgstr ""
 
-#: ../ui.py:448
+#: ../ui.py:450
 msgid "Create archive with current settings"
 msgstr ""
 
@@ -138,59 +142,59 @@ msgstr ""
 msgid "Daily"
 msgstr ""
 
-#: ../ui.py:585 ../ui.py:607 ../ui.py:1243
+#: ../ui.py:587 ../ui.py:609 ../ui.py:1297
 msgid "Delete"
 msgstr ""
 
-#: ../ui.py:590 ../ui.py:617
+#: ../ui.py:592 ../ui.py:619
 #, fuzzy
 msgid "Delete 'autoinstall' list?"
 msgstr "Видалити список автовстановлення"
 
-#: ../ui.py:611
+#: ../ui.py:613
 #, fuzzy
 msgid "Delete including the generic 'autoinstall' file"
 msgstr "Видалити список автовстановлення"
 
-#: ../ui.py:1554
+#: ../ui.py:1608
 msgid "Deselect"
 msgstr "Скасувати"
 
-#: ../ui.py:356
+#: ../ui.py:357
 msgid "Directory where backup files are created."
 msgstr ""
 
-#: ../ui.py:424
+#: ../ui.py:426
 msgid "Discard unsaved changes?"
 msgstr ""
 
-#: ../ui.py:365
+#: ../ui.py:367
 msgid "Display the time needed to find and filter backup archives."
 msgstr ""
 
-#: ../ui.py:630
+#: ../ui.py:632
 msgid ""
 "Do you really want to delete the generic 'autoinstall' file too?\n"
 "\n"
 "On shared storage, it may belong to another receiver!"
 msgstr ""
 
-#: ../ui.py:1376
+#: ../ui.py:1430
 #, fuzzy
 msgid "Do you really want to delete this backup archive?"
 msgstr ""
 "Виберіть резервну копію налаштувань, яку потрібно відновити.\n"
 "Ви дійсно хочете відновити ці налаштування та перезапустити?"
 
-#: ../ui.py:666 ../ui.py:784
+#: ../ui.py:674 ../ui.py:800
 msgid "Done"
 msgstr "Закінчено"
 
-#: ../ui.py:365
+#: ../ui.py:367
 msgid "Enable timing measurements"
 msgstr ""
 
-#: ../ui.py:1458
+#: ../ui.py:1512
 msgid "Enigma"
 msgstr ""
 
@@ -242,16 +246,16 @@ msgstr ""
 msgid "Every hour"
 msgstr ""
 
-#: ../ui.py:666 ../ui.py:787
+#: ../ui.py:674 ../ui.py:803
 msgid "Failed"
 msgstr "Не вдалося"
 
-#: ../ui.py:799
+#: ../ui.py:815
 #, fuzzy
 msgid "Failed to delete backup."
 msgstr "Вибір файлів для резервн. копіювання."
 
-#: ../ui.py:1246
+#: ../ui.py:1300
 msgid "Filters"
 msgstr ""
 
@@ -259,23 +263,28 @@ msgstr ""
 msgid "Harddisk"
 msgstr "Жорсткий диск"
 
-#: ../ui.py:1456
+#: ../ui.py:1510
 msgid "Hostname"
 msgstr ""
 
-#: ../ui.py:1457
+#: ../ui.py:1511
 msgid "Image"
 msgstr ""
 
-#: ../ui.py:445
+#: ../ui.py:447
 msgid "Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."
 msgstr ""
 
-#: ../ui.py:361
+#: ../ui.py:362
 msgid "Keep an Autoinstall file with a list of installed packages in the local backup."
 msgstr ""
 
-#: ../ui.py:397
+#: ../ui.py:364
+#, fuzzy
+msgid "Keep backup archives"
+msgstr "Резервне копіювання кешу EPG"
+
+#: ../ui.py:399
 msgid "Last backup date"
 msgstr "Дата останнього резервного копіювання"
 
@@ -287,36 +296,36 @@ msgstr ""
 msgid "Manual"
 msgstr "Ручна"
 
-#: ../ui.py:1458
+#: ../ui.py:1512
 msgid "Match the current enigma name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1456
+#: ../ui.py:1510
 msgid "Match the current hostname using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1457
+#: ../ui.py:1511
 msgid "Match the current image name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1455
+#: ../ui.py:1509
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr ""
 
-#: ../ui.py:1459
+#: ../ui.py:1513
 msgid "Match the current slot number using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:584 ../ui.py:606
+#: ../ui.py:586 ../ui.py:608
 msgid "No"
 msgstr ""
 
-#: ../ui.py:506 ../ui.py:553
+#: ../ui.py:508 ../ui.py:555
 #, fuzzy
 msgid "No 'autoinstall' file found"
 msgstr "Створення AutoInstall"
 
-#: ../ui.py:519
+#: ../ui.py:521
 msgid ""
 "No 'autoinstall' file matching this receiver's MAC address was found.\n"
 "\n"
@@ -325,7 +334,7 @@ msgid ""
 "Use it anyway?"
 msgstr ""
 
-#: ../ui.py:598
+#: ../ui.py:600
 msgid ""
 "No 'autoinstall' list matching this receiver's MAC address was found.\n"
 "\n"
@@ -334,18 +343,18 @@ msgid ""
 "Delete it anyway?"
 msgstr ""
 
-#: ../ui.py:1297 ../ui.py:1391
+#: ../ui.py:1351 ../ui.py:1445
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
 "Try changing the filter settings."
 msgstr ""
 
-#: ../ui.py:399 ../ui.py:402
+#: ../ui.py:401 ../ui.py:404
 msgid "No backup present"
 msgstr "Відсутній backup"
 
-#: ../ui.py:390
+#: ../ui.py:392
 msgid "No suitable media found, insert USB stick, flash card or harddisk."
 msgstr "Не знайдено відповідного носія, вставте USB-накопичувач, флеш-карту, або жорсткий диск."
 
@@ -353,48 +362,48 @@ msgstr "Не знайдено відповідного носія, вставт�
 msgid "Nowhere"
 msgstr "Ніколи"
 
-#: ../ui.py:1309
+#: ../ui.py:1363
 msgid "Original order"
 msgstr ""
 
-#: ../ui.py:1568
+#: ../ui.py:1622
 msgid "Really close without saving settings?"
 msgstr "Дійсно закрити без збереження налаштувань?"
 
-#: ../ui.py:1455
+#: ../ui.py:1509
 msgid "Receiver MAC"
 msgstr ""
 
-#: ../ui.py:446
+#: ../ui.py:448
 msgid "Remove autoinstall list"
 msgstr "Видалити список автовстановлення"
 
-#: ../ui.py:446
+#: ../ui.py:448
 msgid "Remove the 'autoinstall' file from a backup."
 msgstr ""
 
-#: ../ui.py:324 ../ui.py:447 ../ui.py:1244
+#: ../ui.py:324 ../ui.py:449 ../ui.py:1298
 msgid "Restore"
 msgstr "Відновлення"
 
-#: ../ui.py:449
+#: ../ui.py:451
 #, fuzzy
 msgid "Restore from archive"
 msgstr "Зберегти попередню резервну копію"
 
-#: ../ui.py:449
+#: ../ui.py:451
 msgid "Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored."
 msgstr ""
 
-#: ../ui.py:447
+#: ../ui.py:449
 msgid "Restore settings from the current backup."
 msgstr ""
 
-#: ../ui.py:1334
+#: ../ui.py:1388
 msgid "Restore this backup archive and restart?"
 msgstr ""
 
-#: ../ui.py:717
+#: ../ui.py:725
 #, python-format
 msgid ""
 "Restore this backup archive and restart?\n"
@@ -404,23 +413,23 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../ui.py:1336
+#: ../ui.py:1390
 msgid "Restore this backup archive anyway and restart?"
 msgstr ""
 
-#: ../ui.py:1245 ../ui.py:1309
+#: ../ui.py:1299 ../ui.py:1363
 msgid "Reverse order"
 msgstr ""
 
-#: ../ui.py:443
+#: ../ui.py:445
 msgid "Run a backup now"
 msgstr "Виконати резервне копіювання зараз"
 
-#: ../ui.py:445
+#: ../ui.py:447
 msgid "Run autoinstall"
 msgstr "Запутити AutoInstall"
 
-#: ../ui.py:475 ../ui.py:529 ../ui.py:750 ../ui.py:812
+#: ../ui.py:477 ../ui.py:531 ../ui.py:758 ../ui.py:828
 msgid "Running..."
 msgstr "Запуск..."
 
@@ -428,63 +437,67 @@ msgstr "Запуск..."
 msgid "SD"
 msgstr "SD"
 
-#: ../ui.py:322 ../ui.py:1516
+#: ../ui.py:322 ../ui.py:1570
 msgid "Save"
 msgstr "Зберегти"
 
-#: ../ui.py:362
+#: ../ui.py:363
 #, fuzzy
 msgid "Save EPG cache"
 msgstr "Резервне копіювання кешу EPG"
 
-#: ../ui.py:444
+#: ../ui.py:446
 msgid "Save current contents of EPG cache to a file."
 msgstr ""
 
-#: ../ui.py:362
+#: ../ui.py:363
 msgid "Saves the contents of the EPG cache to a file before creating a manual backup."
 msgstr ""
 
-#: ../ui.py:693
+#: ../ui.py:701
 #, python-format
 msgid "Search time: %s"
 msgstr ""
 
-#: ../ui.py:1556
+#: ../ui.py:1610
 msgid "Select"
 msgstr "Вибрати"
 
-#: ../ui.py:442
+#: ../ui.py:444
 msgid "Select files and folders to include in the backup. Basic backup items are already selected."
 msgstr ""
 
-#: ../ui.py:442
+#: ../ui.py:444
 msgid "Select files to backup"
 msgstr "Вибір файлів для резервн. копіювання."
 
-#: ../ui.py:1547
+#: ../ui.py:1601
 msgid "Select files/folders to backup"
 msgstr "Виберіть файли/папки для резервн. копіювання"
 
-#: ../ui.py:359
+#: ../ui.py:364
+msgid "Select how many backup archives of each type are kept."
+msgstr ""
+
+#: ../ui.py:360
 #, fuzzy
 msgid "Select how often an automatic backup is created."
 msgstr "Щоденно автоматичне резервне копіювання"
 
-#: ../ui.py:364
+#: ../ui.py:366
 msgid "Select whether archive information is read from autobackup.info first or from the archive filename first."
 msgstr ""
 
-#: ../ui.py:360
+#: ../ui.py:361
 #, fuzzy
 msgid "Set the reference time for automatic backups."
 msgstr "Щоденно автоматичне резервне копіювання"
 
-#: ../ui.py:1459
+#: ../ui.py:1513
 msgid "Slot"
 msgstr ""
 
-#: ../ui.py:360
+#: ../ui.py:361
 #, fuzzy
 msgid "Start time"
 msgstr "Час автоматичного резервного копіювання"
@@ -493,7 +506,7 @@ msgstr "Час автоматичного резервного копіюван�
 msgid "USB"
 msgstr ""
 
-#: ../ui.py:1427
+#: ../ui.py:1481
 msgid "Unable to read backup archive."
 msgstr ""
 
@@ -501,11 +514,11 @@ msgstr ""
 msgid "Unknown time"
 msgstr ""
 
-#: ../ui.py:1070
+#: ../ui.py:1124
 msgid "autobackup.info file is missing in archive"
 msgstr ""
 
-#: ../ui.py:501 ../ui.py:545 ../ui.py:713
+#: ../ui.py:503 ../ui.py:547 ../ui.py:721
 msgid "from: "
 msgstr "з: "
 
