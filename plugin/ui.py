@@ -442,8 +442,8 @@ class Config(ConfigListScreen, Screen):
 		lst.append((_("Select files to backup"), self.selectFiles, _("Select files and folders to include in the backup. Basic backup items are already selected."))),
 		lst.append((_("Run a backup now"), self.doBackup, _("Create a backup of the current settings."))),
 		lst.append((_("Backup EPG cache"), self.doepgcachebackup, _("Save current contents of EPG cache to a file."))),
-		lst.append((_("Run autoinstall"), self.doautoinstall, _("Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."))),
-		lst.append((_("Remove autoinstall list"), self.doremoveautoinstall, _("Remove the 'autoinstall' file from a backup."))),
+		lst.append((_("Run autoinstall"), self.doAutoinstall, _("Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."))),
+		lst.append((_("Remove autoinstall list"), self.doRemoveAutoinstall, _("Remove the 'autoinstall' file from a backup."))),
 		lst.append((_("Restore"), self.doRestore, _("Restore settings from the current backup."))),
 		lst.append((_("Create archive with current settings"), self.doArchiveCurrentSettings, _("Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name."))),
 		lst.append((_("Restore from archive"), self.doRestorePreviousManual, _("Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored."))),
@@ -482,66 +482,174 @@ class Config(ConfigListScreen, Screen):
 			self.archivePending = False
 			self.showOutput()
 
-	def doautoinstall(self):
+	def getBackupLocations(self):
+			return [media for media in os.listdir("/media/") if os.path.isdir(os.path.join("/media/", media))]
+
+	def doAutoinstall(self):
 		backupList = []
-		foundBackupLocations = [media for media in os.listdir("/media/") if os.path.isdir(os.path.join("/media/", media))]
+		macaddr = getMacAddress()
+		foundBackupLocations = self.getBackupLocations()
 		for backupMedia in foundBackupLocations:
 			path = "/media/%s/backup/" % backupMedia
-			if os.path.isfile(path + "autoinstall") and os.path.isfile(path + ".timestamp"):
+			autoinstallFile = path + "autoinstall" + macaddr
+			macMatched = os.path.isfile(autoinstallFile)
+			if not macMatched:
+				autoinstallFile = path + "autoinstall"
+			if os.path.isfile(autoinstallFile) and os.path.isfile(path + ".timestamp"):
 				try:
 					st = os.stat(os.path.join(path, ".timestamp"))
-					backupList.append(("/media/%s " % backupMedia + _("from: ") + " ".join(FuzzyTime(st.st_mtime, inPast=True)), "/media/%s" % backupMedia, st.st_mtime))
+					backupList.append(("/media/%s " % backupMedia + _("from: ") + " ".join(FuzzyTime(st.st_mtime, inPast=True)), (autoinstallFile, macMatched), st.st_mtime))
 				except Exception as ex:
 					print("Failed to stat %s: %s" % (path, ex))
 
 		if not backupList:
-			self.session.open(MessageBox, _("No autoinstall list found"), type=MessageBox.TYPE_ERROR, timeout=10)
+			self.session.open(MessageBox, _("No 'autoinstall' list found"), type=MessageBox.TYPE_ERROR, timeout=10)
 			return
 		backupList.sort(key=lambda b: b[2], reverse=True)
-		self.session.openWithCallback(self.doautoinstallnow, MessageBox, _("Choose a backup.\nThis will reinstall all plugins from your backup.\nDo you really want to reinstall?"), list=backupList)
+		self.session.openWithCallback(self.doAutoinstallNow, MessageBox, _("Choose a backup.\n\nPlugins from the 'autoinstall' list will be installed. Already installed plugins will be skipped.\n\nDo you really want to continue?"), list=backupList)
 
-	def doautoinstallnow(self, path):
-		if not path:
+	def doAutoinstallNow(self, result, answer=None):
+		if not result:
+			return
+		autoinstallFile, macMatched = result
+		if not macMatched and answer is None:
+			self.session.openWithCallback(
+				boundFunction(self.doAutoinstallNow, result),
+				MessageBox,
+				_("No 'autoinstall' list matching this receiver's MAC address was found.\n\nThe generic 'autoinstall' list may belong to another receiver.\n\nUse it anyway?"),
+				type=MessageBox.TYPE_YESNO,
+				default=False,
+				picon=MessageBox.TYPE_ERROR
+			)
+			return
+		if not macMatched and not answer:
 			return
 		self.data = ''
 		self.showOutput()
 		self["statusbar"].setText(_('Running...'))
-		cmd = 'opkg update && while read f o; do opkg install $o $f; done < ' + path + '/backup/autoinstall'
+		cmd = 'opkg update && while read -r f o; do case "$f" in ""|"#"*) continue ;; esac; opkg install $o $f; done < "%s"' % autoinstallFile
 		if self.container.execute(cmd):
-			print("[AutoInstall] failed to execute")
+			print("[Autoinstall] failed to execute")
 			self.showOutput()
 
-	def doremoveautoinstall(self):
+	def doRemoveAutoinstall(self):
 		backupList = []
-		foundBackupLocations = [media for media in os.listdir("/media/") if os.path.isdir(os.path.join("/media/", media))]
+		macaddr = getMacAddress()
+		foundBackupLocations = self.getBackupLocations()
 		for backupMedia in foundBackupLocations:
 			path = "/media/%s/backup/" % backupMedia
-			if os.path.isfile(path + "autoinstall") and os.path.isfile(path + ".timestamp"):
+			if (os.path.isfile(path + "autoinstall" + macaddr) or os.path.lexists(path + "autoinstall")) and os.path.isfile(path + ".timestamp"):
 				try:
-					st = os.stat(os.path.join(path, ".timestamp"))
-					backupList.append(("/media/%s " % backupMedia + _("from: ") + " ".join(FuzzyTime(st.st_mtime, inPast=True)), "/media/%s" % backupMedia, st.st_mtime))
+					st = os.stat(path + ".timestamp")
+					backupList.append((
+						"/media/%s " % backupMedia + _("from: ") + " ".join(FuzzyTime(st.st_mtime, inPast=True)),
+						"/media/%s" % backupMedia,
+						st.st_mtime
+					))
 				except Exception as ex:
 					print("Failed to stat %s: %s" % (path, ex))
 
 		if not backupList:
-			self.session.open(MessageBox, _("No autoinstall list found"), type=MessageBox.TYPE_ERROR, timeout=10)
+			self.session.open(MessageBox, _("No 'autoinstall' list found"), type=MessageBox.TYPE_ERROR, timeout=10)
 			return
-		backupList.sort(key=lambda b: b[2], reverse=True)
-		self.session.openWithCallback(self.doremoveautoinstallnow, MessageBox, _("Choose a backup.\nThis will delete autoinstall list.\nDo you really want to continue?"), list=backupList)
 
-	def doremoveautoinstallnow(self, path):
+		backupList.sort(key=lambda b: b[2], reverse=True)
+		self.session.openWithCallback(
+			self.doRemoveAutoinstallNow,
+			MessageBox,
+			_("Choose a backup."),
+			list=backupList
+		)
+
+	def doRemoveAutoinstallNow(self, path, action="choose", answer=None):
 		if not path:
 			return
-		path = os.path.join(path, 'backup', "autoinstall")
-		try:
-			os.unlink(path)
-		except:
-			pass
-		try:
-			macaddr = open('/sys/class/net/eth0/address').read().strip().replace(':', '')
-			os.unlink(path + macaddr)
-		except:
-			pass
+
+		autoinstallPath = os.path.join(path, "backup", "autoinstall")
+		macPath = autoinstallPath + getMacAddress()
+		macExists = os.path.isfile(macPath)
+		genericExists = os.path.lexists(autoinstallPath)
+		genericIsLink = os.path.islink(autoinstallPath)
+		brokenLink = genericIsLink and not os.path.exists(autoinstallPath)
+		linkMatchesMac = genericIsLink and not brokenLink and os.path.realpath(autoinstallPath) == os.path.realpath(macPath)
+
+		if action is None or action == "back":
+			self.doRemoveAutoinstall()
+			return
+
+		if action == "choose":
+			if not macExists:
+				if brokenLink:
+					actions = [
+						(_("No"), "back"),
+						(_("Delete"), "deleteGeneric")
+					]
+					self.session.openWithCallback(
+						boundFunction(self.doRemoveAutoinstallNow, path),
+						MessageBox,
+						_("Delete 'autoinstall' list?"),
+						list=actions
+					)
+					return
+
+				self.session.openWithCallback(
+					boundFunction(self.doRemoveAutoinstallNow, path, "deleteGeneric"),
+					MessageBox,
+					_("No 'autoinstall' list matching this receiver's MAC address was found.\n\nThe generic 'autoinstall' list may belong to another receiver.\n\nDelete it anyway?"),
+					type=MessageBox.TYPE_YESNO,
+					default=False,
+					picon=MessageBox.TYPE_ERROR
+				)
+				return
+
+			actions = [
+				(_("No"), "back"),
+				(_("Delete"), "deleteCurrent")
+			]
+			if genericExists and not linkMatchesMac and not brokenLink:
+				actions.append((
+					_("Delete including the generic 'autoinstall' list"),
+					"deleteBoth"
+				))
+			self.session.openWithCallback(
+				boundFunction(self.doRemoveAutoinstallNow, path),
+				MessageBox,
+				_("Delete 'autoinstall' list?"),
+				list=actions
+			)
+			return
+
+		if answer is False:
+			self.doRemoveAutoinstall()
+			return
+
+		if action == "deleteBoth" and answer is None:
+			self.session.openWithCallback(
+				boundFunction(self.doRemoveAutoinstallNow, path, action),
+				MessageBox,
+				_("Do you really want to delete the generic 'autoinstall' list too?\n\nOn shared storage, it may belong to another receiver!"),
+				type=MessageBox.TYPE_YESNO,
+				default=False,
+				picon=MessageBox.TYPE_ERROR
+			)
+			return
+
+		if action == "deleteCurrent":
+			files = (macPath,)
+			if linkMatchesMac or brokenLink:
+				files += (autoinstallPath,)
+		elif action == "deleteGeneric":
+			files = (autoinstallPath,)
+		elif action == "deleteBoth":
+			files = (macPath, autoinstallPath)
+		else:
+			return
+
+		for filename in files:
+			try:
+				os.unlink(filename)
+			except Exception as ex:
+				print("Failed to delete '%s': %s" % (os.path.basename(filename), ex))
 
 	def doepgcachebackup(self):
 		enigma.eEPGCache.getInstance().save()
@@ -773,6 +881,11 @@ class ArchiveCreator:
 			self.mac,
 			self.mac
 		)
+		backupLinks = (
+			'$(for link in PLi-AutoBackup.tar.gz autoinstall; do '
+			'[ -L "$link" ] && echo "$link"; '
+			'done)'
+		)
 
 		timestamp = strftime("%Y%m%d_%H%M")
 		self.archiveName = "%s.%s.%s.%s%s.tar.gz" % (
@@ -785,7 +898,7 @@ class ArchiveCreator:
 
 		return (
 			'cd "%s" && '
-			'tar -czf "%s/backup/%s" %s; '
+			'tar -czf "%s/backup/%s" %s %s; '
 			'%s'
 			'rm -rf "%s"'
 		) % (
@@ -793,6 +906,7 @@ class ArchiveCreator:
 			self.destination,
 			self.archiveName,
 			backupFiles,
+			backupLinks,
 			removeInfoCommand,
 			self.tmpBackupDir
 		)
