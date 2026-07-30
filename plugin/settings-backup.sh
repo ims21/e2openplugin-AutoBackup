@@ -66,7 +66,7 @@ fi
 
 # remove duplicate lines in case multiple are found
 if [ -f /tmp/rootcron ]; then
-	awk '!seen[$0]++' /tmp/rootcron > /tmp/crontab
+	awk '!NF || !x[$0]++' /tmp/rootcron > /tmp/crontab
 	rm /tmp/rootcron
 	echo /tmp/crontab >> $RESTORE_TEMP
 fi
