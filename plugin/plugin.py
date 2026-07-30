@@ -32,8 +32,10 @@ config.plugins.autobackup.keeparchives = ConfigSelection(default="all", choices=
 	("1", "1"),
 	("2", "2"),
 	("5", "5"),
+	("7", "7"),
 	("10", "10"),
 	("20", "20"),
+	("50", "50"),
 	("all", _("All")),
 ])
 # for ENABLE_EXPERIMENTAL_FEATURES
