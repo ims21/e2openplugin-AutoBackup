@@ -65,6 +65,12 @@ def setLastBackupTime():
 	config.plugins.autobackup.lastbackup.save()
 	configfile.save()
 
+def writeLog(text, mode="a"):
+    try:
+        with open("/tmp/autobackup.log", mode) as f:
+            f.write(text)
+    except Exception as ex:
+        print("[AutoBackup] Failed to write log:", ex)
 
 def runBackup():
 	global container
@@ -101,6 +107,7 @@ def runBackup():
 				if isinstance(data, bytes):
 					data = data.decode("utf-8", errors="replace")
 				print("[AutoBackup]", data.rstrip())
+				writeLog(data)
 
 			print("[AutoBackup] start automatic backup")
 			cmd = backupCommand(fullArchive=True)
@@ -148,6 +155,7 @@ class AutoStartTimer:
 		self.timer = enigma.eTimer()
 		self.timer.callback.append(self.onTimer)
 		self.wakeTime = -1
+		writeLog("start:\n", "w")
 		self.startupCheck = config.plugins.autobackup.enabled.value
 		if self.startupCheck:
 			self.timer.startLongTimer(self.STARTUP_DELAY)
@@ -204,8 +212,10 @@ class AutoStartTimer:
 		except (TypeError, ValueError):
 			lastBackup = 0
 
+		writeLog("Previous=%s, lastBackup=%s\n" % (previous, lastBackup))
 		if previous > lastBackup:
 			print("[AutoBackup] no backup found since the last scheduled time")
+			writeLog("Missed backup found, starting backup\n")
 			return runBackup()
 
 		return False
@@ -230,6 +240,7 @@ class AutoStartTimer:
 		return self.wakeTime
 
 	def onTimer(self):
+		writeLog("Timer fired, startupCheck=%s\n" % self.startupCheck)
 		self.timer.stop()
 		if self.startupCheck:
 			self.startupCheck = False

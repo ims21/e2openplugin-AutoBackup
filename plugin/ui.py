@@ -29,14 +29,6 @@ from time import mktime, strftime, time
 ENABLE_EXPERIMENTAL_FEATURES = True
 
 
-def writeLog(text, mode="a"):
-    try:
-        with open("/tmp/autobackup.log", mode) as f:
-            f.write(text)
-    except Exception as ex:
-        print("[AutoBackup] Failed to write log:", ex)
-
-
 FRIENDLY = {
 	"/media/hdd": _("Harddisk"),
 	"/media/usb": _("USB"),
@@ -342,8 +334,6 @@ class Config(ConfigListScreen, Screen):
 		self.container = enigma.eConsoleAppContainer()
 		self.container.appClosed.append(self.appClosed)
 		self.container.dataAvail.append(self.dataAvail)
-
-		writeLog("","w")
 
 		self.archivePending = False
 		self.archiveCreator = None
@@ -683,7 +673,7 @@ class Config(ConfigListScreen, Screen):
 		print("[AutoBackup]", s.strip())
 		self["status"].appendText(s)
 
-		writeLog(s, "a")
+		plugin.writeLog(s, "a")
 
 	def doRestore(self):
 		backupDir = os.path.join(self.cfgwhere.value, "backup")
