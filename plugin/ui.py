@@ -462,6 +462,8 @@ class Config(ConfigListScreen, Screen):
 		configfile.save()
 		if config.plugins.autobackup.epgcache.value:
 			self.doepgcachebackup()
+
+		plugin.writeLog("Manual backup:\n", "w")
 		self.data = ''
 		self.showOutput()
 		self["statusbar"].setText(_('Running...'))
@@ -660,6 +662,7 @@ class Config(ConfigListScreen, Screen):
 			self.archiveCreator = None
 			if not retval:
 				archiveCreator.removeOldArchives()
+				plugin.setLastBackupTime()
 
 		txt = _("Failed") if retval else _("Done")
 		self.showOutput()
@@ -812,6 +815,8 @@ class Config(ConfigListScreen, Screen):
 	def doRestorePreviousConfirmed(self, backupFile, backupDir, answer):
 		if not answer:
 			return
+
+		plugin.writeLog("Restore:\n", "w")
 
 		self.data = ''
 		self.showOutput()

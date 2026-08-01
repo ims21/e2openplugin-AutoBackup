@@ -107,8 +107,9 @@ def runBackup():
 				if isinstance(data, bytes):
 					data = data.decode("utf-8", errors="replace")
 				print("[AutoBackup]", data.rstrip())
-				writeLog(data)
+				writeLog(data, "a")
 
+			writeLog("Automatic backup:\n", "w")
 			print("[AutoBackup] start automatic backup")
 			cmd = backupCommand(fullArchive=True)
 			container = enigma.eConsoleAppContainer()
@@ -130,7 +131,7 @@ def main(session, **kwargs):
 def doneConfiguring(session, retval):
 	"user has closed configuration, check new values...."
 	global autoStartTimer
-	if autoStartTimer is not None:
+	if autoStartTimer is not None and not autoStartTimer.startupCheck:
 		autoStartTimer.update()
 
 
@@ -155,7 +156,6 @@ class AutoStartTimer:
 		self.timer = enigma.eTimer()
 		self.timer.callback.append(self.onTimer)
 		self.wakeTime = -1
-		writeLog("start:\n", "w")
 		self.startupCheck = config.plugins.autobackup.enabled.value
 		if self.startupCheck:
 			self.timer.startLongTimer(self.STARTUP_DELAY)
@@ -212,10 +212,8 @@ class AutoStartTimer:
 		except (TypeError, ValueError):
 			lastBackup = 0
 
-		writeLog("Previous=%s, lastBackup=%s\n" % (previous, lastBackup))
 		if previous > lastBackup:
 			print("[AutoBackup] no backup found since the last scheduled time")
-			writeLog("Missed backup found, starting backup\n")
 			return runBackup()
 
 		return False
@@ -240,7 +238,6 @@ class AutoStartTimer:
 		return self.wakeTime
 
 	def onTimer(self):
-		writeLog("Timer fired, startupCheck=%s\n" % self.startupCheck)
 		self.timer.stop()
 		if self.startupCheck:
 			self.startupCheck = False
