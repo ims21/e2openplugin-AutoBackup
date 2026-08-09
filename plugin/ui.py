@@ -387,9 +387,9 @@ class Config(ConfigListScreen, Screen):
 			try:
 				if os.path.isfile(os.path.join(path, ".timestamp")) and os.path.isfile(os.path.join(path, "PLi-AutoBackup.tar.gz")):
 					st = os.stat(os.path.join(path, ".timestamp"))
-					self["status"].setText(_("Last backup date") + ": " + " ".join(FuzzyTime(st.st_mtime, inPast=True)))
+					self["status"].setText(_("Last local backup date") + ": " + " ".join(FuzzyTime(st.st_mtime, inPast=True)))
 				else:
-					self["status"].setText(_("No backup present"))
+					self["status"].setText(_("No local backup present"))
 			except Exception as ex:
 				print("Failed to stat %s: %s" % (path, ex))
 				self["status"].setText(_("No backup present"))

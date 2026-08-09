@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ims\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-09 08:53+0200\n"
+"POT-Creation-Date: 2026-08-09 14:51+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Мартин Петков <marto74bg@yahoo.co.uk>\n"
 "Language-Team: \n"
@@ -297,7 +297,8 @@ msgid "Keep backup archives"
 msgstr "Резервно копие на EPG кеша"
 
 #: ../ui.py:390
-msgid "Last backup date"
+#, fuzzy
+msgid "Last local backup date"
 msgstr "Дата на последното резервно копие"
 
 #: ../plugin.py:43
@@ -367,8 +368,13 @@ msgid ""
 "Try changing the filter settings."
 msgstr ""
 
-#: ../ui.py:392 ../ui.py:395
+#: ../ui.py:395
 msgid "No backup present"
+msgstr "Не е открито резервно копие"
+
+#: ../ui.py:392
+#, fuzzy
+msgid "No local backup present"
 msgstr "Не е открито резервно копие"
 
 #: ../ui.py:383

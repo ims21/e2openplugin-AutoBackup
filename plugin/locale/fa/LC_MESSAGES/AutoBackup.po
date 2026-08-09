@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: auto backup Persian Translation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-09 08:53+0200\n"
+"POT-Creation-Date: 2026-08-09 14:51+0200\n"
 "PO-Revision-Date: 2016-05-06 14:13+0200\n"
 "Last-Translator: neoatomic <neoatomic@users.noreply.github.com>\n"
 "Language-Team: Persian Professionals <persianpros@yahoo.com>\n"
@@ -314,7 +314,8 @@ msgstr ""
 
 #
 #: ../ui.py:390
-msgid "Last backup date"
+#, fuzzy
+msgid "Last local backup date"
 msgstr "زمان آخرین تهیه نسخه پشتیبان"
 
 #
@@ -388,8 +389,14 @@ msgid ""
 msgstr ""
 
 #
-#: ../ui.py:392 ../ui.py:395
+#: ../ui.py:395
 msgid "No backup present"
+msgstr "در حال حاضر هیچ نسخه پشتیبانی وجود ندارد"
+
+#
+#: ../ui.py:392
+#, fuzzy
+msgid "No local backup present"
 msgstr "در حال حاضر هیچ نسخه پشتیبانی وجود ندارد"
 
 #
