@@ -38,6 +38,11 @@ config.plugins.autobackup.keeparchives = ConfigSelection(default="all", choices=
 	("50", "50"),
 	("all", _("All")),
 ])
+config.plugins.autobackup.backupmode = ConfigSelection(default="archive_only", choices=[
+		("archive_only", _("Archive only")),
+		("local_and_archive", _("Local backup and archive")),
+])
+
 # for ENABLE_EXPERIMENTAL_FEATURES
 config.plugins.autobackup.method = ConfigOnOff(default = True)
 config.plugins.autobackup.measureTime = ConfigOnOff(default=False)
@@ -72,105 +77,90 @@ def writeLog(text, mode="a"):
     except Exception as ex:
         print("[AutoBackup] Failed to write log:", ex)
 
-
-AUTOMATIC_ARCHIVE_ONLY = True
-
 def runBackup():
-	if AUTOMATIC_ARCHIVE_ONLY:
-		return runArchiveOnlyBackup()
-	else:
-		return runLocalAndArchiveBackup()
-
-def runLocalAndArchiveBackup():
 	global container
+
 	if container is not None:
 		print("[AutoBackup] backup already running")
 		return False
 
 	destination = config.plugins.autobackup.where.value
-	if destination:
-		try:
-			archivePending = [True]
-			archiveCreator = [None]
+	if not destination:
+		return False
 
-			def appClosed(retval):
-				global container
-				if not retval and archivePending[0]:
-					archivePending[0] = False
-					from .ui import ArchiveCreator
-					archiveCreator[0] = ArchiveCreator(destination)
-					backupDir = os.path.join(destination, "backup")
-					archiveCreator[0].createInfo(backupDir)
-					if container.execute(archiveCreator[0].buildArchiveCommand(backupDir, removeInfo=True)):
-						print("[AutoBackup] failed to execute archive")
-						container = None
-					return
-				if not retval:
-					if archiveCreator[0] is not None:
-						archiveCreator[0].removeOldArchives()
-					setLastBackupTime()
-				print("[AutoBackup] complete, result:", retval)
-				container = None
+	try:
+		from .ui import ArchiveCreator
 
-			def dataAvail(data):
-				if isinstance(data, bytes):
-					data = data.decode("utf-8", errors="replace")
-				print("[AutoBackup]", data.rstrip())
-				writeLog(data, "a")
+		if archiveOnly is None:
+			archiveOnly = (config.plugins.autobackup.backupmode.value == "archive_only")
 
-			writeLog("Automatic backup:\n", "w")
-			print("[AutoBackup] start automatic backup")
+		# For local+archive mode, ArchiveCreator is instantiated only
+		# after the local backup has completed, matching the original behavior.
+		archivePending = [not archiveOnly]
+		archiveCreator = [
+			ArchiveCreator(destination) if archiveOnly else None
+		]
+
+		def appClosed(retval):
+			global container
+
+			# The first stage of local+archive completed successfully.
+			if not retval and archivePending[0]:
+				archivePending[0] = False
+				archiveCreator[0] = ArchiveCreator(destination)
+
+				backupDir = os.path.join(destination, "backup")
+				archiveCreator[0].createInfo(backupDir)
+
+				cmd = archiveCreator[0].buildArchiveCommand(
+					backupDir,
+					removeInfo=True
+				)
+
+				if container.execute(cmd):
+					print("[AutoBackup] failed to execute archive")
+					container = None
+
+				return
+
+			# Complete archive-only mode or the second stage of local+archive.
+			if not retval:
+				if archiveCreator[0] is not None:
+					archiveCreator[0].removeOldArchives()
+
+				setLastBackupTime()
+
+			print("[AutoBackup] complete, result:", retval)
+			container = None
+
+		def dataAvail(data):
+			if isinstance(data, bytes):
+				data = data.decode("utf-8", errors="replace")
+
+			print("[AutoBackup]", data.rstrip())
+			writeLog(data, "a")
+
+		if archiveOnly:
+			cmd = archiveCreator[0].buildCurrentSettingsCommand()
+		else:
 			cmd = backupCommand(fullArchive=True)
-			container = enigma.eConsoleAppContainer()
-			container.appClosed.append(appClosed)
-			container.dataAvail.append(dataAvail)
-			if container.execute(cmd):
-				raise Exception("failed to execute: " + cmd)
-			return True
-		except Exception as e:
-			print("[AutoBackup] FAIL:", e)
-			container = None
-	return False
 
-def runArchiveOnlyBackup():
-	global container
-	if container is not None:
-		print("[AutoBackup] backup already running")
+		writeLog("Automatic backup:\n", "w")
+		print("[AutoBackup] start automatic backup")
+
+		container = enigma.eConsoleAppContainer()
+		container.appClosed.append(appClosed)
+		container.dataAvail.append(dataAvail)
+
+		if container.execute(cmd):
+			raise Exception("failed to execute: " + cmd)
+
+		return True
+
+	except Exception as ex:
+		print("[AutoBackup] FAIL:", ex)
+		container = None
 		return False
-
-	destination = config.plugins.autobackup.where.value
-	if destination:
-		try:
-			from .ui import ArchiveCreator
-			archiveCreator = ArchiveCreator(destination)
-
-			def appClosed(retval):
-				global container
-				if not retval:
-					archiveCreator.removeOldArchives()
-					setLastBackupTime()
-				print("[AutoBackup] complete, result:", retval)
-				container = None
-
-			def dataAvail(data):
-				if isinstance(data, bytes):
-					data = data.decode("utf-8", errors="replace")
-				print("[AutoBackup]", data.rstrip())
-				writeLog(data, "a")
-
-			writeLog("Automatic backup:\n", "w")
-			print("[AutoBackup] start automatic backup")
-			cmd = archiveCreator.buildCurrentSettingsCommand()
-			container = enigma.eConsoleAppContainer()
-			container.appClosed.append(appClosed)
-			container.dataAvail.append(dataAvail)
-			if container.execute(cmd):
-				raise Exception("failed to execute: " + cmd)
-			return True
-		except Exception as e:
-			print("[AutoBackup] FAIL:", e)
-			container = None
-	return False
 
 
 def main(session, **kwargs):

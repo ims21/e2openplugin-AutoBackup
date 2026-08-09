@@ -349,6 +349,7 @@ class Config(ConfigListScreen, Screen):
 		if self.cfg.enabled.value:
 			self.list.append((4 * " " + _("Backup frequency"), self.cfg.frequency, _("Select how often an automatic backup is created.")))
 			self.list.append((4 * " " + _("Start time"), self.cfg.wakeup, _("Set the reference time for automatic backups.")))
+			self.list.append((4 * " " + _("Backup mode"), self.cfg.backupmode, _("Create backup archives only, or also overwrite the local backup each time.")))
 		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Keep an Autoinstall file with a list of installed packages in the local backup.")))
 		self.list.append((_("Save EPG cache"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a manual backup.")))
 		self.list.append((_("Keep backup archives"), self.cfg.keeparchives, _("Select how many backup archives of each type are kept.")))
@@ -432,7 +433,7 @@ class Config(ConfigListScreen, Screen):
 	def menu(self):
 		lst = []
 		lst.append((_("Select files to backup"), self.selectFiles, _("Select files and folders to include in the backup. Basic backup items are already selected."))),
-		lst.append((_("Run a backup now"), self.doBackup, _("Create a backup of the current settings."))),
+		lst.append((_("Run a backup now"), self.doBackup, _("Create a local backup and archive of the current settings (same as pressing the yellow button)."))),
 		lst.append((_("Backup EPG cache"), self.doepgcachebackup, _("Save current contents of EPG cache to a file."))),
 		lst.append((_("Run autoinstall"), self.doAutoinstall, _("Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."))),
 		lst.append((_("Remove autoinstall list"), self.doRemoveAutoinstall, _("Remove the 'autoinstall' file from a backup."))),
