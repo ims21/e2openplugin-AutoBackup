@@ -22,9 +22,8 @@ from Tools.BoundFunction import boundFunction
 from time import mktime, strftime, time
 
 
-# Code guarded by this flag is temporary and will be removed later,
-# together with related configuration definition (measureTime) in plugin.py.
-# It enables the experimental timing options.
+# Code guarded by this flag is temporary and will be removed later.
+# It provides experimental timing and count information.
 ENABLE_EXPERIMENTAL_FEATURES = True
 
 
@@ -343,8 +342,6 @@ class Config(ConfigListScreen, Screen):
 		self.list.append((_("Create Autoinstall"), self.cfg.autoinstall, _("Keep an Autoinstall file with a list of installed packages in the local backup.")))
 		self.list.append((_("Save EPG cache"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a manual backup.")))
 		self.list.append((_("Keep backup archives"), self.cfg.keeparchives, _("Select how many backup archives of each type are kept.")))
-		if ENABLE_EXPERIMENTAL_FEATURES == True:
-			self.list.append((_("Enable timing measurements"), self.cfg.measureTime, _("Display the time needed to find and filter backup archives.")))
 
 	# for summary:
 	def changedEntry(self):
@@ -1216,13 +1213,10 @@ def getArchives(backupDir, filters, stats=None):
 
 	return archives
 
+
 # for ENABLE_EXPERIMENTAL_FEATURES
 def getArchivesTimed(backupDir, filters):
 	stats = {}
-
-	if not config.plugins.autobackup.measureTime.value:
-		archives = getArchives(backupDir, filters)
-		return archives, None, None
 
 	started = time()
 	archives = getArchives(backupDir, filters, stats)
@@ -1310,12 +1304,12 @@ class ArchiveList(Screen):
 		self["list"].setList(archives)
 		title = _("Backup archive list")
 		if ENABLE_EXPERIMENTAL_FEATURES and elapsed is not None:
-			title += " - " + colorText(COLOR_LIGHTGREEN, "%.3f s" % elapsed)
 			if checked:
 				title += " - %s / %s" % (
 					colorText(COLOR_LIGHTGREEN, str(len(archives))),
 					colorText(COLOR_LIGHTGREEN, str(checked))
 				)
+			title += " - " + colorText(COLOR_LIGHTGREEN, "%.3f s" % elapsed)
 		self.setTitle(title)
 		self["message"].setText("" if archives else _("No backup archives match the current filters.\n\nTry changing the filter settings."))
 

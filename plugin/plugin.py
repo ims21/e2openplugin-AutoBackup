@@ -43,10 +43,6 @@ config.plugins.autobackup.backupmode = ConfigSelection(default="archive_only", c
 		("local_and_archive", _("Local backup and archive")),
 ])
 
-# for ENABLE_EXPERIMENTAL_FEATURES
-config.plugins.autobackup.measureTime = ConfigOnOff(default=False)
-
-
 # Global variables
 autoStartTimer = None
 container = None
