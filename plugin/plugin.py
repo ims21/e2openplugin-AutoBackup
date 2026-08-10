@@ -2,6 +2,7 @@ from . import _
 import time
 import os
 import enigma
+import traceback
 from Plugins.Plugin import PluginDescriptor
 from Components.config import config, configfile, ConfigEnableDisable, ConfigSubsection, ConfigClock, ConfigOnOff, ConfigSelection, ConfigText
 
@@ -147,12 +148,13 @@ def runBackup():
 		container.dataAvail.append(dataAvail)
 
 		if container.execute(cmd):
-			raise Exception("failed to execute: " + cmd)
-
+			writeLog("Failed to execute: %s\n" % cmd, "a")
+			container = None
+			return False
 		return True
 
-	except Exception as ex:
-		print("[AutoBackup] FAIL:", ex)
+	except Exception:
+		writeLog("FAIL:\n%s" % traceback.format_exc(), "a")
 		container = None
 		return False
 
