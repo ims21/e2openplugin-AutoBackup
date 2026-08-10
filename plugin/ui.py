@@ -22,9 +22,9 @@ from Tools.BoundFunction import boundFunction
 from time import mktime, strftime, time
 
 
-# All code guarded by this flag is temporary and will be removed later,
-# together with the two related configuration definitions (method, measureTime) in plugin.py.
-# It enables the experimental archive information method and timing options.
+# Code guarded by this flag is temporary and will be removed later,
+# together with related configuration definition (measureTime) in plugin.py.
+# It enables the experimental timing options.
 ENABLE_EXPERIMENTAL_FEATURES = True
 
 
@@ -344,7 +344,6 @@ class Config(ConfigListScreen, Screen):
 		self.list.append((_("Save EPG cache"), self.cfg.epgcache, _("Saves the contents of the EPG cache to a file before creating a manual backup.")))
 		self.list.append((_("Keep backup archives"), self.cfg.keeparchives, _("Select how many backup archives of each type are kept.")))
 		if ENABLE_EXPERIMENTAL_FEATURES == True:
-			self.list.append((_("Archive information priority"), self.cfg.method, _("Select whether archive information is read from autobackup.info first or from the archive filename first.")))
 			self.list.append((_("Enable timing measurements"), self.cfg.measureTime, _("Display the time needed to find and filter backup archives.")))
 
 	# for summary:
@@ -1139,19 +1138,6 @@ def mergeMissingArchiveInfo(info, fallbackInfo):
 	return info
 
 
-def readArchiveInfoName(archiveFile, filename, filters):
-	required = getRequiredArchiveInfo(filters)
-	info = readArchiveInfoFromName(filename)
-
-	# All information required by the active filters
-	# was found in the archive name.
-	if all(key in info for key in required):
-		return info
-
-	archiveInfo = readArchiveInfoFromTar(archiveFile, required)
-	return mergeMissingArchiveInfo(info, archiveInfo)
-
-
 def readArchiveInfoFile(archiveFile, filename, filters):
 	required = getRequiredArchiveInfo(filters)
 	info = readArchiveInfoFromTar(archiveFile, required)
@@ -1163,11 +1149,8 @@ def readArchiveInfoFile(archiveFile, filename, filters):
 def archiveMatchesFilters(fullpath, filename, filters, currentInfo):
 		if not any(filters[key] for key in ("mac", "hostname", "image", "enigma", "slot")):
 			return True
-		if ENABLE_EXPERIMENTAL_FEATURES:
-			readArchiveInfo = (readArchiveInfoFile if config.plugins.autobackup.method.value else readArchiveInfoName)
-			info = readArchiveInfo(fullpath, filename, filters)
-		else:
-			info = readArchiveInfoFile(fullpath, filename, filters)
+
+		info = readArchiveInfoFile(fullpath, filename, filters)
 
 		if filters["mac"] and info.get("mac", "").lower() != currentInfo["mac"]:
 			return False

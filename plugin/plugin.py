@@ -44,7 +44,6 @@ config.plugins.autobackup.backupmode = ConfigSelection(default="archive_only", c
 ])
 
 # for ENABLE_EXPERIMENTAL_FEATURES
-config.plugins.autobackup.method = ConfigOnOff(default = True)
 config.plugins.autobackup.measureTime = ConfigOnOff(default=False)
 
 
