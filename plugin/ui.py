@@ -5,7 +5,7 @@ import os, tarfile
 import enigma
 import shutil
 import re
-from Components.config import config, configfile, getConfigListEntry, ConfigSelection, ConfigYesNo
+from Components.config import config, configfile, ConfigSelection, ConfigYesNo
 from Screens.Screen import Screen
 from Components.ConfigList import ConfigListScreen
 from Components.About import about
@@ -18,7 +18,6 @@ from Components.Sources.StaticText import StaticText
 from Screens.ChoiceBox import ChoiceBox
 from Screens.MessageBox import MessageBox
 from Tools.FuzzyDate import FuzzyTime
-from Screens.Standby import getReasons
 from Tools.BoundFunction import boundFunction
 from time import mktime, strftime, time
 
@@ -253,15 +252,6 @@ def validateArchiveParameters(info, filters):
 			mismatch.append(key)
 
 	return mismatch
-
-# for ENABLE_EXPERIMENTAL_FEATURES
-def timedCall(function, *args, **kwargs):
-	if not config.plugins.autobackup.measureTime.value:
-		return function(*args, **kwargs), None
-
-	started = time()
-	result = function(*args, **kwargs)
-	return result, time() - started
 
 
 class Config(ConfigListScreen, Screen):
