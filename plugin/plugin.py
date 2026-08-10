@@ -91,8 +91,7 @@ def runBackup():
 	try:
 		from .ui import ArchiveCreator
 
-		if archiveOnly is None:
-			archiveOnly = (config.plugins.autobackup.backupmode.value == "archive_only")
+		archiveOnly = (config.plugins.autobackup.backupmode.value == "archive_only")
 
 		# For local+archive mode, ArchiveCreator is instantiated only
 		# after the local backup has completed, matching the original behavior.
