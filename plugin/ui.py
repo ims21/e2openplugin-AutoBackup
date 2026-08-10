@@ -1146,27 +1146,27 @@ def readArchiveInfoFile(archiveFile, filename, filters):
 	return mergeMissingArchiveInfo(info, filenameInfo)
 
 
-def archiveMatchesFilters(fullpath, filename, filters, currentInfo):
+def archiveMatchesFilters(fullpath, filename, filters, currentBoxInfo):
 		if not any(filters[key] for key in ("mac", "hostname", "image", "enigma", "slot")):
 			return True
 
 		info = readArchiveInfoFile(fullpath, filename, filters)
 
-		if filters["mac"] and info.get("mac", "").lower() != currentInfo["mac"]:
+		if filters["mac"] and info.get("mac", "").lower() != currentBoxInfo["mac"]:
 			return False
 
-		if filters["hostname"] and info.get("hostname", "") != currentInfo["hostname"]:
+		if filters["hostname"] and info.get("hostname", "") != currentBoxInfo["hostname"]:
 			return False
 
-		if filters["image"] and info.get("image", "") != currentInfo["image"]:
+		if filters["image"] and info.get("image", "") != currentBoxInfo["image"]:
 			return False
 
-		if filters["enigma"] and info.get("enigma", "") != currentInfo["enigma"]:
+		if filters["enigma"] and info.get("enigma", "") != currentBoxInfo["enigma"]:
 			return False
 
 
 		if filters["slot"]:
-			currentSlot = currentInfo["slot"]
+			currentSlot = currentBoxInfo["slot"]
 			archiveSlot = info.get("slot")
 
 			if currentSlot is None:
@@ -1179,18 +1179,18 @@ def archiveMatchesFilters(fullpath, filename, filters, currentInfo):
 
 def getArchives(backupDir, filters, stats=None):
 	archives = []
-	currentInfo = {}
+	currentBoxInfo = {}
 
 	if filters["mac"]:
-		currentInfo["mac"] = getMacAddress().lower()
+		currentBoxInfo["mac"] = getMacAddress().lower()
 	if filters["hostname"]:
-		currentInfo["hostname"] = getHostName()
+		currentBoxInfo["hostname"] = getHostName()
 	if filters["image"]:
-		currentInfo["image"] = getImageShortName()
+		currentBoxInfo["image"] = getImageShortName()
 	if filters["enigma"]:
-		currentInfo["enigma"] = getEnigmaName()
+		currentBoxInfo["enigma"] = getEnigmaName()
 	if filters["slot"]:
-		currentInfo["slot"] = getCurrentSlot()
+		currentBoxInfo["slot"] = getCurrentSlot()
 
 	if ENABLE_EXPERIMENTAL_FEATURES:
 		if stats is not None:
@@ -1205,7 +1205,7 @@ def getArchives(backupDir, filters, stats=None):
 			if ENABLE_EXPERIMENTAL_FEATURES:
 				if stats is not None:
 					stats["checked"] += 1
-			if not archiveMatchesFilters(entry.path, entry.name, filters, currentInfo):
+			if not archiveMatchesFilters(entry.path, entry.name, filters, currentBoxInfo):
 				continue
 
 			match = re.search(r"\d{8}_\d{4}", entry.name)
