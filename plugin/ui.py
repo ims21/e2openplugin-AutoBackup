@@ -1139,6 +1139,9 @@ def readArchiveInfoFile(archiveFile, filename, filters):
 	required = getRequiredArchiveInfo(filters)
 	info = readArchiveInfoFromTar(archiveFile, required)
 
+	if all(key in info for key in required):
+		return info
+
 	filenameInfo = readArchiveInfoFromName(filename)
 	return mergeMissingArchiveInfo(info, filenameInfo)
 
