@@ -35,8 +35,12 @@ config.plugins.autobackup.keeparchives = ConfigSelection(default="all", choices=
 	("5", "5"),
 	("7", "7"),
 	("10", "10"),
+	("14", "14"),
 	("20", "20"),
+	("28", "28"),
+	("42", "42"),
 	("50", "50"),
+	("72", "72"),
 	("all", _("All")),
 ])
 config.plugins.autobackup.backupmode = ConfigSelection(default="archive_only", choices=[
@@ -83,6 +87,8 @@ def runBackup():
 	destination = config.plugins.autobackup.where.value
 	if not destination:
 		return False
+
+	configfile.save()
 
 	try:
 		from .ui import ArchiveCreator

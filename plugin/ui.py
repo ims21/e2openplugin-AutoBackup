@@ -758,6 +758,9 @@ class Config(ConfigListScreen, Screen):
 	def doArchiveCurrentSettings(self):
 		if not self.prepareCommand():
 			return
+
+		configfile.save()
+
 		archive = ArchiveCreator(self.cfgwhere.value)
 		cmd = archive.buildCurrentSettingsCommand()
 		self.archiveCreator = archive
