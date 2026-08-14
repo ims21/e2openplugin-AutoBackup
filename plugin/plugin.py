@@ -5,6 +5,7 @@ import enigma
 import traceback
 from Plugins.Plugin import PluginDescriptor
 from Components.config import config, configfile, ConfigEnableDisable, ConfigSubsection, ConfigClock, ConfigOnOff, ConfigSelection, ConfigText
+from Components.ParentalControl import parentalControl
 
 #Set default configuration
 config.plugins.autobackup = ConfigSubsection()
@@ -48,6 +49,7 @@ config.plugins.autobackup.backupmode = ConfigSelection(default="archive_only", c
 		("local_and_archive", _("Local backup and archive")),
 ])
 
+
 # Global variables
 autoStartTimer = None
 container = None
@@ -77,6 +79,14 @@ def writeLog(text, mode="a"):
     except Exception as ex:
         print("[AutoBackup] Failed to write log:", ex)
 
+def prepareBackup():
+	db = enigma.eDVBDB.getInstance()
+	db.saveServicelist()
+	db.saveIptvServicelist()
+	parentalControl.save()
+	# always write /etc/enigma2/settings last
+	configfile.save()
+
 def runBackup():
 	global container
 
@@ -88,7 +98,7 @@ def runBackup():
 	if not destination:
 		return False
 
-	configfile.save()
+	prepareBackup()
 
 	try:
 		from .ui import ArchiveCreator

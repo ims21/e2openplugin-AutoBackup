@@ -5,7 +5,7 @@ import os, tarfile
 import enigma
 import shutil
 import re
-from Components.config import config, configfile, ConfigSelection, ConfigYesNo
+from Components.config import config, ConfigSelection, ConfigYesNo
 from Screens.Screen import Screen
 from Components.ConfigList import ConfigListScreen
 from Components.About import about
@@ -446,7 +446,7 @@ class Config(ConfigListScreen, Screen):
 
 		self.saveAll()
 		# Write config file before creating the backup so we have it all
-		configfile.save()
+		plugin.prepareBackup()
 		if config.plugins.autobackup.epgcache.value:
 			self.doepgcachebackup()
 
@@ -759,7 +759,7 @@ class Config(ConfigListScreen, Screen):
 		if not self.prepareCommand():
 			return
 
-		configfile.save()
+		plugin.prepareBackup()
 
 		archive = ArchiveCreator(self.cfgwhere.value)
 		cmd = archive.buildCurrentSettingsCommand()
