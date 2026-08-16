@@ -367,18 +367,37 @@ class Config(ConfigListScreen, Screen):
 	def changedWhere(self, cfg):
 		if not cfg.value:
 			self["status"].setText(_("No suitable media found, insert USB stick, flash card or harddisk."))
-		else:
-			config.plugins.autobackup.where.value = cfg.value
-			path = os.path.join(cfg.value, 'backup')
-			try:
-				if os.path.isfile(os.path.join(path, ".timestamp")) and os.path.isfile(os.path.join(path, "PLi-AutoBackup.tar.gz")):
-					st = os.stat(os.path.join(path, ".timestamp"))
-					self["status"].setText(_("Last local backup date") + ": " + " ".join(FuzzyTime(st.st_mtime, inPast=True)))
-				else:
-					self["status"].setText(_("No local backup present"))
-			except Exception as ex:
-				print("Failed to stat %s: %s" % (path, ex))
-				self["status"].setText(_("No backup present"))
+			return
+
+		status = []
+		config.plugins.autobackup.where.value = cfg.value
+		path = os.path.join(cfg.value, "backup")
+
+		# local backup
+		timestampFile = os.path.join(path, ".timestamp")
+		localBackupFile = os.path.join(path, "PLi-AutoBackup.tar.gz")
+		try:
+			if os.path.isfile(timestampFile) and os.path.isfile(localBackupFile):
+				st = os.stat(timestampFile)
+				status.append(_("Last local backup date") + ": " + " ".join(FuzzyTime(st.st_mtime, inPast=True)))
+			else:
+				status.append(_("No local backup present"))
+		except Exception as ex:
+			print("[AutoBackup] Failed to read local backup status from %s: %s" % (path, ex))
+			status.append(_("Unable to read local backup status"))
+
+		# backup archive
+		try:
+			archives = getArchives(path, ARCHIVE_FILTERS_RESTORE, limit=1)
+			if archives:
+				status.append(_("Last archive date") + ": " + getArchiveDateTime(archives[0][0]))
+			else:
+				status.append(_("No matching backup archive present"))
+		except Exception as ex:
+			print("[AutoBackup] Failed to read archive status from %s: %s" % (path, ex))
+			status.append(_("Unable to read backup archive status"))
+
+		self["status"].setText("\n".join(status))
 
 	def __onClose(self):
 		self.cfgwhere.notifiers.remove(self.changedWhere)
@@ -672,7 +691,7 @@ class Config(ConfigListScreen, Screen):
 			self.activeArchiveFilters = ARCHIVE_FILTERS_RESTORE.copy()
 
 		if ENABLE_EXPERIMENTAL_FEATURES:
-			archives, elapsed, checked = getArchivesTimed(backupDir, self.activeArchiveFilters)
+			archives, elapsed, checked = getArchivesTimed(backupDir, self.activeArchiveFilters, limit=1)
 			if checked:
 				timingText = _("\n\nChecked %s archives\n") % colorText(COLOR_LIGHTGREEN, "%d" % checked)
 			else:
@@ -680,7 +699,7 @@ class Config(ConfigListScreen, Screen):
 			if elapsed is not None:
 				timingText += _("Search time: %s") % colorText(COLOR_LIGHTGREEN, "%.3f s" % elapsed)
 		else:
-			archives = getArchives(backupDir, self.activeArchiveFilters)
+			archives = getArchives(backupDir, self.activeArchiveFilters, limit=1)
 
 		if archives:
 			filename, backupFile = archives[0][:2]
@@ -1180,8 +1199,9 @@ def archiveMatchesFilters(fullpath, filename, filters, currentBoxInfo):
 
 		return True
 
-def getArchives(backupDir, filters, stats=None):
+def getArchives(backupDir, filters, stats=None, limit=None):
 	archives = []
+	candidates = []
 	currentBoxInfo = {}
 
 	if filters["mac"]:
@@ -1205,27 +1225,37 @@ def getArchives(backupDir, filters, stats=None):
 				continue
 			if not isArchiveName(entry.name):
 				continue
-			if ENABLE_EXPERIMENTAL_FEATURES:
-				if stats is not None:
-					stats["checked"] += 1
-			if not archiveMatchesFilters(entry.path, entry.name, filters, currentBoxInfo):
-				continue
 
 			match = re.search(r"\d{8}_\d{4}", entry.name)
 			sortKey = match.group(0).replace("_", "")
-			archives.append((entry.name, entry.path, sortKey))
+			candidates.append((entry.name, entry.path, sortKey))
 
-	archives.sort(key=lambda archive: archive[2], reverse=True)
+	# Directory order is undefined. Sort names first so archives can
+	# subsequently be checked from newest to oldest.
+	candidates.sort(key=lambda archive: archive[2], reverse=True)
+
+	for archive in candidates:
+		if ENABLE_EXPERIMENTAL_FEATURES:
+			if stats is not None:
+				stats["checked"] += 1
+
+		if not archiveMatchesFilters(archive[1], archive[0], filters, currentBoxInfo):
+			continue
+
+		archives.append(archive)
+
+		if limit is not None and len(archives) >= limit:
+			break
 
 	return archives
 
 
 # for ENABLE_EXPERIMENTAL_FEATURES
-def getArchivesTimed(backupDir, filters):
+def getArchivesTimed(backupDir, filters, limit=None):
 	stats = {}
 
 	started = time()
-	archives = getArchives(backupDir, filters, stats)
+	archives = getArchives(backupDir, filters, stats, limit)
 	elapsed = time() - started
 
 	return archives, elapsed, stats["checked"]
