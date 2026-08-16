@@ -39,7 +39,7 @@ ARCHIVE_FILTERS_RESTORE = {
 	"mac": True,
 	"hostname": True,
 	"image": True,
-	"enigma": False,
+	"enigma": True,
 	"slot": True,
 }
 ARCHIVE_FILTERS_MANUAL = {
