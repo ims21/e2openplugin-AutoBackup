@@ -1215,6 +1215,13 @@ def getArchives(backupDir, filters, stats=None, limit=None):
 	if filters["slot"]:
 		currentBoxInfo["slot"] = getCurrentSlot()
 
+	# only limit=1 uses exact filename suffix of the current receiver
+	archiveSuffix = None
+	if limit == 1:
+		slot = getCurrentSlot()
+		slotSuffix = ".slot%02d" % slot if slot is not None else ""
+		archiveSuffix = ".%s.%s.%s%s.tar.gz" % (getMacAddress().lower(), getHostName(), getImageShortName(), slotSuffix)
+
 	if ENABLE_EXPERIMENTAL_FEATURES:
 		if stats is not None:
 			stats["checked"] = 0
@@ -1225,7 +1232,8 @@ def getArchives(backupDir, filters, stats=None, limit=None):
 				continue
 			if not isArchiveName(entry.name):
 				continue
-
+			if archiveSuffix is not None and not entry.name.endswith(archiveSuffix):
+				continue
 			match = re.search(r"\d{8}_\d{4}", entry.name)
 			sortKey = match.group(0).replace("_", "")
 			candidates.append((entry.name, entry.path, sortKey))

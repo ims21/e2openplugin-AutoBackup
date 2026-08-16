@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ims\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 12:50+0200\n"
+"POT-Creation-Date: 2026-08-16 22:04+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ims <ims@openpli.org>\n"
 "Language-Team: PLi <ims21@users.sourceforge.net>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Poedit 3.9\n"
 
-#: ../ui.py:677
+#: ../ui.py:696
 #, python-format
 msgid ""
 "\n"
@@ -29,19 +29,19 @@ msgstr ""
 msgid "All"
 msgstr "Všechny"
 
-#: ../ui.py:1486
+#: ../ui.py:1516
 msgid "Apply filters"
 msgstr "Použít filtry"
 
-#: ../ui.py:1126
+#: ../ui.py:1145
 msgid "Archive contents"
 msgstr "Obsah archivu"
 
-#: ../ui.py:787
+#: ../ui.py:806
 msgid "Archive creation failed"
 msgstr "Založení archivu zálohy se nezdařilo"
 
-#: ../ui.py:1468
+#: ../ui.py:1498
 msgid "Archive filters"
 msgstr "Filtry archivů"
 
@@ -73,15 +73,15 @@ msgstr "Nastavení automatického zálohování"
 msgid "Automatically creates backups at the selected frequency and start time."
 msgstr "Automaticky vytváří zálohu ve stanovený čas se zvoleným intervalem."
 
-#: ../ui.py:423
+#: ../ui.py:442
 msgid "Backup EPG cache"
 msgstr "Uložit EPG cache"
 
-#: ../ui.py:784
+#: ../ui.py:803
 msgid "Backup archive created"
 msgstr "Archiv zálohy vytvořen"
 
-#: ../ui.py:1257 ../ui.py:1311
+#: ../ui.py:1287 ../ui.py:1341
 msgid "Backup archive list"
 msgstr "Seznam archivů záloh"
 
@@ -104,7 +104,7 @@ msgstr "Umístění zálohy"
 msgid "Backup mode"
 msgstr "Typ zálohy"
 
-#: ../ui.py:1070
+#: ../ui.py:1089
 #, python-format
 msgid ""
 "Backup was created for another receiver.\n"
@@ -120,15 +120,15 @@ msgid "CF"
 msgstr "CF"
 
 #
-#: ../ui.py:302 ../ui.py:1485 ../ui.py:1538
+#: ../ui.py:302 ../ui.py:1515 ../ui.py:1568
 msgid "Cancel"
 msgstr "Zavřít"
 
-#: ../ui.py:541
+#: ../ui.py:560
 msgid "Choose a backup."
 msgstr "Zvolte zálohu."
 
-#: ../ui.py:490
+#: ../ui.py:509
 msgid ""
 "Choose a backup.\n"
 "\n"
@@ -147,15 +147,15 @@ msgstr ""
 msgid "Create Autoinstall"
 msgstr "Založit autoinstall"
 
-#: ../ui.py:422
+#: ../ui.py:441
 msgid "Create a local backup and archive of the current settings (same as pressing the yellow button)."
 msgstr "Vytváří lokální zálohu a archiv aktuálního nastavení (stejné jako stisknutí žlutého tlačítka)."
 
-#: ../ui.py:427
+#: ../ui.py:446
 msgid "Create a separate archive with current settings and autoinstall list without overwriting the existing backup. The hostname and slot number are added to the archive name."
 msgstr "Vytvoří samostatný archiv s aktuálním nastavením a autoinstall seznamem bez přepsání existující zálohy. Název boxu a číslo slotu se přidají do názvu archivu."
 
-#: ../ui.py:427
+#: ../ui.py:446
 msgid "Create archive with current settings"
 msgstr "Vytvořit archiv aktuálního nastavení"
 
@@ -167,20 +167,20 @@ msgstr "Vytváří buď pouze archiv zálohy nebo přepisuje pokaždé i lokáln
 msgid "Daily"
 msgstr "denně"
 
-#: ../ui.py:566 ../ui.py:588 ../ui.py:1266
+#: ../ui.py:585 ../ui.py:607 ../ui.py:1296
 msgid "Delete"
 msgstr "Smazat"
 
-#: ../ui.py:571 ../ui.py:598
+#: ../ui.py:590 ../ui.py:617
 msgid "Delete 'autoinstall' list?"
 msgstr "Smazat 'autoinstall' soubor?"
 
-#: ../ui.py:592
+#: ../ui.py:611
 msgid "Delete including the generic 'autoinstall' file"
 msgstr "Smazat včetně obecného 'autoinstall' souboru"
 
 #
-#: ../ui.py:1577
+#: ../ui.py:1607
 msgid "Deselect"
 msgstr "Odebrat"
 
@@ -188,11 +188,11 @@ msgstr "Odebrat"
 msgid "Directory where backup files are created."
 msgstr "Adresář pro vytvoření zálohy."
 
-#: ../ui.py:403
+#: ../ui.py:422
 msgid "Discard unsaved changes?"
 msgstr "Zavřít bez uloženého nastavení?"
 
-#: ../ui.py:611
+#: ../ui.py:630
 msgid ""
 "Do you really want to delete the generic 'autoinstall' file too?\n"
 "\n"
@@ -202,16 +202,16 @@ msgstr ""
 "\n"
 "Na sdíleném úložišti může patřit jinému přijímači!"
 
-#: ../ui.py:1399
+#: ../ui.py:1429
 msgid "Do you really want to delete this backup archive?"
 msgstr "Opravdu chcete smazat tento archiv se zálohou?"
 
 #
-#: ../ui.py:654 ../ui.py:783
+#: ../ui.py:673 ../ui.py:802
 msgid "Done"
 msgstr "Dokončeno"
 
-#: ../ui.py:1481
+#: ../ui.py:1511
 msgid "Enigma"
 msgstr "Enigma"
 
@@ -264,15 +264,15 @@ msgid "Every hour"
 msgstr "1 hodina"
 
 #
-#: ../ui.py:654 ../ui.py:786
+#: ../ui.py:673 ../ui.py:805
 msgid "Failed"
 msgstr "Selhalo"
 
-#: ../ui.py:798
+#: ../ui.py:817
 msgid "Failed to delete backup."
 msgstr "Smazání archivu selhalo."
 
-#: ../ui.py:1269
+#: ../ui.py:1299
 msgid "Filters"
 msgstr "Filtry"
 
@@ -281,15 +281,15 @@ msgstr "Filtry"
 msgid "Harddisk"
 msgstr "Pevný disk"
 
-#: ../ui.py:1479
+#: ../ui.py:1509
 msgid "Hostname"
 msgstr "Hostname"
 
-#: ../ui.py:1480
+#: ../ui.py:1510
 msgid "Image"
 msgstr "Image"
 
-#: ../ui.py:424
+#: ../ui.py:443
 msgid "Install all plugins listed in the 'autoinstall' file. Already installed plugins are skipped."
 msgstr "Nainstaluje všechny pluginy uvedené v souboru 'autoinstall'. Již nainstalované pluginy budou přeskočeny."
 
@@ -301,8 +301,12 @@ msgstr "Zachovává v místní záloze soubor Autoinstall se seznamem nainstalov
 msgid "Keep backup archives"
 msgstr "Zachovávat archivy záloh"
 
+#: ../ui.py:393
+msgid "Last archive date"
+msgstr "Datum vytvoření posledního archivu"
+
 #
-#: ../ui.py:376
+#: ../ui.py:382
 msgid "Last local backup date"
 msgstr "Datum poslední lokální zálohy"
 
@@ -319,35 +323,35 @@ msgstr ""
 msgid "Manual"
 msgstr "Ručně"
 
-#: ../ui.py:1481
+#: ../ui.py:1511
 msgid "Match the current enigma name using the archive name or the info file."
 msgstr "Porovnává aktuální název enigma s názvem uloženým v autobackup.info."
 
-#: ../ui.py:1479
+#: ../ui.py:1509
 msgid "Match the current hostname using the archive name or the info file."
 msgstr "Porovnává aktuální hostname s názvem archivu nebo se souborem autobackup.info."
 
-#: ../ui.py:1480
+#: ../ui.py:1510
 msgid "Match the current image name using the archive name or the info file."
 msgstr "Porovnává aktuální image s názvem archivu nebo se souborem autobackup.info."
 
-#: ../ui.py:1478
+#: ../ui.py:1508
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr "Porovnává aktuální MAC adresu přijímače s názvem archivu, souborem autobackup.info nebo s názvy souborů v archivu."
 
-#: ../ui.py:1482
+#: ../ui.py:1512
 msgid "Match the current slot number using the archive name or the info file."
 msgstr "Porovnává aktuální číslo slotu s názvem archivu nebo se souborem autobackup.info."
 
-#: ../ui.py:565 ../ui.py:587
+#: ../ui.py:584 ../ui.py:606
 msgid "No"
 msgstr "Ne"
 
-#: ../ui.py:487 ../ui.py:534
+#: ../ui.py:506 ../ui.py:553
 msgid "No 'autoinstall' file found"
 msgstr "Nenalezen 'autoinstall' soubor"
 
-#: ../ui.py:500
+#: ../ui.py:519
 msgid ""
 "No 'autoinstall' file matching this receiver's MAC address was found.\n"
 "\n"
@@ -361,7 +365,7 @@ msgstr ""
 "\n"
 "Chcete ho přesto použít?"
 
-#: ../ui.py:579
+#: ../ui.py:598
 msgid ""
 "No 'autoinstall' list matching this receiver's MAC address was found.\n"
 "\n"
@@ -375,7 +379,7 @@ msgstr ""
 "\n"
 "Chcete ho přesto smazat?"
 
-#: ../ui.py:1320 ../ui.py:1414
+#: ../ui.py:1350 ../ui.py:1444
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
@@ -386,14 +390,13 @@ msgstr ""
 "Zkuste změnit nastavení filtrů."
 
 #
-#: ../ui.py:381
-msgid "No backup present"
-msgstr "Žádná záloha"
-
-#
-#: ../ui.py:378
+#: ../ui.py:384
 msgid "No local backup present"
 msgstr "Žádná lokální záloha"
+
+#: ../ui.py:395
+msgid "No matching backup archive present"
+msgstr "Žádný odpovídající archiv zálohy"
 
 #: ../ui.py:369
 msgid "No suitable media found, insert USB stick, flash card or harddisk."
@@ -403,48 +406,48 @@ msgstr "Žádné vhodné médium nebylo nalezeno. Vložte USB, flash kartu nebo 
 msgid "Nowhere"
 msgstr "Nikde"
 
-#: ../ui.py:1332
+#: ../ui.py:1362
 msgid "Original order"
 msgstr "Původní pořadí"
 
-#: ../ui.py:1591
+#: ../ui.py:1621
 msgid "Really close without saving settings?"
 msgstr "Opravdu zavřít bez uloženého nastavení?"
 
-#: ../ui.py:1478
+#: ../ui.py:1508
 msgid "Receiver MAC"
 msgstr "MAC přijímače"
 
-#: ../ui.py:425
+#: ../ui.py:444
 msgid "Remove autoinstall list"
 msgstr "Smazat autoinstall"
 
-#: ../ui.py:425
+#: ../ui.py:444
 msgid "Remove the 'autoinstall' file from a backup."
 msgstr "Odstraní soubor 'autoinstall' ze zálohy."
 
 #
-#: ../ui.py:305 ../ui.py:426 ../ui.py:1267
+#: ../ui.py:305 ../ui.py:445 ../ui.py:1297
 msgid "Restore"
 msgstr "Obnovit"
 
-#: ../ui.py:428
+#: ../ui.py:447
 msgid "Restore from archive"
 msgstr "Obnovit z vybraného archivu"
 
-#: ../ui.py:428
+#: ../ui.py:447
 msgid "Restore settings from a selected archive. MAC address is verified, archive is extracted and settings are restored."
 msgstr "Obnova nastavení ze zvoleného archivu. Zkontroluje se MAC adresa, archiv se rozbalí a nastavení je obnoveno."
 
-#: ../ui.py:426
+#: ../ui.py:445
 msgid "Restore settings from the current backup."
 msgstr "Obnova aktuálního uloženého nastavení."
 
-#: ../ui.py:1357
+#: ../ui.py:1387
 msgid "Restore this backup archive and restart?"
 msgstr "Obnovit zálohu z tohoto archivu a restartovat?"
 
-#: ../ui.py:705
+#: ../ui.py:724
 #, python-format
 msgid ""
 "Restore this backup archive and restart?\n"
@@ -459,24 +462,24 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../ui.py:1359
+#: ../ui.py:1389
 msgid "Restore this backup archive anyway and restart?"
 msgstr "Obnovit přesto zálohu z tohoto archivu a restartovat?"
 
-#: ../ui.py:1268 ../ui.py:1332
+#: ../ui.py:1298 ../ui.py:1362
 msgid "Reverse order"
 msgstr "Otočit pořadí"
 
-#: ../ui.py:422
+#: ../ui.py:441
 msgid "Run a backup now"
 msgstr "Spustit zálohu nyní"
 
-#: ../ui.py:424
+#: ../ui.py:443
 msgid "Run autoinstall"
 msgstr "Spustit autoinstall"
 
 #
-#: ../ui.py:456 ../ui.py:510 ../ui.py:738 ../ui.py:813
+#: ../ui.py:475 ../ui.py:529 ../ui.py:757 ../ui.py:832
 msgid "Running..."
 msgstr "Probíhá..."
 
@@ -485,7 +488,7 @@ msgid "SD"
 msgstr "SD"
 
 #
-#: ../ui.py:303 ../ui.py:1539
+#: ../ui.py:303 ../ui.py:1569
 msgid "Save"
 msgstr "Uložit"
 
@@ -493,7 +496,7 @@ msgstr "Uložit"
 msgid "Save EPG cache"
 msgstr "Uložit EPG cache"
 
-#: ../ui.py:423
+#: ../ui.py:442
 msgid "Save current contents of EPG cache to a file."
 msgstr "Uloží aktuální obsah EPG cache do souboru."
 
@@ -501,26 +504,26 @@ msgstr "Uloží aktuální obsah EPG cache do souboru."
 msgid "Saves the contents of the EPG cache to a file before creating a manual backup."
 msgstr "Před vytvořením ruční zálohy uloží obsah EPG cache do souboru."
 
-#: ../ui.py:681
+#: ../ui.py:700
 #, python-format
 msgid "Search time: %s"
 msgstr "Čas hledání: %s"
 
 #
-#: ../ui.py:1579
+#: ../ui.py:1609
 msgid "Select"
 msgstr "Zvolit"
 
-#: ../ui.py:421
+#: ../ui.py:440
 msgid "Select files and folders to include in the backup. Basic backup items are already selected."
 msgstr "Výběr souborů a složek zahrnutých do zálohy. Základní položky pro zálohu jsou již vybrány."
 
-#: ../ui.py:421
+#: ../ui.py:440
 msgid "Select files to backup"
 msgstr "Výběr souborů pro zálohování"
 
 #
-#: ../ui.py:1570
+#: ../ui.py:1600
 msgid "Select files/folders to backup"
 msgstr "Vyberte soubory/složky pro zálohování"
 
@@ -538,7 +541,7 @@ msgstr "Zvolte, jak často se mají vytvářet automatické zálohy."
 msgid "Set the reference time for automatic backups."
 msgstr "Čas spuštění automatických záloh."
 
-#: ../ui.py:1482
+#: ../ui.py:1512
 msgid "Slot"
 msgstr "Slot"
 
@@ -550,19 +553,27 @@ msgstr "Čas začátku"
 msgid "USB"
 msgstr "USB"
 
-#: ../ui.py:1450
+#: ../ui.py:398
+msgid "Unable to read backup archive status"
+msgstr "Nepodařilo se přečíst stav archivu zálohy"
+
+#: ../ui.py:1480
 msgid "Unable to read backup archive."
 msgstr "Nepodařilo se přečíst archiv."
+
+#: ../ui.py:387
+msgid "Unable to read local backup status"
+msgstr "Nepodařilo se přečíst stav lokální zálohy"
 
 #: ../ui.py:204 ../ui.py:218
 msgid "Unknown time"
 msgstr "Neznámý čas"
 
-#: ../ui.py:1109
+#: ../ui.py:1128
 msgid "autobackup.info file is missing in archive"
 msgstr "archiv neobsahuje soubor autobackup.info"
 
-#: ../ui.py:482 ../ui.py:526 ../ui.py:701
+#: ../ui.py:501 ../ui.py:545 ../ui.py:720
 msgid "from: "
 msgstr "z: "
 
