@@ -1,5 +1,5 @@
 # Configuration GUI
-from . import _
+from . import _, ngettext
 from . import plugin
 import os, tarfile
 import enigma
@@ -691,11 +691,10 @@ class Config(ConfigListScreen, Screen):
 			self.activeArchiveFilters = ARCHIVE_FILTERS_RESTORE.copy()
 
 		if ENABLE_EXPERIMENTAL_FEATURES:
+			timingText = "\n\n"
 			archives, elapsed, checked = getArchivesTimed(backupDir, self.activeArchiveFilters, limit=1)
 			if checked:
-				timingText = _("\n\nChecked %s archives\n") % colorText(COLOR_LIGHTGREEN, "%d" % checked)
-			else:
-				timingText = "\n\n"
+				 timingText += ngettext("Checked %s archive\n", "Checked %s archives\n", checked) % colorText(COLOR_LIGHTGREEN, "%d" % checked)
 			if elapsed is not None:
 				timingText += _("Search time: %s") % colorText(COLOR_LIGHTGREEN, "%.3f s" % elapsed)
 		else:
@@ -1349,10 +1348,7 @@ class ArchiveList(Screen):
 		title = _("Backup archive list")
 		if ENABLE_EXPERIMENTAL_FEATURES and elapsed is not None:
 			if checked:
-				title += " - %s / %s" % (
-					colorText(COLOR_LIGHTGREEN, str(len(archives))),
-					colorText(COLOR_LIGHTGREEN, str(checked))
-				)
+				title += " - %s / %s" % (colorText(COLOR_LIGHTGREEN, str(len(archives))), colorText(COLOR_LIGHTGREEN, str(checked)))
 			title += " - " + colorText(COLOR_LIGHTGREEN, "%.3f s" % elapsed)
 		self.setTitle(title)
 		self["message"].setText("" if archives else _("No backup archives match the current filters.\n\nTry changing the filter settings."))

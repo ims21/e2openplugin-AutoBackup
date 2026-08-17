@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: milo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-16 22:04+0200\n"
+"POT-Creation-Date: 2026-08-17 07:41+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Frenske <voorzitter@openpli.org>\n"
 "Language-Team: PLi <ims21@users.sourceforge.net>\n"
@@ -13,31 +13,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.3.1\n"
 
-#: ../ui.py:696
-#, python-format
-msgid ""
-"\n"
-"\n"
-"Checked %s archives\n"
-msgstr ""
-
 #: ../plugin.py:45
 msgid "All"
 msgstr ""
 
-#: ../ui.py:1516
+#: ../ui.py:1520
 msgid "Apply filters"
 msgstr ""
 
-#: ../ui.py:1145
+#: ../ui.py:1144
 msgid "Archive contents"
 msgstr ""
 
-#: ../ui.py:806
+#: ../ui.py:805
 msgid "Archive creation failed"
 msgstr ""
 
-#: ../ui.py:1498
+#: ../ui.py:1502
 msgid "Archive filters"
 msgstr ""
 
@@ -70,12 +62,12 @@ msgstr ""
 msgid "Backup EPG cache"
 msgstr "Backup EPG-cache"
 
-#: ../ui.py:803
+#: ../ui.py:802
 #, fuzzy
 msgid "Backup archive created"
 msgstr "Backup EPG-cache"
 
-#: ../ui.py:1287 ../ui.py:1341
+#: ../ui.py:1294 ../ui.py:1348
 #, fuzzy
 msgid "Backup archive list"
 msgstr "Backup EPG-cache"
@@ -94,7 +86,7 @@ msgstr "Kies de locatie voor de backup"
 msgid "Backup mode"
 msgstr "Kies de locatie voor de backup"
 
-#: ../ui.py:1089
+#: ../ui.py:1088
 #, python-format
 msgid ""
 "Backup was created for another receiver.\n"
@@ -106,9 +98,16 @@ msgstr ""
 msgid "CF"
 msgstr "CF"
 
-#: ../ui.py:302 ../ui.py:1515 ../ui.py:1568
+#: ../ui.py:302 ../ui.py:1519 ../ui.py:1572
 msgid "Cancel"
 msgstr "Annuleren"
+
+#: ../ui.py:697
+#, python-format
+msgid "Checked %s archive\n"
+msgid_plural "Checked %s archives\n"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../ui.py:560
 msgid "Choose a backup."
@@ -151,7 +150,7 @@ msgstr ""
 msgid "Daily"
 msgstr ""
 
-#: ../ui.py:585 ../ui.py:607 ../ui.py:1296
+#: ../ui.py:585 ../ui.py:607 ../ui.py:1303
 msgid "Delete"
 msgstr ""
 
@@ -165,7 +164,7 @@ msgstr "Verwijder de AutoInstall lijst"
 msgid "Delete including the generic 'autoinstall' file"
 msgstr "Verwijder de AutoInstall lijst"
 
-#: ../ui.py:1607
+#: ../ui.py:1611
 msgid "Deselect"
 msgstr "Déselecteer"
 
@@ -184,18 +183,18 @@ msgid ""
 "On shared storage, it may belong to another receiver!"
 msgstr ""
 
-#: ../ui.py:1429
+#: ../ui.py:1433
 #, fuzzy
 msgid "Do you really want to delete this backup archive?"
 msgstr ""
 "Kies de backup die u wenst te herstellen.\n"
 "Wilt u deze backup herstellen en daarna herstarten?"
 
-#: ../ui.py:673 ../ui.py:802
+#: ../ui.py:673 ../ui.py:801
 msgid "Done"
 msgstr "Gereed"
 
-#: ../ui.py:1511
+#: ../ui.py:1515
 msgid "Enigma"
 msgstr ""
 
@@ -247,16 +246,16 @@ msgstr ""
 msgid "Every hour"
 msgstr ""
 
-#: ../ui.py:673 ../ui.py:805
+#: ../ui.py:673 ../ui.py:804
 msgid "Failed"
 msgstr "Mislukt"
 
-#: ../ui.py:817
+#: ../ui.py:816
 #, fuzzy
 msgid "Failed to delete backup."
 msgstr "Kies de bestanden om te backuppen"
 
-#: ../ui.py:1299
+#: ../ui.py:1306
 msgid "Filters"
 msgstr ""
 
@@ -264,11 +263,11 @@ msgstr ""
 msgid "Harddisk"
 msgstr "Harde schijf"
 
-#: ../ui.py:1509
+#: ../ui.py:1513
 msgid "Hostname"
 msgstr ""
 
-#: ../ui.py:1510
+#: ../ui.py:1514
 msgid "Image"
 msgstr ""
 
@@ -308,23 +307,23 @@ msgstr ""
 msgid "Manual"
 msgstr "Handmatig"
 
-#: ../ui.py:1511
+#: ../ui.py:1515
 msgid "Match the current enigma name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1509
+#: ../ui.py:1513
 msgid "Match the current hostname using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1510
+#: ../ui.py:1514
 msgid "Match the current image name using the archive name or the info file."
 msgstr ""
 
-#: ../ui.py:1508
+#: ../ui.py:1512
 msgid "Match the current receiver MAC address using the archive name, info file or filenames in the archive."
 msgstr ""
 
-#: ../ui.py:1512
+#: ../ui.py:1516
 msgid "Match the current slot number using the archive name or the info file."
 msgstr ""
 
@@ -355,7 +354,7 @@ msgid ""
 "Delete it anyway?"
 msgstr ""
 
-#: ../ui.py:1350 ../ui.py:1444
+#: ../ui.py:1354 ../ui.py:1448
 msgid ""
 "No backup archives match the current filters.\n"
 "\n"
@@ -380,15 +379,15 @@ msgstr "Geen geschikt medium gevonden, USB stick, CF kaart of harddisk nodig."
 msgid "Nowhere"
 msgstr "Nergens"
 
-#: ../ui.py:1362
+#: ../ui.py:1366
 msgid "Original order"
 msgstr ""
 
-#: ../ui.py:1621
+#: ../ui.py:1625
 msgid "Really close without saving settings?"
 msgstr ""
 
-#: ../ui.py:1508
+#: ../ui.py:1512
 msgid "Receiver MAC"
 msgstr ""
 
@@ -400,7 +399,7 @@ msgstr "Verwijder de AutoInstall lijst"
 msgid "Remove the 'autoinstall' file from a backup."
 msgstr ""
 
-#: ../ui.py:305 ../ui.py:445 ../ui.py:1297
+#: ../ui.py:305 ../ui.py:445 ../ui.py:1304
 msgid "Restore"
 msgstr "Herstel de image"
 
@@ -417,11 +416,11 @@ msgstr ""
 msgid "Restore settings from the current backup."
 msgstr ""
 
-#: ../ui.py:1387
+#: ../ui.py:1391
 msgid "Restore this backup archive and restart?"
 msgstr ""
 
-#: ../ui.py:724
+#: ../ui.py:723
 #, python-format
 msgid ""
 "Restore this backup archive and restart?\n"
@@ -431,11 +430,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../ui.py:1389
+#: ../ui.py:1393
 msgid "Restore this backup archive anyway and restart?"
 msgstr ""
 
-#: ../ui.py:1298 ../ui.py:1362
+#: ../ui.py:1305 ../ui.py:1366
 msgid "Reverse order"
 msgstr ""
 
@@ -447,7 +446,7 @@ msgstr "Maak nu een backup"
 msgid "Run autoinstall"
 msgstr "Start de AutoInstall"
 
-#: ../ui.py:475 ../ui.py:529 ../ui.py:757 ../ui.py:832
+#: ../ui.py:475 ../ui.py:529 ../ui.py:756 ../ui.py:831
 msgid "Running..."
 msgstr "Loopt"
 
@@ -455,7 +454,7 @@ msgstr "Loopt"
 msgid "SD"
 msgstr "SD"
 
-#: ../ui.py:303 ../ui.py:1569
+#: ../ui.py:303 ../ui.py:1573
 msgid "Save"
 msgstr "Opslaan"
 
@@ -472,12 +471,12 @@ msgstr ""
 msgid "Saves the contents of the EPG cache to a file before creating a manual backup."
 msgstr ""
 
-#: ../ui.py:700
+#: ../ui.py:699
 #, python-format
 msgid "Search time: %s"
 msgstr ""
 
-#: ../ui.py:1609
+#: ../ui.py:1613
 msgid "Select"
 msgstr "Kies"
 
@@ -489,7 +488,7 @@ msgstr ""
 msgid "Select files to backup"
 msgstr "Kies de bestanden om te backuppen"
 
-#: ../ui.py:1600
+#: ../ui.py:1604
 msgid "Select files/folders to backup"
 msgstr "Kies de bestanden en mappen voor de backup"
 
@@ -507,7 +506,7 @@ msgstr "Elke dag automatisch een backup maken"
 msgid "Set the reference time for automatic backups."
 msgstr "Elke dag automatisch een backup maken"
 
-#: ../ui.py:1512
+#: ../ui.py:1516
 msgid "Slot"
 msgstr ""
 
@@ -525,7 +524,7 @@ msgstr "USB"
 msgid "Unable to read backup archive status"
 msgstr "Backup EPG-cache"
 
-#: ../ui.py:1480
+#: ../ui.py:1484
 msgid "Unable to read backup archive."
 msgstr ""
 
@@ -538,11 +537,11 @@ msgstr "Datum vorige backup"
 msgid "Unknown time"
 msgstr ""
 
-#: ../ui.py:1128
+#: ../ui.py:1127
 msgid "autobackup.info file is missing in archive"
 msgstr ""
 
-#: ../ui.py:501 ../ui.py:545 ../ui.py:720
+#: ../ui.py:501 ../ui.py:545 ../ui.py:719
 msgid "from: "
 msgstr "vanaf: "
 
