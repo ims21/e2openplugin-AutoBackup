@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ims\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 07:41+0200\n"
+"POT-Creation-Date: 2026-08-17 12:19+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: neoatomic <neoatomic@users.noreply.github.com>\n"
 "Language-Team: \n"
@@ -287,12 +287,12 @@ msgstr "Бекап кеша EPG"
 
 #: ../ui.py:393
 #, fuzzy
-msgid "Last archive date"
+msgid "Last backup archive"
 msgstr "Бекап кеша EPG"
 
 #: ../ui.py:382
 #, fuzzy
-msgid "Last local backup date"
+msgid "Last local backup"
 msgstr "Дата последнего бэкапа"
 
 #: ../plugin.py:49

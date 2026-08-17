@@ -379,7 +379,7 @@ class Config(ConfigListScreen, Screen):
 		try:
 			if os.path.isfile(timestampFile) and os.path.isfile(localBackupFile):
 				st = os.stat(timestampFile)
-				status.append(_("Last local backup date") + ": " + " ".join(FuzzyTime(st.st_mtime, inPast=True)))
+				status.append(colorText(COLOR_GRAY, _("Last local backup") + ": ") + colorText(COLOR_LIGHTGREEN, " ".join(FuzzyTime(st.st_mtime, inPast=True))))
 			else:
 				status.append(_("No local backup present"))
 		except Exception as ex:
@@ -390,7 +390,7 @@ class Config(ConfigListScreen, Screen):
 		try:
 			archives = getArchives(path, ARCHIVE_FILTERS_RESTORE, limit=1)
 			if archives:
-				status.append(_("Last archive date") + ": " + getArchiveDateTime(archives[0][0]))
+				status.append(colorText(COLOR_GRAY, _("Last backup archive") + ": ") + colorText(COLOR_LIGHTGREEN, getArchiveDateTime(archives[0][0])))
 			else:
 				status.append(_("No matching backup archive present"))
 		except Exception as ex:

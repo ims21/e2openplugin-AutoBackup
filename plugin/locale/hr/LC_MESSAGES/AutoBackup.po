@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e 2openplugin-AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 07:41+0200\n"
+"POT-Creation-Date: 2026-08-17 12:19+0200\n"
 "PO-Revision-Date: 2020-06-03 19:42+0200\n"
 "Last-Translator: Željko <zeljko2@hi.ht.hr>\n"
 "Language-Team: Željko\n"
@@ -287,12 +287,12 @@ msgstr "Backup EPG predmemorije"
 
 #: ../ui.py:393
 #, fuzzy
-msgid "Last archive date"
+msgid "Last backup archive"
 msgstr "Backup EPG predmemorije"
 
 #: ../ui.py:382
 #, fuzzy
-msgid "Last local backup date"
+msgid "Last local backup"
 msgstr "Zadnji datum backupa"
 
 #: ../plugin.py:49

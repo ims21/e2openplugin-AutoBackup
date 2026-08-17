@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 07:41+0200\n"
+"POT-Creation-Date: 2026-08-17 12:19+0200\n"
 "PO-Revision-Date: 2018-12-25 21:50+0200\n"
 "Last-Translator: Taapat <taapat@gmail.com>\n"
 "Language-Team: Taapat <taapat@gmail.com>\n"
@@ -284,12 +284,12 @@ msgstr "Saglabāt EPG informāciju"
 
 #: ../ui.py:393
 #, fuzzy
-msgid "Last archive date"
+msgid "Last backup archive"
 msgstr "Saglabāt EPG informāciju"
 
 #: ../ui.py:382
 #, fuzzy
-msgid "Last local backup date"
+msgid "Last local backup"
 msgstr "Pēdējā dublējumkopija"
 
 #: ../plugin.py:49

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enigma2-plugin-extensions-autobackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 07:41+0200\n"
+"POT-Creation-Date: 2026-08-17 12:19+0200\n"
 "PO-Revision-Date: 2019-07-25 21:34+0200\n"
 "Last-Translator: Pike_Bishop <alfredzngr023@gmail.com>\n"
 "Language-Team: daddelfalk\n"
@@ -307,13 +307,13 @@ msgstr "Sichere EPG-Cache"
 
 #: ../ui.py:393
 #, fuzzy
-msgid "Last archive date"
+msgid "Last backup archive"
 msgstr "Sichere EPG-Cache"
 
 #
 #: ../ui.py:382
 #, fuzzy
-msgid "Last local backup date"
+msgid "Last local backup"
 msgstr "Letztes Sicherungsdatum"
 
 #: ../plugin.py:49

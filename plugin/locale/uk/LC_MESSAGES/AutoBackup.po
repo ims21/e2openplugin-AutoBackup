@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AutoBackup\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 07:41+0200\n"
+"POT-Creation-Date: 2026-08-17 12:19+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: kvinto\n"
 "Language-Team: http://gisclub.tv\n"
@@ -287,12 +287,12 @@ msgstr "Резервне копіювання кешу EPG"
 
 #: ../ui.py:393
 #, fuzzy
-msgid "Last archive date"
+msgid "Last backup archive"
 msgstr "Резервне копіювання кешу EPG"
 
 #: ../ui.py:382
 #, fuzzy
-msgid "Last local backup date"
+msgid "Last local backup"
 msgstr "Дата останнього резервного копіювання"
 
 #: ../plugin.py:49

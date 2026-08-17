@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 07:41+0200\n"
+"POT-Creation-Date: 2026-08-17 12:19+0200\n"
 "PO-Revision-Date: 2020-05-19 21:25+0100\n"
 "Last-Translator: Pereiira69 <pereira69@gmail.com>\n"
 "Language-Team: \n"
@@ -286,12 +286,12 @@ msgstr "Backup EPG cache"
 
 #: ../ui.py:393
 #, fuzzy
-msgid "Last archive date"
+msgid "Last backup archive"
 msgstr "Backup EPG cache"
 
 #: ../ui.py:382
 #, fuzzy
-msgid "Last local backup date"
+msgid "Last local backup"
 msgstr "Data do último backup"
 
 #: ../plugin.py:49
