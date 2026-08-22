@@ -87,14 +87,21 @@ def prepareBackup():
 	# always write /etc/enigma2/settings last
 	configfile.save()
 
-def runBackup():
+def runBackup(flashImagePars=None):
 	global container
 
 	if container is not None:
 		print("[AutoBackup] backup already running")
 		return False
 
-	destination = config.plugins.autobackup.where.value
+	if flashImagePars:
+		destination, callback = flashImagePars
+		archiveOnly = False
+	else:
+		destination = config.plugins.autobackup.where.value
+		callback = None
+		archiveOnly = (config.plugins.autobackup.backupmode.value == "archive_only")
+
 	if not destination:
 		return False
 
@@ -102,8 +109,6 @@ def runBackup():
 
 	try:
 		from .ui import ArchiveCreator
-
-		archiveOnly = (config.plugins.autobackup.backupmode.value == "archive_only")
 
 		# For local+archive mode, ArchiveCreator is instantiated only
 		# after the local backup has completed, matching the original behavior.
@@ -128,9 +133,12 @@ def runBackup():
 					removeInfo=True
 				)
 
-				if container.execute(cmd):
+				executeRetval = container.execute(cmd)
+				if executeRetval:
 					print("[AutoBackup] failed to execute archive")
 					container = None
+					if callback:
+						callback(None, executeRetval, None)
 
 				return
 
@@ -143,6 +151,8 @@ def runBackup():
 
 			print("[AutoBackup] complete, result:", retval)
 			container = None
+			if callback:
+				callback(None, retval, None)
 
 		def dataAvail(data):
 			if isinstance(data, bytes):
@@ -154,7 +164,7 @@ def runBackup():
 		if archiveOnly:
 			cmd = archiveCreator[0].buildCurrentSettingsCommand()
 		else:
-			cmd = backupCommand(fullArchive=True)
+			cmd = backupCommand(destination, fullArchive=True)
 
 		writeLog("Automatic backup:\n", "w")
 		print("[AutoBackup] start automatic backup")
