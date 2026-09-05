@@ -1256,6 +1256,9 @@ def getArchives(backupDir, filters, stats=None, limit=None):
 
 	return archives
 
+def showFilterStatus(filters):
+	filters = " ".join(colorText(COLOR_GREEN if value else COLOR_GRAY, key[0].lower()) for key, value in filters.items())
+	return colorText(COLOR_GRAY, " ~ [ ") + filters + colorText(COLOR_GRAY, " ]")
 
 # for ENABLE_EXPERIMENTAL_FEATURES
 def getArchivesTimed(backupDir, filters, limit=None):
@@ -1345,7 +1348,7 @@ class ArchiveList(Screen):
 			archives.reverse()
 
 		self["list"].setList(archives)
-		title = _("Backup archive list")
+		title = _("Backup archive list") + showFilterStatus(self.archiveFilters)
 		if ENABLE_EXPERIMENTAL_FEATURES and elapsed is not None:
 			if checked:
 				title += " - %s / %s" % (colorText(COLOR_LIGHTGREEN, str(len(archives))), colorText(COLOR_LIGHTGREEN, str(checked)))
