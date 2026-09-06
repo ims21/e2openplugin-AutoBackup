@@ -168,7 +168,7 @@ def getCurrentSlot():
 
 
 COLOR_RED = "ff4040"
-COLOR_GREEN = "40a040"
+COLOR_GREEN = "40b040"
 COLOR_GRAY = "b0b0b0"
 COLOR_LIGHTGREEN = "c0ffc0"
 
